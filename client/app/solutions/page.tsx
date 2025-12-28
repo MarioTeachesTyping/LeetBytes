@@ -10,15 +10,22 @@ import PillNav from "@/components/react-bits/PillNav";
 
 const items = [
   "Two Sum - E - Array, Hash Table",
-  "Add Two Numbers - M - Linked List, Math",
-  "Longest Substring Without Repeating Characters - M - String, Sliding Window",
-  "Median of Two Sorted Arrays - H - Array, Binary Search",
-  "Valid Parentheses - E - Stack, String",
-  "Merge Intervals - M - Array, Sorting",
-  "Best Time to Buy and Sell Stock - E - Array, Dynamic Programming",
-  "Maximum Subarray - M - Array, Dynamic Programming",
-  "Climbing Stairs - E - Dynamic Programming",
-  "Container With Most Water - M - Array, Two Pointers",
+  "Add Two Numbers - M - Linked List, Math, Recursion",
+  "Longest Substring Without Repeating Characters - M - Hash Table, Sliding Window",
+  "Longest Palindromic Substring - M - Two Pointers, DP",
+  "Palindrome Number - E - Math",
+  "Valid Parentheses - E - String, Stack",
+  "Merge Two Sorted Lists - E - Linked Lists, Recursion",
+  "Generate Parentheses - M - String, DP, Backtracking",
+  "Trapping Rain Water - H - Array, Two Pointers, DP, Stack",
+  "Group Anagrams - M - Array, Hash Table, String, Sorting",
+  "Subsets - M - Array, Backtracking",
+  "Word Search - M - Array, String, Backtracking, DFS, Matrix",
+  "Same Tree - E - Tree, DFS, BFS, Binary Tree",
+  "Symmetric Tree - E - Tree, DFS, BFS, Binary Tree",
+  "LRU Cache - M - Hash Table, Linked List, Design",
+  "Number of Islands - M - Array, DFS, BFS, Union Find, Matrix",
+  "Kth Largest Element in an Array - M - Array, Divide & Conquer, Sorting, Heap"
 ];
 
 const difficultyTextClass: Record<string, string> = {
@@ -32,11 +39,20 @@ const navItems = [
   { label: "Array", href: "" },
   { label: "String", href: "" },
   { label: "Hash Table", href: "" },
+  { label: "Sorting", href: "" },
   { label: "Two Pointers", href: "" },
+  { label: "Sliding Window", href: "" },
   { label: "Stack", href: "" },
-  { label: "Queue", href: "" },
+  { label: "Heap", href: "" },
   { label: "Linked List", href: "" },
-  { label: "Dynamic Programming", href: "" },
+  { label: "Tree", href: "" },
+  { label: "DFS", href: "" },
+  { label: "BFS", href: "" },
+  { label: "Matrix", href: "" },
+  { label: "Backtracking", href: "" },
+  { label: "DP", href: "" },
+  { label: "Design", href: "" },
+  { label: ":)", href: "" },
 ];
 
 export default function Solutions() 
@@ -57,8 +73,8 @@ export default function Solutions()
   return (
     <div className="h-screen bg-black flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="px-4 md:px-8 py-4 border-b border-white/20 bg-black relative z-20">
-        <div className="max-w-6xl mx-auto flex items-center justify-center">
+      <div className="px-4 md:px-8 py-3 border-b border-white/20 bg-black relative z-20">
+        <div className="w-full flex items-center justify-center">
           <PillNav
             logo="/icon-dark.png"
             items={navItems}
@@ -71,6 +87,7 @@ export default function Solutions()
           />
         </div>
       </div>
+
 
       {/* Content */}
       <div className="flex-1 px-4 md:px-8 py-8 overflow-hidden relative">
@@ -124,7 +141,7 @@ export default function Solutions()
 
               {filtered.length === 0 && (
                 <div className="p-10 text-center text-white/60">
-                  No solutions match{" "}
+                  No Solutions Match{" "}
                   <span className="text-white">{selectedTopic}</span>
                 </div>
               )}
