@@ -31,7 +31,7 @@ export default function Landing()
         <div className="relative w-[290px] h-[290px]">
           {/* Ring: force it to fill wrapper + cancel mx-auto */}
           <CircularText
-            text="L E E T B Y T E S * L E E T B Y T E S * "
+            text="L E E T B Y T E S ● L E E T B Y T E S ● "
             onHover="speedUp"
             spinDuration={20}
             className="absolute inset-0 w-full h-full mx-0 pointer-events-none"
