@@ -44,12 +44,44 @@ export const SOLUTIONS: Record<string, SolutionEntry> = {
       "Only one valid answer exists.",
     ],
     code: `class Solution:
-    def twoSum(self, nums, target):
-        seen = {}
-        for i, x in enumerate(nums):
-            need = target - x
-            if need in seen:
-                return [seen[need], i]
-            seen[x] = i`,
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        '''
+        brute force: loop through the list twice
+        O(n^2) because double for loop
+        '''
+        # for i in range(len(nums)):
+        #     for j in range(1, len(nums)):
+        #         # check if adding i and j equals target
+        #         if nums[i] + nums[j] == target:
+        #             return [i, j]
+
+        # return []
+      
+        '''
+        optimal solution: dict with one pass
+        we need to find the complement of each index for our target 
+        complement = target - index value | ex: ??? = 9 - 2 --> 7 = 9 - 2
+        '''
+        # we need a dict to keep track of our complements
+        dict = {}
+
+        # loop through the list
+        for i in range(len(nums)):
+            # check for our complement through a simple equation
+            complement = target - nums[i]
+            '''
+            if complement is in our dict, then we have a solution
+            if target is 9 and 2 is in dict, and our num value rn is 7, we found our
+            pair for the target and can return index of complement and curr num
+            '''
+            if complement in dict:
+                return [dict[complement], i]
+            
+            # add index to dict
+            # key = value
+            dict[nums[i]] = i
+        
+        # return empty list if we dont find shit
+        return []`,
   },
 };
