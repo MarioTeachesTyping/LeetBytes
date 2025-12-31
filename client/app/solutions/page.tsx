@@ -31,9 +31,25 @@ const items: ItemRow[] = [
   { title: "Word Search", difficulty: "M", topics: "Array, String, Backtracking, DFS, Matrix" },
   { title: "Same Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
   { title: "Symmetric Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
+  { title: "Maximum Depth of Binary Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
+  { title: "Best Time to Buy and Sell Stock", difficulty: "E", topics: "Array, DP" },
+  { title: "Linked List Cycle", difficulty: "E", topics: "Hash Table, Linked List, Two Pointers" },
   { title: "LRU Cache", difficulty: "M", topics: "Hash Table, Linked List, Design" },
+  { title: "Min Stack", difficulty: "M", topics: "Stack, Design" },
+  { title: "Majority Element", difficulty: "E", topics: "Array, Hash Table, Divide & Conquer, Sorting, Counting" },
   { title: "Number of Islands", difficulty: "M", topics: "Array, DFS, BFS, Union Find, Matrix" },
+  { title: "Isomorphic Strings", difficulty: "E", topics: "Hash Table, String" },
+  { title: "Reverse Linked List", difficulty: "E", topics: "Linked List, Recursion" },
   { title: "Kth Largest Element in an Array", difficulty: "M", topics: "Array, Divide & Conquer, Sorting, Heap" },
+  { title: "Contains Duplicate", difficulty: "E", topics: "Array, Hash Table, Sorting" },
+  { title: "Contains Duplicate II", difficulty: "E", topics: "Array, Hash Table, Sliding Window" },
+  { title: "Invert Binary Tree", difficulty: "E", topics: "Tree, BFS, DFS, Binary Tree" },
+  { title: "Valid Anagram", difficulty: "E", topics: "Hash Table, String, Sorting" },
+  { title: "Meeting Rooms", difficulty: "E", topics: "Array, Sorting" },
+  { title: "Binary Tree Vertical Order Traversal", difficulty: "M", topics: "Hash Table, Tree, DFS, BFS, Sorting, Binary Tree" },
+  { title: "Minimum Remove to Make Valid Parentheses", difficulty: "M", topics: "String, Stack" },
+  { title: "Sequential Digits", difficulty: "M", topics: "Enumeration" },
+  { title: "Check If All 1's Are at Least Length K Places Away", difficulty: "E", topics: "Array" },
 ];
 
 const difficultyTextClass: Record<string, string> = {
@@ -110,7 +126,7 @@ export default function Solutions() {
 
                 const content = (
                   <div
-                    className={`grid grid-cols-[48px_1fr_56px_300px] border-b border-white/10 last:border-b-0 hover:bg-white/5 transition-all ${
+                    className={`grid grid-cols-[48px_minmax(0,1fr)_56px_420px] border-b border-white/10 last:border-b-0 hover:bg-white/5 transition-all ${
                       row.slug ? "cursor-pointer" : "cursor-not-allowed opacity-60"
                     }`}
                   >
