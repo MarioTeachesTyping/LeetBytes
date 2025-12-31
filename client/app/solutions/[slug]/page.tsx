@@ -32,6 +32,7 @@ export default async function Page({ params }: PageProps) {
           description={entry.description}
           examples={entry.examples}
           constraints={entry.constraints}
+          topics={entry.topics}
         />
 
         <Solution highlightedHtml={highlightedHtml} />
