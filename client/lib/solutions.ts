@@ -8,6 +8,12 @@ export type Example = {
   explanation?: string;
 };
 
+export type Stat = {
+  label: "Runtime" | "Memory";
+  value: string;      // "0 ms", "19.05 MB"
+  beats?: string;     // "100.00%", "19.44%"
+};
+
 export type SolutionEntry = {
   title: string;
   difficulty: "Easy" | "Medium" | "Hard";
@@ -15,8 +21,13 @@ export type SolutionEntry = {
   examples?: Example[];
   constraints?: string[];
   topics?: string[];
-  code: string; // python only for now
+  code: string;
+  stats?: {
+    runtime?: Stat;
+    memory?: Stat;
+  };
 };
+
 
 export const SOLUTIONS: Record<string, SolutionEntry> = {
   "two-sum": {
@@ -47,6 +58,9 @@ export const SOLUTIONS: Record<string, SolutionEntry> = {
       "`-10⁹ ≤ nums[i] ≤ 10⁹`",
       "`-10⁹ ≤ target ≤ 10⁹`",
       "Only one valid answer exists.",
+    ],
+    topics: [
+      "Array", "Hash Table"
     ],
     code: `class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -88,6 +102,9 @@ export const SOLUTIONS: Record<string, SolutionEntry> = {
         
         # return empty list if we dont find shit
         return []`,
-      topics: ["Array", "Hash Table"],
+    stats: {
+      runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
+      memory: { label: "Memory", value: "19.05 MB", beats: "19.44%" },
+    },
   },
 };

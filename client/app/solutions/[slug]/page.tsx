@@ -35,7 +35,7 @@ export default async function Page({ params }: PageProps) {
           topics={entry.topics}
         />
 
-        <Solution highlightedHtml={highlightedHtml} />
+        <Solution highlightedHtml={highlightedHtml} stats={entry.stats} />
       </div>
     </main>
   );

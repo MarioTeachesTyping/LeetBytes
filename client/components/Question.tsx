@@ -63,7 +63,7 @@ export default function Question({
   };
 
   return (
-    <aside className="h-full overflow-y-auto border-r border-white/10 bg-zinc-950 p-7">
+    <aside className="h-full overflow-y-auto border-r border-white/10 bg-zinc-950 px-5 py-4">
       {/* Title */}
       <h1 className="text-2xl font-semibold text-white mb-3">{title}</h1>
 
