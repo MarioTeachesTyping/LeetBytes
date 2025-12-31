@@ -18,7 +18,7 @@ type ItemRow = {
 
 const items: ItemRow[] = [
   { title: "Two Sum", difficulty: "E", topics: "Array, Hash Table", slug: "two-sum" },
-  { title: "Add Two Numbers", difficulty: "M", topics: "Linked List, Math, Recursion" },
+  { title: "Add Two Numbers", difficulty: "M", topics: "Linked List, Math, Recursion", slug: "add-two-numbers" },
   { title: "Longest Substring Without Repeating Characters", difficulty: "M", topics: "Hash Table, Sliding Window" },
   { title: "Longest Palindromic Substring", difficulty: "M", topics: "Two Pointers, DP" },
   { title: "Palindrome Number", difficulty: "E", topics: "Math" },
