@@ -4,7 +4,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Iridescence from "./react-bits/Iridescence";
 
 type StatCard = {
@@ -14,6 +14,7 @@ type StatCard = {
 
 interface SolutionProps {
   highlightedHtml: string;
+  slug: string;
   stats?: {
     runtime?: StatCard;
     memory?: StatCard;
@@ -51,50 +52,96 @@ function StatBox({ title, stat }: { title: string; stat?: StatCard }) {
   );
 }
 
-export default function Solution({ highlightedHtml, stats }: SolutionProps) {
+export default function Solution({ highlightedHtml, slug, stats }: SolutionProps) {
   const [revealed, setRevealed] = useState(false);
+  const [activeTab, setActiveTab] = useState<"code" | "notes">("code");
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    const savedNotes = localStorage.getItem(`leetbytes-notes-${slug}`);
+    if (savedNotes) {
+      setNotes(savedNotes);
+    }
+  }, [slug]);
+
+  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newNotes = e.target.value;
+    setNotes(newNotes);
+    localStorage.setItem(`leetbytes-notes-${slug}`, newNotes);
+  };
 
   return (
-    <section className="h-full bg-zinc-950 p-6 flex flex-col min-h-0">
+    <section className="h-full bg-zinc-950 p-3 flex flex-col min-h-0">
       {/* Header */}
-      <div className="mb-3 flex items-center gap-2 text-sm text-zinc-400">
-        <span className="font-medium text-white">Code</span>
-        <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs">Python</span>
+      <div className="mb-3 flex items-center gap-2">
+        <button
+          onClick={() => setActiveTab("code")}
+          className={`px-4 py-1 rounded-full font-medium transition-all ${
+            activeTab === "code" 
+              ? "bg-white text-black" 
+              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+          }`}
+        >
+          Code
+        </button>
+        <button
+          onClick={() => setActiveTab("notes")}
+          className={`px-4 py-1 rounded-full font-medium transition-all ${
+            activeTab === "notes" 
+              ? "bg-white text-black" 
+              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+          }`}
+        >
+          Notes
+        </button>
       </div>
 
-      {/* Code container */}
-      <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
-        <div
-          className="h-full overflow-auto bg-[#0d1117] text-sm"
-          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-        />
-
-        {/* Iridescence spoiler overlay (fade out) */}
-        <div
-          className={`
-            absolute inset-0 flex items-center justify-center
-            transition-opacity duration-500 ease-out
-            ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
-          `}
-        >
-          <Iridescence
-            color={[1, 1, 1]}
-            mouseReact={false}
-            amplitude={0.1}
-            speed={1.0}
+      {/* Content container */}
+      {activeTab === "code" ? (
+        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+          <div
+            className="h-full overflow-auto bg-black text-sm [&_pre]:!bg-transparent [&_code]:!bg-transparent"
+            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
           />
 
-          {!revealed && (
-            <button
-              onClick={() => setRevealed(true)}
-              className="absolute px-12 py-3 bg-black text-white font-semibold rounded-full border border-white
-                         hover:bg-white hover:text-black transition-colors"
-            >
-              Spoiler
-            </button>
-          )}
+          {/* Iridescence spoiler overlay (fade out) */}
+          <div
+            className={`
+              absolute inset-0 flex items-center justify-center
+              transition-opacity duration-500 ease-out
+              ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
+            `}
+          >
+            <Iridescence
+              color={[1, 1, 1]}
+              mouseReact={false}
+              amplitude={0.1}
+              speed={1.0}
+            />
+
+            {!revealed && (
+              <button
+                onClick={() => setRevealed(true)}
+                className="absolute px-12 py-3 bg-black text-white font-semibold rounded-full border border-white
+                           hover:bg-white hover:text-black transition-colors"
+              >
+                Spoiler
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 min-h-0 rounded-md overflow-hidden">
+          <textarea
+            value={notes}
+            onChange={handleNotesChange}
+            placeholder="Type your notes here..."
+            className="w-full h-full p-4 bg-black text-zinc-300 text-sm resize-none
+                       focus:outline-none focus:ring-2 focus:ring-zinc-700 rounded-md
+                       placeholder:text-zinc-600"
+          />
+        </div>
+      )}
 
       {/* Bottom stats section */}
       <div className="mt-4 flex gap-3">

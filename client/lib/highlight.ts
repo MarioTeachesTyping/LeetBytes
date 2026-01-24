@@ -6,7 +6,7 @@ async function getHighlighterOnce() {
   if (_highlighter) return _highlighter;
 
   _highlighter = await createHighlighter({
-    themes: ["github-dark"],
+    themes: ["vesper"],
     langs: ["python"],
   });
 
@@ -18,6 +18,6 @@ export async function highlightPython(code: string) {
 
   return highlighter.codeToHtml(code, {
     lang: "python",
-    theme: "github-dark",
+    theme: "vesper",
   });
 }
