@@ -71,25 +71,25 @@ export default function Solution({ highlightedHtml, slug, stats }: SolutionProps
   };
 
   return (
-    <section className="h-full bg-zinc-950 p-3 flex flex-col min-h-0">
+    <section className="h-full p-3 flex flex-col min-h-0">
       {/* Header */}
       <div className="mb-3 flex items-center gap-2">
         <button
           onClick={() => setActiveTab("code")}
-          className={`px-4 py-1 rounded-full font-medium transition-all ${
+          className={`px-4 py-1 font-semibold rounded-full border border-white transition-colors ${
             activeTab === "code" 
               ? "bg-white text-black" 
-              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              : "bg-black text-white hover:bg-white hover:text-black"
           }`}
         >
           Code
         </button>
         <button
           onClick={() => setActiveTab("notes")}
-          className={`px-4 py-1 rounded-full font-medium transition-all ${
+          className={`px-4 py-1 font-semibold rounded-full border border-white transition-colors ${
             activeTab === "notes" 
               ? "bg-white text-black" 
-              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              : "bg-black text-white hover:bg-white hover:text-black"
           }`}
         >
           Notes

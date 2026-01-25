@@ -22,24 +22,28 @@ export default async function Page({ params }: PageProps) {
   const highlightedHtml = await highlightPython(entry.code);
 
   return (
-    <main className="h-screen bg-zinc-950 text-white flex flex-col">
+    <main className="h-screen bg-black text-white flex flex-col">
       <Navbar />
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0">
-        <Question
-          title={entry.title}
-          difficulty={entry.difficulty}
-          description={entry.description}
-          examples={entry.examples}
-          constraints={entry.constraints}
-          topics={entry.topics}
-        />
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0 gap-2 py-1 px-1">
+        <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
+          <Question
+            title={entry.title}
+            difficulty={entry.difficulty}
+            description={entry.description}
+            examples={entry.examples}
+            constraints={entry.constraints}
+            topics={entry.topics}
+          />
+        </div>
 
-        <Solution 
-          highlightedHtml={highlightedHtml} 
-          slug={slug}
-          stats={entry.stats} 
-        />
+        <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
+          <Solution 
+            highlightedHtml={highlightedHtml} 
+            slug={slug}
+            stats={entry.stats} 
+          />
+        </div>
       </div>
     </main>
   );

@@ -10,6 +10,7 @@ interface Example {
   input: string;
   output: string;
   explanation?: string;
+  image?: string;
 }
 
 interface QuestionProps {
@@ -63,14 +64,14 @@ export default function Question({
   };
 
   return (
-    <aside className="h-full overflow-y-auto border-r border-white/10 bg-zinc-950 px-5 py-4">
+    <aside className="h-full overflow-y-auto px-3 py-4">
       {/* Title */}
       <h1 className="text-2xl font-semibold text-white mb-3">{title}</h1>
 
       {/* Badges row */}
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`inline-flex items-center justify-center rounded-full border px-4 py-1 text-base font-semibold ${difficultyStyles}`}
+          className={`inline-flex items-center justify-center rounded-full border px-3 py-0.5 text-base font-semibold ${difficultyStyles}`}
         >
           {difficulty}
         </span>
@@ -79,7 +80,7 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToTopics}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-1 text-base font-medium text-white/90
+            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 py-0.5 text-base font-medium text-white/90
                        hover:bg-white hover:text-black transition-colors"
           >
             Topics
@@ -104,6 +105,15 @@ export default function Question({
               </p>
 
               <div className="pl-5 space-y-2 border-l border-white/10">
+              {ex.image && (
+                  <div className="mt-3">
+                    <img
+                      src={ex.image}
+                      alt={`Example ${i + 1} illustration`}
+                      className="max-w-full h-auto rounded-lg border border-white/20 bg-white p-2"
+                    />
+                  </div>
+                )}
                 <p>
                   <span className="font-semibold text-white">Input:</span>{" "}
                   {renderInlineCode(ex.input)}
