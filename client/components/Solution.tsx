@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect } from "react";
 import Iridescence from "./react-bits/Iridescence";
+import { FaLeaf } from "react-icons/fa";
 
 type StatCard = {
   value: string;
@@ -31,18 +32,18 @@ function StatBox({ title, stat }: { title: string; stat?: StatCard }) {
         </span>
       </div>
 
-      <div className="mt-2 flex items-end justify-between">
+      <div className="mt-1 flex items-end justify-between">
         <div className="text-lg font-semibold text-white">
           {stat?.value ?? "—"}
         </div>
 
         <div className="text-xs text-white/60">
           {stat?.beats ? (
-            <>
+            <span className="flex items-center gap-1">
               Beats{" "}
-              <span className="text-white font-semibold">{stat.beats}</span>{" "}
-              <span className="text-emerald-400">🍃</span>
-            </>
+              <span className="text-white font-semibold">{stat.beats}</span>
+              <FaLeaf className="text-white inline-block" />
+            </span>
           ) : (
             " "
           )}
