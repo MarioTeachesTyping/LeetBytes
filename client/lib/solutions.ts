@@ -22,6 +22,7 @@ export type SolutionEntry = {
   examples?: Example[];
   constraints?: string[];
   topics?: string[];
+  companies?: string[];
   code: string;
   stats?: {
     runtime?: Stat;

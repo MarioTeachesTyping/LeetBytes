@@ -77,7 +77,7 @@ export default function Solution({ highlightedHtml, slug, stats }: SolutionProps
       <div className="mb-3 flex items-center gap-2">
         <button
           onClick={() => setActiveTab("code")}
-          className={`px-4 py-1 font-semibold rounded-full border border-white transition-colors ${
+          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
             activeTab === "code" 
               ? "bg-white text-black" 
               : "bg-black text-white hover:bg-white hover:text-black"
@@ -87,7 +87,7 @@ export default function Solution({ highlightedHtml, slug, stats }: SolutionProps
         </button>
         <button
           onClick={() => setActiveTab("notes")}
-          className={`px-4 py-1 font-semibold rounded-full border border-white transition-colors ${
+          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
             activeTab === "notes" 
               ? "bg-white text-black" 
               : "bg-black text-white hover:bg-white hover:text-black"
@@ -123,7 +123,7 @@ export default function Solution({ highlightedHtml, slug, stats }: SolutionProps
             {!revealed && (
               <button
                 onClick={() => setRevealed(true)}
-                className="absolute px-12 py-3 bg-black text-white font-semibold rounded-full border border-white
+                className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
                            hover:bg-white hover:text-black transition-colors"
               >
                 Spoiler

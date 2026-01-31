@@ -30,6 +30,9 @@ export const longestSubstringWithoutRepeatingCharacters: SolutionEntry = {
   topics: [
     "Hash Table", "String", "Sliding Window"
   ],
+  companies: [
+    "Amazon", "Google", "Microsoft",
+  ],
   code: `class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
 

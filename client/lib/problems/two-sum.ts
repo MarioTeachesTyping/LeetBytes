@@ -30,7 +30,10 @@ export const twoSum: SolutionEntry = {
     "Only one valid answer exists.",
   ],
   topics: [
-    "Array", "Hash Table"
+    "Array", "Hash Table",
+  ],
+  companies: [
+    "Google", "Amazon", "Microsoft",
   ],
   code: `class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:

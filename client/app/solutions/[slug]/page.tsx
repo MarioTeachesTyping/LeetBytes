@@ -34,6 +34,7 @@ export default async function Page({ params }: PageProps) {
             examples={entry.examples}
             constraints={entry.constraints}
             topics={entry.topics}
+            companies={entry.companies}
           />
         </div>
 

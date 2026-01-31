@@ -26,6 +26,9 @@ export const longestPalindromicSubstring: SolutionEntry = {
   topics: [
     "Two Pointers", "String", "Dynammic Programming"
   ],
+  companies: [
+    "Microsoft", "Google", "TCS", "Amazon",
+  ],
   code: `class Solution:
     def longestPalindrome(self, s: str) -> str:
         

@@ -31,6 +31,9 @@ export const addTwoNumbers: SolutionEntry = {
   topics: [
     "Linked List", "Math", "Recursion"
   ],
+  companies: [
+    "Google", "Microsoft", "Meta", "Bloomberg", "Amazon",
+  ],
   code: `# Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):

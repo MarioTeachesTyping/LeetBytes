@@ -20,6 +20,7 @@ interface QuestionProps {
   examples?: Example[];
   constraints?: string[];
   topics?: string[];
+  companies?: string[];
 }
 
 /**
@@ -48,8 +49,10 @@ export default function Question({
   examples = [],
   constraints = [],
   topics = [],
+  companies = [],
 }: QuestionProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
+  const companiesRef = useRef<HTMLDivElement | null>(null);
 
   const difficultyStyles =
     difficulty === "Easy"
@@ -61,6 +64,11 @@ export default function Question({
   const scrollToTopics = () => {
     if (!topicsRef.current) return;
     topicsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToCompanies = () => {
+    if (!companiesRef.current) return;
+    companiesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -80,10 +88,21 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToTopics}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 py-0.5 text-base font-medium text-white/90
-                       hover:bg-white hover:text-black transition-colors"
+            className="inline-flex items-center justify-center rounded-full border border-purple-400/40 bg-purple-500/10 px-3 py-0.5 text-base font-medium text-purple-300
+                       hover:bg-purple-500 hover:text-white transition-colors"
           >
             Topics
+          </button>
+        )}
+
+        {companies.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToCompanies}
+            className="inline-flex items-center justify-center rounded-full border border-blue-400/40 bg-blue-500/10 px-3 py-0.5 text-base font-medium text-blue-300
+                       hover:bg-blue-500 hover:text-white transition-colors"
+          >
+            Companies
           </button>
         )}
       </div>
@@ -151,10 +170,10 @@ export default function Question({
       {/* Topics dropdown */}
       {topics.length > 0 && (
         <div ref={topicsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-white/10 bg-white/5">
+          <details className="group rounded-lg border border-purple-400/40 bg-purple-500/10">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-white">Topics</span>
-              <span className="text-white/70 transition-transform group-open:rotate-180">
+              <span className="text-lg font-semibold text-purple-300">Topics</span>
+              <span className="text-purple-300/70 transition-transform group-open:rotate-180">
                 ▾
               </span>
             </summary>
@@ -163,7 +182,7 @@ export default function Question({
               {topics.map((t) => (
                 <span
                   key={`dropdown-${t}`}
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 bg-black/40 px-3 py-1 text-sm font-medium text-white/90"
+                  className="inline-flex items-center justify-center rounded-full border border-purple-400/30 bg-purple-500/20 px-3 py-1 text-sm font-medium text-purple-200"
                 >
                   {t}
                 </span>
@@ -172,6 +191,37 @@ export default function Question({
           </details>
         </div>
       )}
+
+      {/* Companies dropdown */}
+      {companies.length > 0 && (
+        <div ref={companiesRef} className="mt-8 scroll-mt-24">
+          <details className="group rounded-lg border border-blue-400/40 bg-blue-500/10">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
+              <span className="text-lg font-semibold text-blue-300">Companies</span>
+              <span className="text-blue-300/70 transition-transform group-open:rotate-180">
+                ▾
+              </span>
+            </summary>
+
+            <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2">
+              {companies.map((c) => (
+                <span
+                  key={`company-${c}`}
+                  className="inline-flex items-center justify-center rounded-full border border-blue-400/30 bg-blue-500/20 px-3 py-1 text-sm font-medium text-blue-200"
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          </details>
+        </div>
+      )}
+
+      <div>
+        <p className="mt-10 text-xs text-white/40">
+          Copyright © 2026 LeetCode. All rights reserved.
+        </p>
+      </div>
     </aside>
   );
 }

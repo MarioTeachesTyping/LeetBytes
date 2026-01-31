@@ -31,6 +31,9 @@ export const palindromeNumber: SolutionEntry = {
   topics: [
     "Math",
   ],
+  companies: [
+    "Google", "Amazon", "Microsoft", "Bloomberg",
+  ],
   code: `class Solution:
     def isPalindrome(self, x: int) -> bool:
         '''
