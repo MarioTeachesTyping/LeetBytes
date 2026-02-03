@@ -15,6 +15,7 @@ interface Example {
 
 interface QuestionProps {
   title: string;
+  link?: string;
   difficulty?: "Easy" | "Medium" | "Hard";
   description: string[];
   examples?: Example[];
@@ -44,6 +45,7 @@ function renderInlineCode(text: string) {
 
 export default function Question({
   title,
+  link,
   difficulty = "Easy",
   description,
   examples = [],
@@ -74,7 +76,18 @@ export default function Question({
   return (
     <aside className="h-full overflow-y-auto px-3 py-4">
       {/* Title */}
-      <h1 className="text-2xl font-semibold text-white mb-3">{title}</h1>
+      {link ? (
+        <a 
+          href={link} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-2xl font-semibold text-white mb-3 hover:text-gray-400 transition-colors cursor-pointer inline-block"
+        >
+          {title}
+        </a>
+      ) : (
+        <h1 className="text-2xl font-semibold text-white mb-3">{title}</h1>
+      )}
 
       {/* Badges row */}
       <div className="flex flex-wrap items-center gap-2">
@@ -88,8 +101,8 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToTopics}
-            className="inline-flex items-center justify-center rounded-full border border-purple-400/40 bg-purple-500/10 px-3 py-0.5 text-base font-medium text-purple-300
-                       hover:bg-purple-500 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center rounded-full border border-orange-300/40 bg-orange-400/10 px-3 py-0.5 text-base font-medium text-orange-200
+                       hover:bg-orange-400 hover:text-white transition-colors"
           >
             Topics
           </button>
@@ -99,8 +112,8 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToCompanies}
-            className="inline-flex items-center justify-center rounded-full border border-blue-400/40 bg-blue-500/10 px-3 py-0.5 text-base font-medium text-blue-300
-                       hover:bg-blue-500 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center rounded-full border border-sky-300/40 bg-sky-400/10 px-3 py-0.5 text-base font-medium text-sky-200
+                       hover:bg-sky-400 hover:text-white transition-colors"
           >
             Companies
           </button>
@@ -170,10 +183,10 @@ export default function Question({
       {/* Topics dropdown */}
       {topics.length > 0 && (
         <div ref={topicsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-purple-400/40 bg-purple-500/10">
+          <details className="group rounded-lg border border-orange-300/40 bg-orange-400/10">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-purple-300">Topics</span>
-              <span className="text-purple-300/70 transition-transform group-open:rotate-180">
+              <span className="text-lg font-semibold text-orange-200">Topics</span>
+              <span className="text-orange-200/70 transition-transform group-open:rotate-180">
                 ▾
               </span>
             </summary>
@@ -182,7 +195,7 @@ export default function Question({
               {topics.map((t) => (
                 <span
                   key={`dropdown-${t}`}
-                  className="inline-flex items-center justify-center rounded-full border border-purple-400/30 bg-purple-500/20 px-3 py-1 text-sm font-medium text-purple-200"
+                  className="inline-flex items-center justify-center rounded-full border border-orange-300/30 bg-orange-400/20 px-3 py-1 text-sm font-medium text-orange-100"
                 >
                   {t}
                 </span>
@@ -195,10 +208,10 @@ export default function Question({
       {/* Companies dropdown */}
       {companies.length > 0 && (
         <div ref={companiesRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-blue-400/40 bg-blue-500/10">
+          <details className="group rounded-lg border border-sky-300/40 bg-sky-400/10">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-blue-300">Companies</span>
-              <span className="text-blue-300/70 transition-transform group-open:rotate-180">
+              <span className="text-lg font-semibold text-sky-200">Companies</span>
+              <span className="text-sky-200/70 transition-transform group-open:rotate-180">
                 ▾
               </span>
             </summary>
@@ -207,7 +220,7 @@ export default function Question({
               {companies.map((c) => (
                 <span
                   key={`company-${c}`}
-                  className="inline-flex items-center justify-center rounded-full border border-blue-400/30 bg-blue-500/20 px-3 py-1 text-sm font-medium text-blue-200"
+                  className="inline-flex items-center justify-center rounded-full border border-sky-300/30 bg-sky-400/20 px-3 py-1 text-sm font-medium text-sky-100"
                 >
                   {c}
                 </span>

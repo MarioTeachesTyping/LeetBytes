@@ -2,6 +2,7 @@ import { SolutionEntry } from "../solutions";
 
 export const twoSum: SolutionEntry = {
   title: "1. Two Sum",
+  link: "https://leetcode.com/problems/two-sum/",
   difficulty: "Easy",
   description: [
     "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",

@@ -2,6 +2,7 @@ import { SolutionEntry } from "../solutions";
 
 export const longestSubstringWithoutRepeatingCharacters: SolutionEntry = {
   title: "3. Longest Substring Without Repeating Characters",
+  link: "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
   difficulty: "Medium",
   description: [
     "Given a string `s`, find the length of the longest substring without duplicate characters.",

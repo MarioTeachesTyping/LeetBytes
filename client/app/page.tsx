@@ -50,7 +50,7 @@ export default function Landing()
         </div>
 
         <Link href="/solutions">
-          <button className="px-12 py-3 bg-black text-white font-semibold rounded-full border border-white hover:bg-white hover:text-black transition-colors">
+          <button className="px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white hover:bg-white hover:text-black transition-colors">
             Solutions
           </button>
         </Link>

@@ -2,6 +2,7 @@ import { SolutionEntry } from "../solutions";
 
 export const palindromeNumber: SolutionEntry = {
   title: "9. Palindrome Number",
+  link: "https://leetcode.com/problems/palindrome-number/",
   difficulty: "Easy",
   description: [
     "Given an integer `x`, return `true` if `x` is a palindrome integer.",

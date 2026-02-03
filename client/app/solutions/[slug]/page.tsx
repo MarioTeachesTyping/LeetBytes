@@ -29,6 +29,7 @@ export default async function Page({ params }: PageProps) {
         <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
           <Question
             title={entry.title}
+            link={entry.link}
             difficulty={entry.difficulty}
             description={entry.description}
             examples={entry.examples}

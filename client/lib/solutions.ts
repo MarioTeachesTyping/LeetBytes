@@ -17,6 +17,7 @@ export type Stat = {
 
 export type SolutionEntry = {
   title: string;
+  link?: string;
   difficulty: "Easy" | "Medium" | "Hard";
   description: string[];
   examples?: Example[];

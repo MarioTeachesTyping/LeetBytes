@@ -2,6 +2,7 @@ import { SolutionEntry } from "../solutions";
 
 export const longestPalindromicSubstring: SolutionEntry = {
   title: "5. Longest Palindromic Substring",
+  link: "https://leetcode.com/problems/longest-palindromic-substring/",
   difficulty: "Medium",
   description: [
     "Given a string `s`, return the longest palindromic substring in `s`.",
@@ -27,7 +28,7 @@ export const longestPalindromicSubstring: SolutionEntry = {
     "Two Pointers", "String", "Dynammic Programming"
   ],
   companies: [
-    "Microsoft", "Google", "TCS", "Amazon",
+    "Microsoft", "Google", "tcs", "Amazon",
   ],
   code: `class Solution:
     def longestPalindrome(self, s: str) -> str:
