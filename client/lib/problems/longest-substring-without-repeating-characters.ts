@@ -36,7 +36,6 @@ export const longestSubstringWithoutRepeatingCharacters: SolutionEntry = {
   ],
   code: `class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-
         # first thought is sliding window and using a set due to:
         # no duplicates allowed and needing to check 2 spots potentially
 

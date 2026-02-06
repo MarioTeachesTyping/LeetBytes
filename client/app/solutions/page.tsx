@@ -27,6 +27,7 @@ const items: ItemRow[] = [
   { title: "Generate Parentheses", difficulty: "M", topics: "String, DP, Backtracking" },
   { title: "Trapping Rain Water", difficulty: "H", topics: "Array, Two Pointers, DP, Stack" },
   { title: "Group Anagrams", difficulty: "M", topics: "Array, Hash Table, String, Sorting" },
+  { title: "Maximum Subarray", difficulty: "M", topics: "Array, Divide & Conquer, DP", slug: "maximum-subarray" },
   { title: "Merge Intervals", difficulty: "M", topics: "Array, Sorting", slug: "merge-intervals" },
   { title: "Subsets", difficulty: "M", topics: "Array, Backtracking" },
   { title: "Word Search", difficulty: "M", topics: "Array, String, Backtracking, DFS, Matrix" },

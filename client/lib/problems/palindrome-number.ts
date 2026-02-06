@@ -44,17 +44,6 @@ export const palindromeNumber: SolutionEntry = {
             at start and right at end. then have a while loop that moves everytime
             each side is the same number then when both collide, return true 
             since it's the same return false if different at any point
-        i: l, r = 0, len(nums)
-            while r > l:
-                if nums[l] == nums[r]:
-                    l += 1
-                    r += 1
-                    return
-                
-                if nums[l] != nums[r]:
-                    return False
-                
-            return True
         '''
         # make the int a string so we can increment
         nums = str(x)

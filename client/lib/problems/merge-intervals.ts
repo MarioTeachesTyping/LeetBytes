@@ -37,7 +37,6 @@ export const mergeIntervals: SolutionEntry = {
   ],
   code: `class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        
         '''
         since our answer is specific with it's order, it'd be best to do sorting
         we can sort the intervals list by the 1st index of each interval
@@ -53,7 +52,6 @@ export const mergeIntervals: SolutionEntry = {
 
         # go through each interval and check for our cases
         for interval in intervals:
-
             # if merged is null, or prev of merged is less than curr interval
             # checking prev interval at its start
             if not merged or merged[-1][1] < interval[0]:

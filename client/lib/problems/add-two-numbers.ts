@@ -42,7 +42,6 @@ export const addTwoNumbers: SolutionEntry = {
 #         self.next = next
 class Solution:
     def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
-        
         '''
         the output itself is in regular order. the whole reverse part is kind of making it sound
         harder than it is
@@ -58,7 +57,6 @@ class Solution:
 
         # while list1, list2, or our carry number is not null
         while l1 or l2 or carry:
-
             # get our values from the 2 lists if they arent empty
             v1 = l1.val if l1 else 0
             v2 = l2.val if l2 else 0

@@ -32,7 +32,6 @@ export const longestPalindromicSubstring: SolutionEntry = {
   ],
   code: `class Solution:
     def longestPalindrome(self, s: str) -> str:
-        
         '''
         first thought is 2 pointer even if it's not most optimal
         left will be at the start and right will be at the end
