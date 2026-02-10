@@ -6,6 +6,9 @@ import { longestPalindromicSubstring } from "./longest-palindromic-substring";
 import { palindromeNumber } from "./palindrome-number";
 import { maximumSubarray } from "./maximum-subarray";
 import { mergeIntervals } from "./merge-intervals";
+import { validParentheses } from "./valid-parentheses";
+import { mergeTwoSortedLists } from "./merge-two-sorted-lists";
+import { generateParentheses } from "./generate-parentheses";
 
 export const PROBLEMS: Record<string, SolutionEntry> = {
   "two-sum": twoSum,
@@ -15,4 +18,7 @@ export const PROBLEMS: Record<string, SolutionEntry> = {
   "palindrome-number": palindromeNumber,
   "maximum-subarray": maximumSubarray,
   "merge-intervals": mergeIntervals,
+  "valid-parentheses": validParentheses,
+  "merge-two-sorted-lists": mergeTwoSortedLists,
+  "generate-parentheses": generateParentheses,
 };
