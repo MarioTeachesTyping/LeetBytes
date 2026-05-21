@@ -25,7 +25,7 @@ const items: ItemRow[] = [
   { title: "Valid Parentheses", difficulty: "E", topics: "String, Stack", slug: "valid-parentheses" },
   { title: "Merge Two Sorted Lists", difficulty: "E", topics: "Linked Lists, Recursion", slug: "merge-two-sorted-lists" },
   { title: "Generate Parentheses", difficulty: "M", topics: "String, DP, Backtracking", slug: "generate-parentheses" },
-  { title: "Trapping Rain Water", difficulty: "H", topics: "Array, Two Pointers, DP, Stack" },
+  { title: "Trapping Rain Water", difficulty: "H", topics: "Array, Two Pointers, DP, Stack", slug: "trapping-rain-water" },
   { title: "Group Anagrams", difficulty: "M", topics: "Array, Hash Table, String, Sorting" },
   { title: "Maximum Subarray", difficulty: "M", topics: "Array, Divide & Conquer, DP", slug: "maximum-subarray" },
   { title: "Merge Intervals", difficulty: "M", topics: "Array, Sorting", slug: "merge-intervals" },

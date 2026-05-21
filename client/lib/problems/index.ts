@@ -9,6 +9,7 @@ import { mergeIntervals } from "./merge-intervals";
 import { validParentheses } from "./valid-parentheses";
 import { mergeTwoSortedLists } from "./merge-two-sorted-lists";
 import { generateParentheses } from "./generate-parentheses";
+import { trappingRainWater } from "./trapping-rain-water";
 
 export const PROBLEMS: Record<string, SolutionEntry> = {
   "two-sum": twoSum,
@@ -21,4 +22,5 @@ export const PROBLEMS: Record<string, SolutionEntry> = {
   "valid-parentheses": validParentheses,
   "merge-two-sorted-lists": mergeTwoSortedLists,
   "generate-parentheses": generateParentheses,
+  "trapping-rain-water": trappingRainWater,
 };
