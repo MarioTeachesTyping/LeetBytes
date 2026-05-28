@@ -16,6 +16,7 @@ type ItemRow = {
   slug?: string; // only rows with a slug are clickable
 };
 
+// Static list of solution rows displayed in the table.
 const items: ItemRow[] = [
   { title: "Two Sum", difficulty: "E", topics: "Array, Hash Table", slug: "two-sum" },
   { title: "Add Two Numbers", difficulty: "M", topics: "Linked List, Math, Recursion", slug: "add-two-numbers" },
@@ -54,35 +55,48 @@ const items: ItemRow[] = [
   { title: "Check If All 1's Are at Least Length K Places Away", difficulty: "E", topics: "Array" },
 ];
 
+// Maps compact difficulty codes to their table text color.
 const difficultyTextClass: Record<string, string> = {
   E: "text-emerald-400",
   M: "text-amber-400",
   H: "text-rose-400",
 };
 
-const navItems = [
-  { label: "All", href: "" },
-  { label: "Array", href: "" },
-  { label: "String", href: "" },
-  { label: "Hash Table", href: "" },
-  { label: "Sorting", href: "" },
-  { label: "Two Pointers", href: "" },
-  { label: "Sliding Window", href: "" },
-  { label: "Stack", href: "" },
-  { label: "Heap", href: "" },
-  { label: "Linked List", href: "" },
-  { label: "Tree", href: "" },
-  { label: "DFS", href: "" },
-  { label: "BFS", href: "" },
-  { label: "Matrix", href: "" },
-  { label: "Backtracking", href: "" },
-  { label: "DP", href: "" },
-  { label: "Design", href: "" },
+// Topics shown in the pill navigation filter.
+const topics = [
+  "All",
+  "Array",
+  "String",
+  "Hash Table",
+  "Sorting",
+  "Two Pointers",
+  "Sliding Window",
+  "Stack",
+  "Heap",
+  "Linked List",
+  "Tree",
+  "DFS",
+  "BFS",
+  "Matrix",
+  "Backtracking",
+  "DP",
+  "Design",
 ];
+
+// Builds a stable hash-like value for PillNav active state comparisons.
+const topicHref = (topic: string) =>
+  `#${topic.toLowerCase().replaceAll(" ", "-")}`;
+
+// Converts the topic list into the item format expected by PillNav.
+const navItems = topics.map((topic) => ({
+  label: topic,
+  href: topicHref(topic),
+}));
 
 export default function Solutions() {
   const [selectedTopic, setSelectedTopic] = useState<string>("All");
 
+  // Recomputes visible rows whenever the selected topic changes.
   const filtered = useMemo(() => {
     if (selectedTopic === "All") return items;
 
@@ -100,7 +114,7 @@ export default function Solutions() {
           <PillNav
             logo="/icon-dark.png"
             items={navItems}
-            activeHref="/solutions"
+            activeHref={topicHref(selectedTopic)}
             onSelect={(item) => setSelectedTopic(item.label)}
             baseColor="#ffffff"
             pillColor="#000000"
@@ -125,6 +139,7 @@ export default function Solutions() {
                 const diffColor =
                   difficultyTextClass[row.difficulty] ?? "text-white/70";
 
+                // Shared row markup used for both clickable and disabled rows.
                 const content = (
                   <div
                     className={`grid grid-cols-[48px_minmax(0,1fr)_56px_420px] border-b border-white/10 last:border-b-0 hover:bg-white/5 transition-all ${

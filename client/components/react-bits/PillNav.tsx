@@ -28,6 +28,8 @@ export interface PillNavProps {
   onSelect?: (item: PillNavItem) => void;
 }
 
+type CSSVars = React.CSSProperties & Record<`--${string}`, string>;
+
 const PillNav: React.FC<PillNavProps> = ({
   logo,
   logoAlt = "Logo",
@@ -251,16 +253,16 @@ const PillNav: React.FC<PillNavProps> = ({
     href.startsWith("tel:") ||
     href.startsWith("#");
 
-  const cssVars = {
-    ["--base" as any]: baseColor,
-    ["--pill-bg" as any]: pillColor,
-    ["--hover-text" as any]: hoveredPillTextColor,
-    ["--pill-text" as any]: resolvedPillTextColor,
-    ["--nav-h" as any]: "42px",
-    ["--logo" as any]: "36px",
-    ["--pill-pad-x" as any]: "18px",
-    ["--pill-gap" as any]: "3px",
-  } as React.CSSProperties;
+  const cssVars: CSSVars = {
+    "--base": baseColor,
+    "--pill-bg": pillColor,
+    "--hover-text": hoveredPillTextColor,
+    "--pill-text": resolvedPillTextColor,
+    "--nav-h": "42px",
+    "--logo": "36px",
+    "--pill-pad-x": "18px",
+    "--pill-gap": "3px",
+  };
 
   // click handler that optionally prevents navigation
   const onItemClick = (e: React.MouseEvent, item: PillNavItem) => {
@@ -297,10 +299,21 @@ const PillNav: React.FC<PillNavProps> = ({
     el.scrollLeft = scrollLeftRef.current - walk;
   };
 
+  const onWheel = (e: React.WheelEvent) => {
+    const el = navItemsRef.current;
+    if (!el) return;
+
+    const canScroll = el.scrollWidth > el.clientWidth;
+    if (!canScroll || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+    e.preventDefault();
+    el.scrollLeft += e.deltaY;
+  };
+
   return (
     <div className="w-full">
       <nav
-        className={`w-full md:w-max flex items-center justify-between md:justify-start box-border px-4 md:px-0 ${className}`}
+        className={`w-full max-w-full min-w-0 flex items-center justify-between md:justify-start box-border px-4 md:px-0 ${className}`}
         aria-label="Primary"
         style={cssVars}
       >
@@ -310,7 +323,7 @@ const PillNav: React.FC<PillNavProps> = ({
           aria-label="Home"
           onMouseEnter={handleLogoEnter}
           ref={logoRef}
-          className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden"
+          className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden shrink-0"
           style={{
             width: "var(--nav-h)",
             height: "var(--nav-h)",
@@ -326,7 +339,7 @@ const PillNav: React.FC<PillNavProps> = ({
         </Link>
 
         {/* Desktop pills (scrollable when overflow) */}
-        <div className="hidden md:block ml-2 max-w-full">
+        <div className="hidden md:block ml-2 flex-1 min-w-0 overflow-hidden">
           <div
             ref={navItemsRef}
             className="relative rounded-full flex items-center overflow-x-auto overflow-y-hidden whitespace-nowrap no-scrollbar"
@@ -339,6 +352,7 @@ const PillNav: React.FC<PillNavProps> = ({
             onMouseLeave={onMouseLeave}
             onMouseUp={onMouseUp}
             onMouseMove={onMouseMove}
+            onWheel={onWheel}
           >
             <ul
               role="menubar"
