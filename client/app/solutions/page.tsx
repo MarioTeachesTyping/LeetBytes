@@ -8,87 +8,26 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Balatro from "@/components/react-bits/Balatro";
 import PillNav from "@/components/react-bits/PillNav";
+import { PROBLEM_ROWS, PROBLEM_TOPICS, type ProblemListRow } from "@/lib/problem-list";
 
-type ItemRow = {
-  title: string;
-  difficulty: "E" | "M" | "H";
-  topics: string;
-  slug?: string; // only rows with a slug are clickable
+const difficultyTextClass: Record<ProblemListRow["difficulty"], string> = {
+  Easy: "text-emerald-400",
+  Medium: "text-amber-400",
+  Hard: "text-rose-400",
 };
 
-// Static list of solution rows displayed in the table.
-const items: ItemRow[] = [
-  { title: "Two Sum", difficulty: "E", topics: "Array, Hash Table", slug: "two-sum" },
-  { title: "Add Two Numbers", difficulty: "M", topics: "Linked List, Math, Recursion", slug: "add-two-numbers" },
-  { title: "Longest Substring Without Repeating Characters", difficulty: "M", topics: "Hash Table, Sliding Window", slug: "longest-substring-without-repeating-characters" },
-  { title: "Longest Palindromic Substring", difficulty: "M", topics: "Two Pointers, String, DP", slug: "longest-palindromic-substring" },
-  { title: "Palindrome Number", difficulty: "E", topics: "Math", slug: "palindrome-number" },
-  { title: "Valid Parentheses", difficulty: "E", topics: "String, Stack", slug: "valid-parentheses" },
-  { title: "Merge Two Sorted Lists", difficulty: "E", topics: "Linked Lists, Recursion", slug: "merge-two-sorted-lists" },
-  { title: "Generate Parentheses", difficulty: "M", topics: "String, DP, Backtracking", slug: "generate-parentheses" },
-  { title: "Trapping Rain Water", difficulty: "H", topics: "Array, Two Pointers, DP, Stack", slug: "trapping-rain-water" },
-  { title: "Group Anagrams", difficulty: "M", topics: "Array, Hash Table, String, Sorting", slug: "group-anagrams"},
-  { title: "Maximum Subarray", difficulty: "M", topics: "Array, Divide & Conquer, DP", slug: "maximum-subarray" },
-  { title: "Merge Intervals", difficulty: "M", topics: "Array, Sorting", slug: "merge-intervals" },
-  { title: "Subsets", difficulty: "M", topics: "Array, Backtracking" },
-  { title: "Word Search", difficulty: "M", topics: "Array, String, Backtracking, DFS, Matrix" },
-  { title: "Same Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
-  { title: "Symmetric Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
-  { title: "Maximum Depth of Binary Tree", difficulty: "E", topics: "Tree, DFS, BFS, Binary Tree" },
-  { title: "Best Time to Buy and Sell Stock", difficulty: "E", topics: "Array, DP" },
-  { title: "Linked List Cycle", difficulty: "E", topics: "Hash Table, Linked List, Two Pointers" },
-  { title: "LRU Cache", difficulty: "M", topics: "Hash Table, Linked List, Design" },
-  { title: "Min Stack", difficulty: "M", topics: "Stack, Design" },
-  { title: "Majority Element", difficulty: "E", topics: "Array, Hash Table, Divide & Conquer, Sorting, Counting" },
-  { title: "Number of Islands", difficulty: "M", topics: "Array, DFS, BFS, Union Find, Matrix" },
-  { title: "Isomorphic Strings", difficulty: "E", topics: "Hash Table, String" },
-  { title: "Reverse Linked List", difficulty: "E", topics: "Linked List, Recursion" },
-  { title: "Kth Largest Element in an Array", difficulty: "M", topics: "Array, Divide & Conquer, Sorting, Heap" },
-  { title: "Contains Duplicate", difficulty: "E", topics: "Array, Hash Table, Sorting" },
-  { title: "Contains Duplicate II", difficulty: "E", topics: "Array, Hash Table, Sliding Window" },
-  { title: "Invert Binary Tree", difficulty: "E", topics: "Tree, BFS, DFS, Binary Tree" },
-  { title: "Valid Anagram", difficulty: "E", topics: "Hash Table, String, Sorting" },
-  { title: "Meeting Rooms", difficulty: "E", topics: "Array, Sorting" },
-  { title: "Binary Tree Vertical Order Traversal", difficulty: "M", topics: "Hash Table, Tree, DFS, BFS, Sorting, Binary Tree" },
-  { title: "Minimum Remove to Make Valid Parentheses", difficulty: "M", topics: "String, Stack" },
-  { title: "Sequential Digits", difficulty: "M", topics: "Enumeration" },
-  { title: "Check If All 1's Are at Least Length K Places Away", difficulty: "E", topics: "Array" },
-];
-
-// Maps compact difficulty codes to their table text color.
-const difficultyTextClass: Record<string, string> = {
-  E: "text-emerald-400",
-  M: "text-amber-400",
-  H: "text-rose-400",
+const difficultyAbbreviation: Record<ProblemListRow["difficulty"], string> = {
+  Easy: "E",
+  Medium: "M",
+  Hard: "H",
 };
-
-// Topics shown in the pill navigation filter.
-const topics = [
-  "All",
-  "Array",
-  "String",
-  "Hash Table",
-  "Sorting",
-  "Two Pointers",
-  "Sliding Window",
-  "Stack",
-  "Heap",
-  "Linked List",
-  "Tree",
-  "DFS",
-  "BFS",
-  "Matrix",
-  "Backtracking",
-  "DP",
-  "Design",
-];
 
 // Builds a stable hash-like value for PillNav active state comparisons.
 const topicHref = (topic: string) =>
   `#${topic.toLowerCase().replaceAll(" ", "-")}`;
 
 // Converts the topic list into the item format expected by PillNav.
-const navItems = topics.map((topic) => ({
+const navItems = PROBLEM_TOPICS.map((topic) => ({
   label: topic,
   href: topicHref(topic),
 }));
@@ -98,11 +37,10 @@ export default function Solutions() {
 
   // Recomputes visible rows whenever the selected topic changes.
   const filtered = useMemo(() => {
-    if (selectedTopic === "All") return items;
+    if (selectedTopic === "All") return PROBLEM_ROWS;
 
-    return items.filter((row) => {
-      const tags = row.topics.split(",").map((t) => t.trim());
-      return tags.includes(selectedTopic);
+    return PROBLEM_ROWS.filter((row) => {
+      return row.topics.includes(selectedTopic);
     });
   }, [selectedTopic]);
 
@@ -138,6 +76,7 @@ export default function Solutions() {
               {filtered.map((row, index) => {
                 const diffColor =
                   difficultyTextClass[row.difficulty] ?? "text-white/70";
+                const topicsText = row.topics.join(", ");
 
                 // Shared row markup used for both clickable and disabled rows.
                 const content = (
@@ -162,12 +101,12 @@ export default function Solutions() {
                       <span
                         className={`text-sm font-bold tracking-wide ${diffColor}`}
                       >
-                        {row.difficulty}
+                        {difficultyAbbreviation[row.difficulty]}
                       </span>
                     </div>
 
                     <div className="p-6 flex items-center justify-center">
-                      <p className="text-white/60 text-sm">{row.topics}</p>
+                      <p className="text-white/60 text-sm">{topicsText}</p>
                     </div>
                   </div>
                 );

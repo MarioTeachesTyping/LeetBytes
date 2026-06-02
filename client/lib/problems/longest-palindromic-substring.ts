@@ -25,7 +25,7 @@ export const longestPalindromicSubstring: SolutionEntry = {
     "`s` consist of only digits and English letters.",
   ],
   topics: [
-    "Two Pointers", "String", "Dynammic Programming"
+    "Two Pointers", "String", "Dynamic Programming"
   ],
   companies: [
     "Microsoft", "Google", "tcs", "Amazon",
