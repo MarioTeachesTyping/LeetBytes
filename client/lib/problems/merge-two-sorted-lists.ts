@@ -1,14 +1,19 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const mergeTwoSortedLists: SolutionEntry = {
+export const mergeTwoSortedLists: SolutionEntry = 
+{
   title: "21. Merge Two Sorted Lists",
+
   link: "https://leetcode.com/problems/merge-two-sorted-lists/",
+
   difficulty: "Easy",
+
   description: [
     "You are given the head of two sorted linked lists.",
     "Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.",
     "Return the head of the merged linked list.",
   ],
+
   examples: [
     {
       image: "/problem-images/merge_ex1.jpg",
@@ -24,17 +29,21 @@ export const mergeTwoSortedLists: SolutionEntry = {
       output: "`[0]`",
     },
   ],
+
   constraints: [
     "The number of nodes in both lists is in the range `[0, 50]`.",
     "`-100 <= Node.val <= 100`",
     "Both `list1` and `list2` are sorted in non-decreasing order.",
   ],
+
   topics: [
     "Linked List", "Recursion",
   ],
+
   companies: [
     "Google", "Amazon", "Udemy",
   ],
+
   code: `# Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -72,6 +81,7 @@ class Solution:
         # its merged.next cause merged and tail at first were null nodes at the start of the list
         # doing this makes it point it to the 1st node in our new sorted merged list
         return merged.next`,
+
   stats: {
     runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
     memory: { label: "Memory", value: "17.74 MB", beats: "67.49%" },

@@ -7,11 +7,9 @@
 import React, { useState, useEffect } from "react";
 import Iridescence from "./react-bits/Iridescence";
 import { FaLeaf } from "react-icons/fa";
+import type { ProblemStat } from "@/lib/problems";
 
-type StatCard = {
-  value: string;
-  beats?: string;
-};
+type StatCard = Pick<ProblemStat, "value" | "beats">;
 
 interface SolutionProps {
   highlightedHtml: string;

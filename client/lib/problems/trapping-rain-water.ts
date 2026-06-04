@@ -1,12 +1,17 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const trappingRainWater: SolutionEntry = {
+export const trappingRainWater: SolutionEntry = 
+{
   title: "42. Trapping Rain Water",
+
   link: "https://leetcode.com/problems/trapping-rain-water/",
+
   difficulty: "Hard",
+
   description: [
     "Given `n`, non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it can trap after raining.",
   ],
+
   examples: [
     {
       image: "/problem-images/rainwatertrap.png",
@@ -19,17 +24,21 @@ export const trappingRainWater: SolutionEntry = {
       output: "`9`",
     },
   ],
+
   constraints: [
     "`n == height.length`.",
     "`1 <= n <= 2 * 10^4`.",
     "`0 <= height[i] <= 10^5`.",
   ],
+
   topics: [
     "Array", "Two Pointers", "Dynamic Programming", "Stack", "Monotonic Stack",
   ],
+
   companies: [
     "Amazon", "Google", "Microsoft",
   ],
+
   code: `class Solution:
     def trap(self, height: List[int]) -> int:
 
@@ -58,6 +67,7 @@ export const trappingRainWater: SolutionEntry = {
                 right -= 1
             
         return res`,
+
   stats: {
     runtime: { label: "Runtime", value: "11 ms", beats: "45.81%" },
     memory: { label: "Memory", value: "19.33 MB", beats: "100.00%" },

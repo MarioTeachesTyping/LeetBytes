@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Question from "@/components/Question";
 import Solution from "@/components/Solution";
-import { SOLUTIONS } from "@/lib/solutions";
+import { PROBLEMS } from "@/lib/problems";
 import { highlightPython } from "@/lib/highlight";
 
 type PageProps = {
@@ -16,7 +16,7 @@ type PageProps = {
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
 
-  const entry = SOLUTIONS[slug];
+  const entry = PROBLEMS[slug];
   if (!entry) return notFound();
 
   const highlightedHtml = await highlightPython(entry.code);

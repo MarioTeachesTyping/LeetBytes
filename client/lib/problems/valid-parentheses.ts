@@ -1,9 +1,13 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const validParentheses: SolutionEntry = {
+export const validParentheses: SolutionEntry = 
+{
   title: "20. Valid Parentheses",
+
   link: "https://leetcode.com/problems/valid-parentheses/",
+
   difficulty: "Easy",
+
   description: [
     "Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.",
     "An input string is valid if:",
@@ -11,6 +15,7 @@ export const validParentheses: SolutionEntry = {
     "2. Open brackets must be closed in the correct order.",
     "3. Every close bracket has a corresponding open bracket of the same type.",
   ],
+
   examples: [
     {
       input: "`s = \"()\"`",
@@ -33,16 +38,20 @@ export const validParentheses: SolutionEntry = {
       output: "`false`",
     },
   ],
+
   constraints: [
     "`1 <= s.length <= 10^4`.",
     "`s` consists of parentheses only `'()[]{}'`.",
   ],
+
   topics: [
     "String", "Stack",
   ],
+
   companies: [
     "Google", "Bloomberg", "Meta",
   ],
+
   code: `class Solution:
     def isValid(self, s: str) -> bool:
         '''
@@ -76,6 +85,7 @@ export const validParentheses: SolutionEntry = {
 
         # we return true if stack is empty, and false if not
         return True if not stack else False`,
+
   stats: {
     runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
     memory: { label: "Memory", value: "18.06 MB", beats: "62.77%" },

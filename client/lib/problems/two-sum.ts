@@ -1,14 +1,19 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const twoSum: SolutionEntry = {
+export const twoSum: SolutionEntry = 
+{
   title: "1. Two Sum",
+
   link: "https://leetcode.com/problems/two-sum/",
+
   difficulty: "Easy",
+
   description: [
     "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",
     "You may assume that each input would have exactly one solution, and you may not use the same element twice.",
     "You can return the answer in any order.",
   ],
+
   examples: [
     {
       input: "`nums = [2,7,11,15], target = 9`",
@@ -24,18 +29,22 @@ export const twoSum: SolutionEntry = {
       output: "`[0,1]`",
     },
   ],
+
   constraints: [
     "`2 ≤ nums.length ≤ 10⁴`",
     "`-10⁹ ≤ nums[i] ≤ 10⁹`",
     "`-10⁹ ≤ target ≤ 10⁹`",
     "Only one valid answer exists.",
   ],
+
   topics: [
     "Array", "Hash Table",
   ],
+
   companies: [
     "Google", "Amazon", "Microsoft",
   ],
+
   code: `class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         '''
@@ -76,6 +85,7 @@ export const twoSum: SolutionEntry = {
         
         # return empty list if we dont find shit
         return []`,
+
   stats: {
     runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
     memory: { label: "Memory", value: "19.05 MB", beats: "19.44%" },

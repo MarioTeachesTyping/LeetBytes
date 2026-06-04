@@ -1,4 +1,4 @@
-import { SOLUTIONS, type SolutionEntry } from "./solutions";
+import { PROBLEMS, type SolutionEntry } from "./problems";
 
 export type ProblemListRow = {
   title: string;
@@ -41,7 +41,7 @@ const problemNumber = (title: string) => {
   return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
 };
 
-const solutionRows: ProblemListRow[] = Object.entries(SOLUTIONS)
+const solutionRows: ProblemListRow[] = Object.entries(PROBLEMS)
   .map(([slug, entry]) => ({
     title: titleWithoutProblemNumber(entry.title),
     difficulty: entry.difficulty,

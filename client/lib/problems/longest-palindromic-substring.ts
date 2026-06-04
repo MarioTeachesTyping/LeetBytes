@@ -1,14 +1,19 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const longestPalindromicSubstring: SolutionEntry = {
+export const longestPalindromicSubstring: SolutionEntry = 
+{
   title: "5. Longest Palindromic Substring",
+
   link: "https://leetcode.com/problems/longest-palindromic-substring/",
+
   difficulty: "Medium",
+
   description: [
     "Given a string `s`, return the longest palindromic substring in `s`.",
     "Palindromic- a string is palindromic if it reads the same forwards and backwards.",
     "Substring- a substring is a contiguous non-empty sequence of characters within a string.",
   ],
+
   examples: [
     {
       input: "`s = \"babad\"`",
@@ -20,16 +25,20 @@ export const longestPalindromicSubstring: SolutionEntry = {
       output: "`\"bb\"`",
     },
   ],
+
   constraints: [
     "`1 <= s.length <= 1000`.",
     "`s` consist of only digits and English letters.",
   ],
+
   topics: [
     "Two Pointers", "String", "Dynamic Programming"
   ],
+
   companies: [
     "Microsoft", "Google", "tcs", "Amazon",
   ],
+
   code: `class Solution:
     def longestPalindrome(self, s: str) -> str:
         '''
@@ -66,6 +75,7 @@ export const longestPalindromicSubstring: SolutionEntry = {
                     return s[start : start + length]
 
         return ""`,
+
   stats: {
     runtime: { label: "Runtime", value: "2896 ms", beats: "18.76%" },
     memory: { label: "Memory", value: "17.76 MB", beats: "68.52%" },

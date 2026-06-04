@@ -1,13 +1,18 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const maximumSubarray: SolutionEntry = {
+export const maximumSubarray: SolutionEntry = 
+{
   title: "53. Maximum Subarray",
+
   link: "https://leetcode.com/problems/maximum-subarray/",
+
   difficulty: "Medium",
+
   description: [
     "Given an integer array `nums`, find the subarray with the largest sum, and return its sum.",
     "Subarray- A subarray is a contiguous non-empty sequence of elements within an array.",
   ],
+
   examples: [
     {
       input: "`nums = [-2,1,-3,4,-1,2,1,-5,4]`",
@@ -25,16 +30,20 @@ export const maximumSubarray: SolutionEntry = {
       explanation: "The subarray [5,4,-1,7,8] has the largest sum 23.",
     },
   ],
+
   constraints: [
     "`1 <= nums.length <= 10^5`",
     "`-10^4 <= nums[i] <= 10^4`",
   ],
+
   topics: [
     "Array", "Divide and Conquer", "Dynamic Programming",
   ],
+
   companies: [
     "Microsoft", "Amazon", "Apple", "Google",
   ],
+
   code: `class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
         '''
@@ -56,6 +65,7 @@ export const maximumSubarray: SolutionEntry = {
             max_subarray = max(max_subarray, curr_subarray)
 
         return max_subarray`,
+
   stats: {
     runtime: { label: "Runtime", value: "37 ms", beats: "68.42%" },
     memory: { label: "Memory", value: "31.55 MB", beats: "39.09%" },

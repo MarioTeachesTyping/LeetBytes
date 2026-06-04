@@ -1,14 +1,19 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const palindromeNumber: SolutionEntry = {
+export const palindromeNumber: SolutionEntry = 
+{
   title: "9. Palindrome Number",
+
   link: "https://leetcode.com/problems/palindrome-number/",
+
   difficulty: "Easy",
+
   description: [
     "Given an integer `x`, return `true` if `x` is a palindrome integer.",
     "An integer is a palindrome when it reads the same backward as forward.",
     "For example, `121` is a palindrome while `123` is not.",
   ],
+
   examples: [
     {
       input: "`x = 121`",
@@ -26,15 +31,19 @@ export const palindromeNumber: SolutionEntry = {
       explanation: "Reads 01 from right to left. Therefore it is not a palindrome.",
     },
   ],
+
   constraints: [
     "`-2³¹ <= x <= 2³¹ - 1`.",
   ],
+
   topics: [
     "Math",
   ],
+
   companies: [
     "Google", "Amazon", "Microsoft", "Bloomberg",
   ],
+
   code: `class Solution:
     def isPalindrome(self, x: int) -> bool:
         '''
@@ -62,6 +71,7 @@ export const palindromeNumber: SolutionEntry = {
             r -= 1
 
         return True`,
+
   stats: {
     runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
     memory: { label: "Memory", value: "17.69 MB", beats: "65.41%" },

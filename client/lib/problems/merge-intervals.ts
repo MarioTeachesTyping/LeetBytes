@@ -1,12 +1,17 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const mergeIntervals: SolutionEntry = {
+export const mergeIntervals: SolutionEntry = 
+{
   title: "56. Merge Intervals",
+
   link: "https://leetcode.com/problems/merge-intervals/",
+
   difficulty: "Medium",
+
   description: [
     "Given an array `intervals` where `intervals[i] = [starti, endi]`, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
   ],
+
   examples: [
     {
       input: "`intervals = [[1,3],[2,6],[8,10],[15,18]]`",
@@ -24,17 +29,21 @@ export const mergeIntervals: SolutionEntry = {
       explanation: "Intervals [1,4] and [4,7] are considered overlapping.",
     },
   ],
+
   constraints: [
     "`1 <= intervals.length <= 1000`.",
     "`intervals[i].length == 2`.",
     "`0 <= starti <= endi <= 1000`.",
   ],
+
   topics: [
     "Array", "Sorting",
   ],
+
   companies: [
     "Google", "Bloomberg", "Amazon", "CleverTap",
   ],
+
   code: `class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         '''
@@ -63,6 +72,7 @@ export const mergeIntervals: SolutionEntry = {
                 merged[-1][1] = max(merged[-1][1], interval[1])
 
         return merged`,
+
   stats: {
     runtime: { label: "Runtime", value: "11 ms", beats: "28.81%" },
     memory: { label: "Memory", value: "22.46 MB", beats: "41.88%" },

@@ -1,12 +1,17 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const groupAnagrams: SolutionEntry = {
+export const groupAnagrams: SolutionEntry = 
+{
   title: "49. Group Anagrams",
+
   link: "https://leetcode.com/problems/group-anagrams/",
+
   difficulty: "Medium",
+
   description: [
     "Given an array of strings `strs`, group the anagrams together. You can return the answer in any order.",
   ],
+
   examples: [
     {
       input: "`strs = ['eat','tea','tan','ate','nat','bat']`",
@@ -22,17 +27,21 @@ export const groupAnagrams: SolutionEntry = {
       output: "`[['a']]`",
     },
   ],
+
   constraints: [
     "`1 <= strs.length <= 10^4`",
     "`0 <= strs[i].length * 100`.",
     "`strs[i]` consists of lowercase English letters.",
   ],
+
   topics: [
     "Array", "Hash Table", "String", "Sorting",
   ],
+
   companies: [
     "Amazon", "Bloomberg", "Google",
   ],
+
   code: `class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         '''
@@ -58,6 +67,7 @@ export const groupAnagrams: SolutionEntry = {
 
         # return only the words
         return list(res.values())`,
+
   stats: {
     runtime: { label: "Runtime", value: "19 ms", beats: "22.40%" },
     memory: { label: "Memory", value: "22.76 MB", beats: "37.06%" },

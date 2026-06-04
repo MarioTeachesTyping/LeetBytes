@@ -1,4 +1,4 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 import { twoSum } from "./two-sum";
 import { addTwoNumbers } from "./add-two-numbers";
 import { longestSubstringWithoutRepeatingCharacters } from "./longest-substring-without-repeating-characters";
@@ -26,3 +26,5 @@ export const PROBLEMS: Record<string, SolutionEntry> = {
   "trapping-rain-water": trappingRainWater,
   "group-anagrams": groupAnagrams,
 };
+
+export type { ProblemExample, ProblemStat, SolutionEntry } from "./types";

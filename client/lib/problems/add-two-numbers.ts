@@ -1,13 +1,18 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const addTwoNumbers: SolutionEntry = {
+export const addTwoNumbers: SolutionEntry = 
+{
   title: "2. Add Two Numbers",
+
   link: "https://leetcode.com/problems/add-two-numbers/",
+
   difficulty: "Medium",
+
   description: [
     "You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.",
     "You may assume the two numbers do not contain any leading zero, except the number 0 itself.",
   ],
+
   examples: [
     {
       image: "/problem-images/addtwonumber1.jpg",
@@ -24,17 +29,21 @@ export const addTwoNumbers: SolutionEntry = {
       output: "`[8,9,9,9,0,0,0,1]`",
     },
   ],
+
   constraints: [
     "The number of nodes in each linked list is in the range `[1, 100]`.",
     "`0 <= Node.val <= 9`",
     "It is guaranteed that the list represents a number that does not have leading zeros.",
   ],
+
   topics: [
     "Linked List", "Math", "Recursion"
   ],
+
   companies: [
     "Google", "Microsoft", "Meta", "Bloomberg", "Amazon",
   ],
+
   code: `# Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -81,6 +90,7 @@ class Solution:
             l2 = l2.next if l2 else None
         
         return l3.next`,
+        
   stats: {
     runtime: { label: "Runtime", value: "3 ms", beats: "72.91%" },
     memory: { label: "Memory", value: "17.98 MB", beats: "28.17%" },

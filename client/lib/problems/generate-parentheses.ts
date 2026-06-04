@@ -1,12 +1,17 @@
-import { SolutionEntry } from "../solutions";
+import type { SolutionEntry } from "./types";
 
-export const generateParentheses: SolutionEntry = {
+export const generateParentheses: SolutionEntry = 
+{
   title: "22. Generate Parentheses",
+
   link: "https://leetcode.com/problems/generate-parentheses/",
+
   difficulty: "Medium",
+
   description: [
     "Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.",
   ],
+
   examples: [
     {
       input: "`n = 3`",
@@ -18,15 +23,19 @@ export const generateParentheses: SolutionEntry = {
     },
     
   ],
+
   constraints: [
     "`1 <= n <= 8`.",
   ],
+
   topics: [
     "String", "Dynamic Programming", "Backtracking",
   ],
+
   companies: [
     "Amazon", "Google", "Meta",
   ],
+
   code: `class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         '''
@@ -69,6 +78,7 @@ export const generateParentheses: SolutionEntry = {
         backtrack([], 0, 0)
 
         return res`,
+
   stats: {
     runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
     memory: { label: "Memory", value: "18.01 MB", beats: "66.30%" },

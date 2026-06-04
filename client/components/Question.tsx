@@ -5,20 +5,14 @@
 "use client";
 
 import React, { useRef } from "react";
-
-interface Example {
-  input: string;
-  output: string;
-  explanation?: string;
-  image?: string;
-}
+import type { ProblemExample, SolutionEntry } from "@/lib/problems";
 
 interface QuestionProps {
   title: string;
   link?: string;
-  difficulty?: "Easy" | "Medium" | "Hard";
+  difficulty?: SolutionEntry["difficulty"];
   description: string[];
-  examples?: Example[];
+  examples?: ProblemExample[];
   constraints?: string[];
   topics?: string[];
   companies?: string[];
