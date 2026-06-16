@@ -5,7 +5,7 @@
 import { createServer } from "node:http";
 import { config } from "./config.js";
 import { sendJson, sendOptions, type HttpError } from "./http.js";
-import { handleRunSubmission } from "./routes/submissions.js";
+import { handleRunSubmission, handleJudgeSubmission } from "./routes/submissions.js";
 
 // Creates the HTTP server and routes each request to the right handler.
 const server = createServer(async (request, response) =>
@@ -29,6 +29,12 @@ const server = createServer(async (request, response) =>
     if (request.method === "POST" && url.pathname === "/submissions/run")
     {
       await handleRunSubmission(request, response);
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/submissions/judge")
+    {
+      await handleJudgeSubmission(request, response);
       return;
     }
 

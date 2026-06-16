@@ -26,7 +26,8 @@ Returns `{ "ok": true }`.
 
 ### `POST /submissions/run`
 
-Runs a Python submission through Piston.
+Runs a Python submission and returns its raw stdout/stderr. This is the "Run"
+scratchpad path — it does not grade anything.
 
 ```json
 {
@@ -35,6 +36,34 @@ Runs a Python submission through Piston.
   "stdin": ""
 }
 ```
+
+### `POST /submissions/judge`
+
+The "Submit" path. Runs a `class Solution` submission against the problem's
+server-owned test cases and grades it.
+
+```json
+{
+  "problemSlug": "two-sum",
+  "language": "python",
+  "code": "class Solution:\n    def twoSum(self, nums, target):\n        ..."
+}
+```
+
+Returns `200` when the verdict is `accepted`, otherwise `422`. The response
+reports an overall `status` (`accepted` / `wrong_answer` / `runtime_error` /
+`time_limit_exceeded` / `compile_error` / `error`), `passed`/`total`, and a
+per-case `results` array with the input, expected, and actual values.
+
+The server wraps the submitted code in a Python harness (see
+`src/services/judge/harness.ts`) that calls the method named in the problem
+definition for each test case. Test cases and the method name live server-side
+in `src/problems/`, so the client never sees the answer key. Linked-list and
+tree problems are not judged yet — they need `ListNode`/`TreeNode` argument
+adapters in the harness.
+
+Judging reuses the same runner switch as `/submissions/run`, so it works
+against Piston or, for local development, `CODE_RUNNER=local-python`.
 
 ## Runner options
 
