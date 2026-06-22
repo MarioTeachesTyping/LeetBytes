@@ -7,7 +7,6 @@ import Navbar from "@/components/Navbar";
 import Question from "@/components/Question";
 import Solution from "@/components/Solution";
 import { PROBLEMS } from "@/lib/problems";
-import { highlightPython } from "@/lib/highlight";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -18,8 +17,6 @@ export default async function Page({ params }: PageProps) {
 
   const entry = PROBLEMS[slug];
   if (!entry) return notFound();
-
-  const highlightedHtml = await highlightPython(entry.code);
 
   return (
     <main className="h-screen bg-black text-white flex flex-col">
@@ -40,10 +37,9 @@ export default async function Page({ params }: PageProps) {
         </div>
 
         <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
-          <Solution 
-            highlightedHtml={highlightedHtml} 
+          <Solution
             slug={slug}
-            stats={entry.stats} 
+            code={entry.code}
           />
         </div>
       </div>

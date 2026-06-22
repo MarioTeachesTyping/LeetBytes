@@ -4,148 +4,140 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Iridescence from "./react-bits/Iridescence";
-import { FaLeaf } from "react-icons/fa";
-import type { ProblemStat } from "@/lib/problems";
+import CodeEditor from "./CodeEditor";
 
-type StatCard = Pick<ProblemStat, "value" | "beats">;
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:4000";
+
+// Mirrors the server's JudgeSubmissionResponse (kept local so the client does
+// not import across the shared/ package boundary).
+type JudgeResponse = {
+  status: string;
+  passed: number;
+  total: number;
+  message?: string;
+};
+
+type RunState =
+  | { status: "idle" }
+  | { status: "running" }
+  | { status: "passed"; detail: string }
+  | { status: "failed"; detail: string };
 
 interface SolutionProps {
-  highlightedHtml: string;
   slug: string;
-  stats?: {
-    runtime?: StatCard;
-    memory?: StatCard;
-  };
+  code: string;
 }
 
-function StatBox({ title, stat }: { title: string; stat?: StatCard }) {
+function ResultBox({ state }: { state: RunState }) {
+  const palette = {
+    idle: "border-white/10 bg-white/5 text-white/50",
+    running: "border-white/20 bg-white/5 text-white/80",
+    passed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
+    failed: "border-red-500/40 bg-red-500/10 text-red-300",
+  }[state.status];
+
+  const label = {
+    idle: "Run your code to see the result",
+    running: "Running…",
+    passed: "Passed",
+    failed: "Failed",
+  }[state.status];
+
   return (
-    <div className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-3">
-      <div className="flex items-center justify-between text-xs text-white/60">
-        <span className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-white/30" />
-          {title}
+    <div className={`rounded-lg border px-4 py-3 ${palette}`}>
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-2 text-lg font-semibold">
+          {state.status === "passed" && <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-400" />}
+          {state.status === "failed" && <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-400" />}
+          {label}
         </span>
-      </div>
-
-      <div className="mt-1 flex items-end justify-between">
-        <div className="text-lg font-semibold text-white">
-          {stat?.value ?? "—"}
-        </div>
-
-        <div className="text-xs text-white/60">
-          {stat?.beats ? (
-            <span className="flex items-center gap-1">
-              Beats{" "}
-              <span className="text-white font-semibold">{stat.beats}</span>
-              <FaLeaf className="text-white inline-block" />
-            </span>
-          ) : (
-            " "
-          )}
-        </div>
+        {"detail" in state && state.detail && (
+          <span className="text-xs text-white/60">{state.detail}</span>
+        )}
       </div>
     </div>
   );
 }
 
-export default function Solution({ highlightedHtml, slug, stats }: SolutionProps) {
+export default function Solution({ slug, code: initialCode }: SolutionProps) {
   const [revealed, setRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"code" | "notes">("code");
-  const [notes, setNotes] = useState("");
+  const [code, setCode] = useState(initialCode);
+  const [runState, setRunState] = useState<RunState>({ status: "idle" });
 
-  useEffect(() => {
-    const savedNotes = localStorage.getItem(`leetbytes-notes-${slug}`);
-    if (savedNotes) {
-      setNotes(savedNotes);
+  async function handleRun() {
+    setRunState({ status: "running" });
+
+    try {
+      const response = await fetch(`${SERVER_URL}/submissions/judge`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ problemSlug: slug, language: "python", code }),
+      });
+
+      const data = (await response.json()) as JudgeResponse;
+
+      if (data.status === "accepted") {
+        setRunState({ status: "passed", detail: `${data.passed}/${data.total} test cases` });
+      } else {
+        const detail = data.message ?? `${data.passed}/${data.total} test cases · ${data.status.replace(/_/g, " ")}`;
+        setRunState({ status: "failed", detail });
+      }
+    } catch {
+      setRunState({ status: "failed", detail: "Could not reach the server." });
     }
-  }, [slug]);
-
-  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newNotes = e.target.value;
-    setNotes(newNotes);
-    localStorage.setItem(`leetbytes-notes-${slug}`, newNotes);
-  };
+  }
 
   return (
     <section className="h-full p-3 flex flex-col min-h-0">
       {/* Header */}
       <div className="mb-3 flex items-center gap-2">
         <button
-          onClick={() => setActiveTab("code")}
-          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
-            activeTab === "code" 
-              ? "bg-white text-black" 
-              : "bg-black text-white hover:bg-white hover:text-black"
-          }`}
+          onClick={handleRun}
+          disabled={runState.status === "running"}
+          className="px-4 py-1 font-semibold rounded-lg border border-white transition-colors
+                     bg-white text-black hover:bg-black hover:text-white
+                     disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Code
-        </button>
-        <button
-          onClick={() => setActiveTab("notes")}
-          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
-            activeTab === "notes" 
-              ? "bg-white text-black" 
-              : "bg-black text-white hover:bg-white hover:text-black"
-          }`}
-        >
-          Notes
+          {runState.status === "running" ? "Running…" : "Run"}
         </button>
       </div>
 
-      {/* Content container */}
-      {activeTab === "code" ? (
-        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
-          <div
-            className="h-full overflow-auto bg-black text-sm [&_pre]:!bg-transparent [&_code]:!bg-transparent"
-            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+      {/* Editor */}
+      <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+        <CodeEditor value={code} onChange={setCode} />
+
+        {/* Iridescence spoiler overlay (fade out) */}
+        <div
+          className={`
+            absolute inset-0 flex items-center justify-center
+            transition-opacity duration-500 ease-out
+            ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
+          `}
+        >
+          <Iridescence
+            color={[1, 1, 1]}
+            mouseReact={false}
+            amplitude={0.1}
+            speed={1.0}
           />
 
-          {/* Iridescence spoiler overlay (fade out) */}
-          <div
-            className={`
-              absolute inset-0 flex items-center justify-center
-              transition-opacity duration-500 ease-out
-              ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
-            `}
-          >
-            <Iridescence
-              color={[1, 1, 1]}
-              mouseReact={false}
-              amplitude={0.1}
-              speed={1.0}
-            />
-
-            {!revealed && (
-              <button
-                onClick={() => setRevealed(true)}
-                className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
-                           hover:bg-white hover:text-black transition-colors"
-              >
-                Spoiler
-              </button>
-            )}
-          </div>
+          {!revealed && (
+            <button
+              onClick={() => setRevealed(true)}
+              className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
+                         hover:bg-white hover:text-black transition-colors"
+            >
+              Spoiler
+            </button>
+          )}
         </div>
-      ) : (
-        <div className="flex-1 min-h-0 rounded-md overflow-hidden">
-          <textarea
-            value={notes}
-            onChange={handleNotesChange}
-            placeholder="Type your notes here..."
-            className="w-full h-full p-4 bg-black text-zinc-300 text-sm resize-none
-                       focus:outline-none focus:ring-2 focus:ring-zinc-700 rounded-md
-                       placeholder:text-zinc-600"
-          />
-        </div>
-      )}
+      </div>
 
-      {/* Bottom stats section */}
-      <div className="mt-4 flex gap-3">
-        <StatBox title="Runtime" stat={stats?.runtime} />
-        <StatBox title="Memory" stat={stats?.memory} />
+      {/* Result */}
+      <div className="mt-4">
+        <ResultBox state={runState} />
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
-// ================== //
+// =================== //
 // Problem Definitions //
-// ================== //
+// =================== //
 
 import type { SubmissionLanguage } from "../../../shared/submissions.js";
 

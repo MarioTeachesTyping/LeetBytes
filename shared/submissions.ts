@@ -25,9 +25,9 @@ export type RunSubmissionResponse =
   message?: string;
 };
 
-// =================== //
-// Judged Submissions  //
-// =================== //
+// ================== //
+// Judged Submissions //
+// ================== //
 
 // The "Submit" path: code is run against per-problem test cases and graded.
 // "accepted" means every case passed; the others describe how it failed.
