@@ -40,6 +40,85 @@ import contextlib as _ctx
 
 _SENTINEL = ${JSON.stringify(RESULT_SENTINEL)}
 
+# ---- I/O adapters ----------------------------------------------------------
+# Problems whose parameters or return value are linked lists or trees declare a
+# logical type (e.g. "ListNode") in their spec. We decode JSON -> node objects
+# before calling the user's method and encode node objects -> JSON afterward, so
+# comparison, serialization, and the readable input string never touch live node
+# instances. LeetCode's own serialization is used: linked lists are flat arrays;
+# binary trees are level-order arrays with null for missing children and trailing
+# nulls trimmed.
+
+def _to_listnode(value):
+    head = None
+    for v in reversed(value or []):
+        head = ListNode(v, head)
+    return head
+
+def _from_listnode(node):
+    out = []
+    while node is not None:
+        out.append(node.val)
+        node = node.next
+    return out
+
+def _to_treenode(value):
+    values = list(value or [])
+    if not values:
+        return None
+    root = TreeNode(values[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(values):
+        node = queue.popleft()
+        if i < len(values) and values[i] is not None:
+            node.left = TreeNode(values[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(values) and values[i] is not None:
+            node.right = TreeNode(values[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def _from_treenode(node):
+    out = []
+    queue = deque([node])
+    while queue:
+        n = queue.popleft()
+        if n is None:
+            out.append(None)
+            continue
+        out.append(n.val)
+        queue.append(n.left)
+        queue.append(n.right)
+    while out and out[-1] is None:
+        out.pop()
+    return out
+
+def _array_of(fn):
+    return lambda value: [fn(x) for x in (value or [])]
+
+_DECODERS = {
+    "ListNode": _to_listnode,
+    "TreeNode": _to_treenode,
+    "ListNode[]": _array_of(_to_listnode),
+    "TreeNode[]": _array_of(_to_treenode),
+}
+
+_ENCODERS = {
+    "ListNode": _from_listnode,
+    "TreeNode": _from_treenode,
+    "ListNode[]": _array_of(_from_listnode),
+    "TreeNode[]": _array_of(_from_treenode),
+}
+
+def _decode(value, io_type):
+    return _DECODERS.get(io_type, lambda v: v)(value)
+
+def _encode(value, io_type):
+    return _ENCODERS.get(io_type, lambda v: v)(value)
+
 def _canon(value, mode):
     try:
         if mode == "unordered" and isinstance(value, list):
@@ -67,6 +146,8 @@ def _run():
     spec = _json.load(_sys.stdin)
     fn = spec["functionName"]
     mode = spec.get("compare", "exact")
+    arg_types = spec.get("argTypes") or []
+    return_type = spec.get("returnType")
     tests = spec.get("tests", [])
     results = []
     overall = "accepted"
@@ -79,8 +160,16 @@ def _run():
         try:
             solution = Solution()
             method = getattr(solution, fn)
+            # Deep-copy the raw JSON first (isolating each case from in-place
+            # mutation), then decode declared slots into fresh node objects.
+            call_args = [
+                _decode(_copy.deepcopy(a), arg_types[j]) if j < len(arg_types) else _copy.deepcopy(a)
+                for j, a in enumerate(args)
+            ]
             with _ctx.redirect_stdout(buf):
-                actual = method(*_copy.deepcopy(args))
+                actual = method(*call_args)
+            if return_type:
+                actual = _encode(actual, return_type)
             elapsed = (_time.perf_counter() - start) * 1000
             passed = _equal(actual, expected, mode)
             results.append({

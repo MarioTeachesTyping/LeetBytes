@@ -5,10 +5,38 @@
 import type { ProblemDefinition } from "./types.js";
 
 // Test cases are seeded from each problem's published examples. Linked-list and
-// tree problems (add-two-numbers, merge-two-sorted-lists) are intentionally left
-// out until the harness gains ListNode/TreeNode adapters.
+// tree problems declare argTypes/returnType so the harness can adapt the JSON
+// test data to/from ListNode/TreeNode objects (see judge/harness.ts).
 const DEFINITIONS: ProblemDefinition[] =
 [
+  {
+    slug: "merge-two-sorted-lists",
+    functionName: "mergeTwoLists",
+    language: "python",
+    compare: "exact",
+    paramNames: ["list1", "list2"],
+    argTypes: ["ListNode", "ListNode"],
+    returnType: "ListNode",
+    tests: [
+      { args: [[1, 2, 4], [1, 3, 4]], expected: [1, 1, 2, 3, 4, 4] },
+      { args: [[], []], expected: [] },
+      { args: [[], [0]], expected: [0] },
+    ],
+  },
+  {
+    slug: "add-two-numbers",
+    functionName: "addTwoNumbers",
+    language: "python",
+    compare: "exact",
+    paramNames: ["l1", "l2"],
+    argTypes: ["ListNode", "ListNode"],
+    returnType: "ListNode",
+    tests: [
+      { args: [[2, 4, 3], [5, 6, 4]], expected: [7, 0, 8] },
+      { args: [[0], [0]], expected: [0] },
+      { args: [[9, 9, 9, 9, 9, 9, 9], [9, 9, 9, 9]], expected: [8, 9, 9, 9, 0, 0, 0, 1] },
+    ],
+  },
   {
     slug: "two-sum",
     functionName: "twoSum",

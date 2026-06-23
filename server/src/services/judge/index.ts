@@ -53,6 +53,8 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
     stdin: JSON.stringify({
       functionName: problem.functionName,
       compare: problem.compare,
+      argTypes: problem.argTypes,
+      returnType: problem.returnType,
       tests: problem.tests,
     }),
   });
