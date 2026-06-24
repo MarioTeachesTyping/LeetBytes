@@ -33,6 +33,7 @@ export default async function Page({ params }: PageProps) {
             constraints={entry.constraints}
             topics={entry.topics}
             companies={entry.companies}
+            code={entry.code}
           />
         </div>
 
