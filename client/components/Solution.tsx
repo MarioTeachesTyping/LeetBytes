@@ -5,6 +5,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Gavel } from "lucide-react";
 import Iridescence from "./react-bits/Iridescence";
 import CodeEditor from "./CodeEditor";
 
@@ -96,13 +97,17 @@ export default function Solution({ slug, code: initialCode }: SolutionProps) {
         <button
           onClick={handleRun}
           disabled={runState.status === "running"}
-          className="px-4 py-1 font-semibold rounded-lg border border-white transition-colors
-                     bg-white text-black hover:bg-black hover:text-white
+          className="inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     bg-black text-white hover:bg-white hover:text-black
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {runState.status === "running" ? "Running…" : "Run"}
+          <Gavel className="h-4 w-4" />
+          {runState.status === "running" ? "Judging…" : "Judge"}
         </button>
       </div>
+
+      {/* Divider */}
+      <div className="mb-3 border-t border-zinc-700" />
 
       {/* Editor */}
       <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">

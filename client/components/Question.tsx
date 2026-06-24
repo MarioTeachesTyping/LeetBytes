@@ -5,6 +5,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { FileText, EyeOff } from "lucide-react";
 import type { ProblemExample, SolutionEntry } from "@/lib/problems";
 
 interface QuestionProps {
@@ -69,6 +70,31 @@ export default function Question({
 
   return (
     <aside className="h-full overflow-y-auto px-3 py-4">
+      {/* Button row */}
+      <div className="mb-3 flex items-center gap-2">
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     bg-black text-white hover:bg-white hover:text-black"
+        >
+          <FileText className="h-4 w-4" />
+          Question
+        </button>
+        <button
+          type="button"
+          disabled
+          className="inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     bg-black text-white hover:bg-white hover:text-black
+                     disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <EyeOff className="h-4 w-4" />
+          Spoiler
+        </button>
+      </div>
+
+      {/* Divider */}
+      <div className="mb-3 border-t border-zinc-700" />
+
       {/* Title */}
       {link ? (
         <a 
