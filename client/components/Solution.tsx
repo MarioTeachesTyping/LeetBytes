@@ -6,7 +6,6 @@
 
 import React, { useState } from "react";
 import { Gavel } from "lucide-react";
-import Iridescence from "./react-bits/Iridescence";
 import CodeEditor from "./CodeEditor";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:4000";
@@ -28,7 +27,6 @@ type RunState =
 
 interface SolutionProps {
   slug: string;
-  code: string;
 }
 
 function ResultBox({ state }: { state: RunState }) {
@@ -62,9 +60,8 @@ function ResultBox({ state }: { state: RunState }) {
   );
 }
 
-export default function Solution({ slug, code: initialCode }: SolutionProps) {
-  const [revealed, setRevealed] = useState(false);
-  const [code, setCode] = useState(initialCode);
+export default function Solution({ slug }: SolutionProps) {
+  const [code, setCode] = useState("");
   const [runState, setRunState] = useState<RunState>({ status: "idle" });
 
   async function handleRun() {
@@ -112,32 +109,6 @@ export default function Solution({ slug, code: initialCode }: SolutionProps) {
       {/* Editor */}
       <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
         <CodeEditor value={code} onChange={setCode} />
-
-        {/* Iridescence spoiler overlay (fade out) */}
-        <div
-          className={`
-            absolute inset-0 flex items-center justify-center
-            transition-opacity duration-500 ease-out
-            ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
-          `}
-        >
-          <Iridescence
-            color={[1, 1, 1]}
-            mouseReact={false}
-            amplitude={0.1}
-            speed={1.0}
-          />
-
-          {!revealed && (
-            <button
-              onClick={() => setRevealed(true)}
-              className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
-                         hover:bg-white hover:text-black transition-colors"
-            >
-              Spoiler
-            </button>
-          )}
-        </div>
       </div>
 
       {/* Result */}
