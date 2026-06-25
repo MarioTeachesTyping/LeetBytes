@@ -27,6 +27,7 @@ type RunState =
 
 interface SolutionProps {
   slug: string;
+  starterCode: string;
 }
 
 function ResultBox({ state }: { state: RunState }) {
@@ -60,8 +61,8 @@ function ResultBox({ state }: { state: RunState }) {
   );
 }
 
-export default function Solution({ slug }: SolutionProps) {
-  const [code, setCode] = useState("");
+export default function Solution({ slug, starterCode }: SolutionProps) {
+  const [code, setCode] = useState(starterCode);
   const [runState, setRunState] = useState<RunState>({ status: "idle" });
 
   async function handleRun() {

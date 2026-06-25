@@ -39,6 +39,10 @@ export const trappingRainWater: SolutionEntry =
     "Amazon", "Google", "Microsoft",
   ],
 
+  starterCode: `class Solution:
+    def trap(self, height: List[int]) -> int:
+        `,
+
   code: `class Solution:
     def trap(self, height: List[int]) -> int:
 

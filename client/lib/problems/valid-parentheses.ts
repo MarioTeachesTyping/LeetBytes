@@ -52,6 +52,10 @@ export const validParentheses: SolutionEntry =
     "Google", "Bloomberg", "Meta",
   ],
 
+  starterCode: `class Solution:
+    def isValid(self, s: str) -> bool:
+        `,
+
   code: `class Solution:
     def isValid(self, s: str) -> bool:
         '''

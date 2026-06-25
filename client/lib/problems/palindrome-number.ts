@@ -44,6 +44,10 @@ export const palindromeNumber: SolutionEntry =
     "Google", "Amazon", "Microsoft", "Bloomberg",
   ],
 
+  starterCode: `class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        `,
+
   code: `class Solution:
     def isPalindrome(self, x: int) -> bool:
         '''

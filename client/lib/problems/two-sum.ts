@@ -45,6 +45,10 @@ export const twoSum: SolutionEntry =
     "Google", "Amazon", "Microsoft",
   ],
 
+  starterCode: `class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        `,
+
   code: `class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         '''

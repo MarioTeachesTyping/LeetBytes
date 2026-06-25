@@ -38,7 +38,7 @@ export default async function Page({ params }: PageProps) {
         </div>
 
         <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
-          <Solution slug={slug} />
+          <Solution slug={slug} starterCode={entry.starterCode} />
         </div>
       </div>
     </main>
