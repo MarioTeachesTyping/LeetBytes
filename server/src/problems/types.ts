@@ -42,5 +42,10 @@ export type ProblemDefinition =
   argTypes?: IOType[];
   // I/O type of the method's return value. Defaults to "json".
   returnType?: IOType;
+  // The public example cases shown on the problem (the "Run" path grades against
+  // just these). A subset/restatement of the problem's published examples, kept
+  // structured so the harness can run them. Distinct from `tests`, the full
+  // hidden suite used by the judge.
+  examples?: TestCase[];
   tests: TestCase[];
 };

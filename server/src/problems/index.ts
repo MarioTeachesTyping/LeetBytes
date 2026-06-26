@@ -13,6 +13,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "merge-two-sorted-lists",
     functionName: "mergeTwoLists",
     language: "python",
+    examples: [
+      { args: [[1, 2, 4], [1, 3, 4]], expected: [1, 1, 2, 3, 4, 4] },
+      { args: [[], []], expected: [] },
+      { args: [[], [0]], expected: [0] },
+    ],
     compare: "exact",
     paramNames: ["list1", "list2"],
     argTypes: ["ListNode", "ListNode"],
@@ -39,6 +44,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "add-two-numbers",
     functionName: "addTwoNumbers",
     language: "python",
+    examples: [
+      { args: [[2, 4, 3], [5, 6, 4]], expected: [7, 0, 8] },
+      { args: [[0], [0]], expected: [0] },
+      { args: [[9, 9, 9, 9, 9, 9, 9], [9, 9, 9, 9]], expected: [8, 9, 9, 9, 0, 0, 0, 1] },
+    ],
     compare: "exact",
     paramNames: ["l1", "l2"],
     argTypes: ["ListNode", "ListNode"],
@@ -61,6 +71,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "two-sum",
     functionName: "twoSum",
     language: "python",
+    examples: [
+      { args: [[2, 7, 11, 15], 9], expected: [0, 1] },
+      { args: [[3, 2, 4], 6], expected: [1, 2] },
+      { args: [[3, 3], 6], expected: [0, 1] },
+    ],
     // LeetCode accepts the two indices in either order, so the pair is graded
     // order-independently rather than as an exact match.
     compare: "unordered",
@@ -85,6 +100,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "palindrome-number",
     functionName: "isPalindrome",
     language: "python",
+    examples: [
+      { args: [121], expected: true },
+      { args: [-121], expected: false },
+      { args: [10], expected: false },
+    ],
     compare: "exact",
     paramNames: ["x"],
     // Covers: even/odd-length palindromes, all negatives (always false),
@@ -108,6 +128,13 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "valid-parentheses",
     functionName: "isValid",
     language: "python",
+    examples: [
+      { args: ["()"], expected: true },
+      { args: ["()[]{}"], expected: true },
+      { args: ["(]"], expected: false },
+      { args: ["([])"], expected: true },
+      { args: ["([)]"], expected: false },
+    ],
     compare: "exact",
     paramNames: ["s"],
     // Covers: matched/nested/mixed types, wrong-type close, crossed pairs,
@@ -133,6 +160,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "maximum-subarray",
     functionName: "maxSubArray",
     language: "python",
+    examples: [
+      { args: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], expected: 6 },
+      { args: [[1]], expected: 1 },
+      { args: [[5, 4, -1, 7, 8]], expected: 23 },
+    ],
     compare: "exact",
     paramNames: ["nums"],
     // Covers: the classic mixed array, single element, no-negatives, all-negatives
@@ -157,6 +189,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "longest-substring-without-repeating-characters",
     functionName: "lengthOfLongestSubstring",
     language: "python",
+    examples: [
+      { args: ["abcabcbb"], expected: 3 },
+      { args: ["bbbbb"], expected: 1 },
+      { args: ["pwwkew"], expected: 3 },
+    ],
     compare: "exact",
     paramNames: ["s"],
     // Covers: classic, all-same, the pwwkew window-reset trap, a single space,
@@ -180,6 +217,10 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "trapping-rain-water",
     functionName: "trap",
     language: "python",
+    examples: [
+      { args: [[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]], expected: 6 },
+      { args: [[4, 2, 0, 3, 2, 5]], expected: 9 },
+    ],
     compare: "exact",
     paramNames: ["height"],
     // Covers: the two canonical examples, single/empty bars, flat terrain,
@@ -202,6 +243,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "merge-intervals",
     functionName: "merge",
     language: "python",
+    examples: [
+      { args: [[[1, 3], [2, 6], [8, 10], [15, 18]]], expected: [[1, 6], [8, 10], [15, 18]] },
+      { args: [[[1, 4], [4, 5]]], expected: [[1, 5]] },
+      { args: [[[4, 7], [1, 4]]], expected: [[1, 7]] },
+    ],
     compare: "exact",
     paramNames: ["intervals"],
     // Output must be sorted by start. Covers: the canonical example, touching
@@ -225,6 +271,10 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "generate-parentheses",
     functionName: "generateParenthesis",
     language: "python",
+    examples: [
+      { args: [3], expected: ["((()))", "(()())", "(())()", "()(())", "()()()"] },
+      { args: [1], expected: ["()"] },
+    ],
     // The set of strings is fixed but the order they are produced is not graded.
     compare: "unordered",
     paramNames: ["n"],
@@ -242,6 +292,11 @@ const DEFINITIONS: ProblemDefinition[] =
     slug: "group-anagrams",
     functionName: "groupAnagrams",
     language: "python",
+    examples: [
+      { args: [["eat", "tea", "tan", "ate", "nat", "bat"]], expected: [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]] },
+      { args: [[""]], expected: [[""]] },
+      { args: [["a"]], expected: [["a"]] },
+    ],
     // Neither the order of groups nor the order within a group is graded.
     compare: "unordered_deep",
     paramNames: ["strs"],

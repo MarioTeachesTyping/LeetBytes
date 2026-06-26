@@ -3,7 +3,7 @@
 // =========== //
 
 import { getProblem } from "../../problems/index.js";
-import type { ProblemDefinition } from "../../problems/types.js";
+import type { ProblemDefinition, TestCase } from "../../problems/types.js";
 import { runSubmission } from "../code-runner/index.js";
 import type { CodeRunnerResult } from "../code-runner/types.js";
 import { buildHarness, RESULT_SENTINEL } from "./harness.js";
@@ -44,6 +44,32 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
     return failure(request, 0, "error", `No judged test cases for "${request.problemSlug}" yet.`);
   }
 
+  return grade(request, problem, problem.tests);
+}
+
+// Runs a submission against only a problem's public example cases (the "Run"
+// path). Identical grading machinery to the judge, but on the handful of visible
+// examples — so the user can sanity-check inputs/outputs before submitting.
+export async function runExamples(request: JudgeSubmissionRequest): Promise<JudgeSubmissionResponse>
+{
+  const problem = getProblem(request.problemSlug);
+
+  if (!problem || !problem.examples || problem.examples.length === 0)
+  {
+    return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
+  }
+
+  return grade(request, problem, problem.examples);
+}
+
+// Shared core: builds the harness around `tests`, runs it, and maps the harness
+// output into a graded, per-case response. Used by both judge and run.
+async function grade(
+  request: JudgeSubmissionRequest,
+  problem: ProblemDefinition,
+  tests: TestCase[],
+): Promise<JudgeSubmissionResponse>
+{
   const startedAt = performance.now();
 
   const run = await runSubmission({
@@ -55,7 +81,7 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
       compare: problem.compare,
       argTypes: problem.argTypes,
       returnType: problem.returnType,
-      tests: problem.tests,
+      tests,
     }),
   });
 
@@ -65,10 +91,10 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
   // No sentinel means the harness never finished: a crash, timeout, or syntax error.
   if (!payload)
   {
-    return inferFailure(request, problem, run, runtimeMs);
+    return inferFailure(request, tests.length, run, runtimeMs);
   }
 
-  const inputs = problem.tests.map((test) => formatInput(test.args, problem.paramNames));
+  const inputs = tests.map((test) => formatInput(test.args, problem.paramNames));
 
   const results: TestCaseResult[] = payload.results.map((result) => ({
     index: result.index,
@@ -117,12 +143,11 @@ function extractPayload(stdout: string): HarnessPayload | undefined
 // Classifies a run that produced no harness output into a single verdict.
 function inferFailure(
   request: JudgeSubmissionRequest,
-  problem: ProblemDefinition,
+  total: number,
   run: CodeRunnerResult,
   runtimeMs: number,
 ): JudgeSubmissionResponse
 {
-  const total = problem.tests.length;
   const detail = run.stderr || run.compileOutput || run.message || "";
 
   if (run.message?.toLowerCase().includes("signal"))
