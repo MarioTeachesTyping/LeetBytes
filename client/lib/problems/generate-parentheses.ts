@@ -36,6 +36,10 @@ export const generateParentheses: SolutionEntry =
     "Amazon", "Google", "Meta",
   ],
 
+  starterCode: `class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        `,
+
   code: `class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         '''

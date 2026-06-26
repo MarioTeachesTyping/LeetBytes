@@ -39,6 +39,10 @@ export const longestPalindromicSubstring: SolutionEntry =
     "Microsoft", "Google", "tcs", "Amazon",
   ],
 
+  starterCode: `class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        `,
+
   code: `class Solution:
     def longestPalindrome(self, s: str) -> str:
         '''

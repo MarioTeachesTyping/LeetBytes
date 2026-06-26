@@ -4,8 +4,10 @@
 
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { FileText, EyeOff } from "lucide-react";
 import type { ProblemExample, SolutionEntry } from "@/lib/problems";
+import Spoiler from "./Spoiler";
 
 interface QuestionProps {
   title: string;
@@ -16,6 +18,7 @@ interface QuestionProps {
   constraints?: string[];
   topics?: string[];
   companies?: string[];
+  code: string;
 }
 
 /**
@@ -46,9 +49,11 @@ export default function Question({
   constraints = [],
   topics = [],
   companies = [],
+  code,
 }: QuestionProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
+  const [view, setView] = useState<"question" | "spoiler">("question");
 
   const difficultyStyles =
     difficulty === "Easy"
@@ -69,6 +74,45 @@ export default function Question({
 
   return (
     <aside className="h-full overflow-y-auto px-3 py-4">
+      {/* Button row */}
+      <div className="mb-3 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setView("question")}
+          className={`inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     ${
+                       view === "question"
+                         ? "bg-white text-black"
+                         : "bg-black text-white hover:bg-white hover:text-black"
+                     }`}
+        >
+          <FileText className="h-4 w-4" />
+          Question
+        </button>
+        <button
+          type="button"
+          onClick={() => setView("spoiler")}
+          className={`inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     ${
+                       view === "spoiler"
+                         ? "bg-white text-black"
+                         : "bg-black text-white hover:bg-white hover:text-black"
+                     }`}
+        >
+          <EyeOff className="h-4 w-4" />
+          Spoiler
+        </button>
+      </div>
+
+      {/* Divider */}
+      <div className="mb-3 border-t border-zinc-700" />
+
+      {view === "spoiler" ? (
+        <Spoiler code={code} />
+      ) : (
+      <>
+
+
       {/* Title */}
       {link ? (
         <a 
@@ -229,6 +273,8 @@ export default function Question({
           Copyright © 2026 LeetCode. All rights reserved.
         </p>
       </div>
+      </>
+      )}
     </aside>
   );
 }

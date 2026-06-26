@@ -1,3 +1,3 @@
 # Shared
 
-Database stuff or somethin.
+Shared request and response types used by the client and server.

@@ -43,6 +43,10 @@ export const longestSubstringWithoutRepeatingCharacters: SolutionEntry =
     "Amazon", "Google", "Microsoft",
   ],
 
+  starterCode: `class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        `,
+
   code: `class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         # first thought is sliding window and using a set due to:

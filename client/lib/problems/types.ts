@@ -20,6 +20,7 @@ export type SolutionEntry = {
   constraints?: string[];
   topics?: string[];
   companies?: string[];
+  starterCode: string;
   code: string;
   stats?: {
     runtime?: ProblemStat;

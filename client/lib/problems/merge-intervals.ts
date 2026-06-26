@@ -44,6 +44,10 @@ export const mergeIntervals: SolutionEntry =
     "Google", "Bloomberg", "Amazon", "CleverTap",
   ],
 
+  starterCode: `class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        `,
+
   code: `class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         '''

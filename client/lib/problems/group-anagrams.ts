@@ -42,6 +42,10 @@ export const groupAnagrams: SolutionEntry =
     "Amazon", "Bloomberg", "Google",
   ],
 
+  starterCode: `class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        `,
+
   code: `class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         '''

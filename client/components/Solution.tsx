@@ -4,148 +4,250 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Iridescence from "./react-bits/Iridescence";
-import { FaLeaf } from "react-icons/fa";
-import type { ProblemStat } from "@/lib/problems";
+import React, { useState } from "react";
+import { Gavel, Play } from "lucide-react";
+import CodeEditor from "./CodeEditor";
 
-type StatCard = Pick<ProblemStat, "value" | "beats">;
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:4000";
+
+// Mirrors the server's per-case TestCaseResult (kept local so the client does
+// not import across the shared/ package boundary).
+type CaseResult = {
+  index: number;
+  status: string;
+  input: string;
+  expected: string;
+  actual?: string;
+  stdout?: string;
+  stderr?: string;
+  runtimeMs?: number;
+};
+
+// Mirrors the server's JudgeSubmissionResponse. Both /run and /judge return it.
+type GradeResponse = {
+  status: string;
+  passed: number;
+  total: number;
+  results: CaseResult[];
+  message?: string;
+};
+
+// The bottom result panel. "run" shows per-example detail; "judge" shows a
+// single pass/fail verdict (the hidden suite stays hidden).
+type Panel =
+  | { kind: "idle" }
+  | { kind: "running"; action: "run" | "judge" }
+  | { kind: "judge"; passed: number; total: number; status: string; message?: string }
+  | { kind: "run"; passed: number; total: number; cases: CaseResult[]; message?: string }
+  | { kind: "error"; detail: string };
 
 interface SolutionProps {
-  highlightedHtml: string;
   slug: string;
-  stats?: {
-    runtime?: StatCard;
-    memory?: StatCard;
-  };
+  starterCode: string;
 }
 
-function StatBox({ title, stat }: { title: string; stat?: StatCard }) {
+// Per-case status → label + color, shared by the example cards.
+function caseStyle(status: string) {
+  if (status === "accepted") {
+    return { label: "Passed", className: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300", dot: "bg-emerald-400" };
+  }
+  if (status === "runtime_error") {
+    return { label: "Runtime Error", className: "border-red-500/40 bg-red-500/10 text-red-300", dot: "bg-red-400" };
+  }
+  return { label: "Wrong Answer", className: "border-red-500/40 bg-red-500/10 text-red-300", dot: "bg-red-400" };
+}
+
+function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-3">
-      <div className="flex items-center justify-between text-xs text-white/60">
-        <span className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-white/30" />
-          {title}
+    <div className="flex gap-2">
+      <span className="shrink-0 text-white/40">{label}</span>
+      <span className="break-all text-white/90">{value}</span>
+    </div>
+  );
+}
+
+// Renders the result of a "Run": each visible example with its input, your
+// output, the expected output, plus any printed/error output.
+function RunResults({ passed, total, cases, message }: { passed: number; total: number; cases: CaseResult[]; message?: string }) {
+  const allPassed = passed === total;
+
+  return (
+    <div className="space-y-2">
+      <div className={`rounded-lg border px-4 py-2 ${allPassed ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" : "border-amber-500/40 bg-amber-500/10 text-amber-200"}`}>
+        <span className="text-lg font-semibold">
+          {allPassed ? "All examples passed" : "Some examples failed"}
         </span>
+        <span className="ml-2 text-xs text-white/60">{passed}/{total} examples</span>
       </div>
 
-      <div className="mt-1 flex items-end justify-between">
-        <div className="text-lg font-semibold text-white">
-          {stat?.value ?? "—"}
-        </div>
+      {message && <p className="px-1 text-xs text-red-300">{message}</p>}
 
-        <div className="text-xs text-white/60">
-          {stat?.beats ? (
-            <span className="flex items-center gap-1">
-              Beats{" "}
-              <span className="text-white font-semibold">{stat.beats}</span>
-              <FaLeaf className="text-white inline-block" />
-            </span>
-          ) : (
-            " "
-          )}
-        </div>
+      <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
+        {cases.map((c) => {
+          const style = caseStyle(c.status);
+          return (
+            <div key={c.index} className={`rounded-lg border px-3 py-2 ${style.className}`}>
+              <div className="mb-2 flex items-center justify-between">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} />
+                  Example {c.index + 1}
+                </span>
+                <span className="text-xs text-white/50">{style.label}</span>
+              </div>
+              <div className="space-y-1 font-mono text-xs">
+                <Field label="Input" value={c.input} />
+                <Field label="Output" value={c.actual ?? "—"} />
+                <Field label="Expected" value={c.expected} />
+                {c.stdout && (
+                  <div className="pt-1">
+                    <span className="text-white/40">Stdout</span>
+                    <pre className="mt-1 whitespace-pre-wrap break-all text-white/70">{c.stdout}</pre>
+                  </div>
+                )}
+                {c.stderr && (
+                  <div className="pt-1">
+                    <span className="text-white/40">Error</span>
+                    <pre className="mt-1 whitespace-pre-wrap break-all text-red-300/90">{c.stderr}</pre>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-export default function Solution({ highlightedHtml, slug, stats }: SolutionProps) {
-  const [revealed, setRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"code" | "notes">("code");
-  const [notes, setNotes] = useState("");
+// Renders the result of a "Judge": just the verdict and pass count.
+function JudgeResult({ passed, total, status, message }: { passed: number; total: number; status: string; message?: string }) {
+  const accepted = status === "accepted";
+  const palette = accepted
+    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+    : "border-red-500/40 bg-red-500/10 text-red-300";
+  const detail = message ?? `${passed}/${total} test cases · ${status.replace(/_/g, " ")}`;
 
-  useEffect(() => {
-    const savedNotes = localStorage.getItem(`leetbytes-notes-${slug}`);
-    if (savedNotes) {
-      setNotes(savedNotes);
+  return (
+    <div className={`rounded-lg border px-4 py-3 ${palette}`}>
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-2 text-lg font-semibold">
+          <span className={`inline-block h-2.5 w-2.5 rounded-full ${accepted ? "bg-emerald-400" : "bg-red-400"}`} />
+          {accepted ? "Accepted" : "Failed"}
+        </span>
+        <span className="text-xs text-white/60">{accepted ? `${passed}/${total} test cases` : detail}</span>
+      </div>
+    </div>
+  );
+}
+
+export default function Solution({ slug, starterCode }: SolutionProps) {
+  const [code, setCode] = useState(starterCode);
+  const [panel, setPanel] = useState<Panel>({ kind: "idle" });
+
+  const busy = panel.kind === "running";
+
+  // Runs the code against the visible example cases and shows per-case detail.
+  async function handleRunExamples() {
+    setPanel({ kind: "running", action: "run" });
+
+    try {
+      const response = await fetch(`${SERVER_URL}/submissions/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ problemSlug: slug, language: "python", code }),
+      });
+
+      const data = (await response.json()) as GradeResponse;
+
+      if (data.results && data.results.length > 0) {
+        setPanel({ kind: "run", passed: data.passed, total: data.total, cases: data.results, message: data.message });
+      } else {
+        setPanel({ kind: "error", detail: data.message ?? "Could not run the examples." });
+      }
+    } catch {
+      setPanel({ kind: "error", detail: "Could not reach the server." });
     }
-  }, [slug]);
+  }
 
-  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newNotes = e.target.value;
-    setNotes(newNotes);
-    localStorage.setItem(`leetbytes-notes-${slug}`, newNotes);
-  };
+  // Grades the code against the full hidden test suite.
+  async function handleJudge() {
+    setPanel({ kind: "running", action: "judge" });
+
+    try {
+      const response = await fetch(`${SERVER_URL}/submissions/judge`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ problemSlug: slug, language: "python", code }),
+      });
+
+      const data = (await response.json()) as GradeResponse;
+      setPanel({ kind: "judge", passed: data.passed, total: data.total, status: data.status, message: data.message });
+    } catch {
+      setPanel({ kind: "error", detail: "Could not reach the server." });
+    }
+  }
 
   return (
     <section className="h-full p-3 flex flex-col min-h-0">
       {/* Header */}
       <div className="mb-3 flex items-center gap-2">
         <button
-          onClick={() => setActiveTab("code")}
-          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
-            activeTab === "code" 
-              ? "bg-white text-black" 
-              : "bg-black text-white hover:bg-white hover:text-black"
-          }`}
+          onClick={handleRunExamples}
+          disabled={busy}
+          className="inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     bg-black text-white hover:bg-white hover:text-black
+                     disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Code
+          <Play className="h-4 w-4" />
+          {panel.kind === "running" && panel.action === "run" ? "Running…" : "Run"}
         </button>
         <button
-          onClick={() => setActiveTab("notes")}
-          className={`px-4 py-1 font-semibold rounded-lg border border-white transition-colors ${
-            activeTab === "notes" 
-              ? "bg-white text-black" 
-              : "bg-black text-white hover:bg-white hover:text-black"
-          }`}
+          onClick={handleJudge}
+          disabled={busy}
+          className="inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
+                     bg-black text-white hover:bg-white hover:text-black
+                     disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Notes
+          <Gavel className="h-4 w-4" />
+          {panel.kind === "running" && panel.action === "judge" ? "Judging…" : "Judge"}
         </button>
       </div>
 
-      {/* Content container */}
-      {activeTab === "code" ? (
-        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
-          <div
-            className="h-full overflow-auto bg-black text-sm [&_pre]:!bg-transparent [&_code]:!bg-transparent"
-            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-          />
+      {/* Divider */}
+      <div className="mb-3 border-t border-zinc-700" />
 
-          {/* Iridescence spoiler overlay (fade out) */}
-          <div
-            className={`
-              absolute inset-0 flex items-center justify-center
-              transition-opacity duration-500 ease-out
-              ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
-            `}
-          >
-            <Iridescence
-              color={[1, 1, 1]}
-              mouseReact={false}
-              amplitude={0.1}
-              speed={1.0}
-            />
+      {/* Editor */}
+      <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+        <CodeEditor value={code} onChange={setCode} />
+      </div>
 
-            {!revealed && (
-              <button
-                onClick={() => setRevealed(true)}
-                className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
-                           hover:bg-white hover:text-black transition-colors"
-              >
-                Spoiler
-              </button>
-            )}
+      {/* Result */}
+      <div className="mt-4">
+        {panel.kind === "idle" && (
+          <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+            Run against the examples, or judge against every test case.
           </div>
-        </div>
-      ) : (
-        <div className="flex-1 min-h-0 rounded-md overflow-hidden">
-          <textarea
-            value={notes}
-            onChange={handleNotesChange}
-            placeholder="Type your notes here..."
-            className="w-full h-full p-4 bg-black text-zinc-300 text-sm resize-none
-                       focus:outline-none focus:ring-2 focus:ring-zinc-700 rounded-md
-                       placeholder:text-zinc-600"
-          />
-        </div>
-      )}
+        )}
 
-      {/* Bottom stats section */}
-      <div className="mt-4 flex gap-3">
-        <StatBox title="Runtime" stat={stats?.runtime} />
-        <StatBox title="Memory" stat={stats?.memory} />
+        {panel.kind === "running" && (
+          <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
+            {panel.action === "run" ? "Running examples…" : "Judging…"}
+          </div>
+        )}
+
+        {panel.kind === "error" && (
+          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
+            {panel.detail}
+          </div>
+        )}
+
+        {panel.kind === "run" && (
+          <RunResults passed={panel.passed} total={panel.total} cases={panel.cases} message={panel.message} />
+        )}
+
+        {panel.kind === "judge" && (
+          <JudgeResult passed={panel.passed} total={panel.total} status={panel.status} message={panel.message} />
+        )}
       </div>
     </section>
   );

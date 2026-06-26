@@ -44,6 +44,10 @@ export const maximumSubarray: SolutionEntry =
     "Microsoft", "Amazon", "Apple", "Google",
   ],
 
+  starterCode: `class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        `,
+
   code: `class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
         '''
