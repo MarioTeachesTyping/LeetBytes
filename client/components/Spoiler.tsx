@@ -6,17 +6,18 @@
 
 import React, { useEffect, useState } from "react";
 import { highlightPython } from "@/lib/highlight";
-import Iridescence from "./react-bits/Iridescence";
+import type { SpoilerSolution } from "@/lib/problems";
+import Balatro from "./react-bits/Balatro";
 
 interface SpoilerProps {
-  code: string;
+  solutions: SpoilerSolution[];
 }
 
 /**
- * Read-only, syntax-highlighted view of a problem's solution code.
- * Uses Shiki to highlight on the client (no editing needed).
+ * One read-only, syntax-highlighted code block hidden behind a Balatro overlay.
+ * Highlights with Shiki on the client and reveals independently of its siblings.
  */
-export default function Spoiler({ code }: SpoilerProps) {
+function SpoilerBlock({ code }: { code: string }) {
   const [html, setHtml] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -47,7 +48,7 @@ export default function Spoiler({ code }: SpoilerProps) {
         dangerouslySetInnerHTML={{ __html: html }}
       />
 
-      {/* Iridescence spoiler overlay (fade out on reveal) */}
+      {/* Balatro spoiler overlay (fade out on reveal) */}
       <div
         className={`
           absolute inset-0 flex items-center justify-center
@@ -55,12 +56,7 @@ export default function Spoiler({ code }: SpoilerProps) {
           ${revealed ? "opacity-0 pointer-events-none" : "opacity-100"}
         `}
       >
-        <Iridescence
-          color={[1, 1, 1]}
-          mouseReact={false}
-          amplitude={0.1}
-          speed={1.0}
-        />
+        <Balatro isRotate={false} mouseInteraction={!revealed} />
 
         {!revealed && (
           <button
@@ -72,6 +68,32 @@ export default function Spoiler({ code }: SpoilerProps) {
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Spoiler view: each approach gets a title + description section above its own
+ * revealable code block, so multiple ways of solving the problem can be listed.
+ */
+export default function Spoiler({ solutions }: SpoilerProps) {
+  return (
+    <div className="space-y-8">
+      {solutions.map((solution, i) => (
+        <div key={i} className="space-y-3">
+          {/* Title + description section */}
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold text-white">{solution.title}</h2>
+            {solution.description && (
+              <p className="text-sm leading-relaxed text-zinc-300">
+                {solution.description}
+              </p>
+            )}
+          </div>
+
+          <SpoilerBlock code={solution.code} />
+        </div>
+      ))}
     </div>
   );
 }

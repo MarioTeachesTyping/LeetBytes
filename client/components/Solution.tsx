@@ -188,9 +188,9 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   }
 
   return (
-    <section className="h-full p-3 flex flex-col min-h-0">
-      {/* Header */}
-      <div className="mb-3 flex items-center gap-2">
+    <div className="h-full flex flex-col gap-2 min-h-0">
+      {/* Toolbar panel — stays put while the content below scrolls */}
+      <div className="shrink-0 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
         <button
           onClick={handleRunExamples}
           disabled={busy}
@@ -213,42 +213,42 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
         </button>
       </div>
 
-      {/* Divider */}
-      <div className="mb-3 border-t border-zinc-700" />
+      {/* Content panel */}
+      <section className="flex-1 min-h-0 flex flex-col rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+        {/* Editor */}
+        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+          <CodeEditor value={code} onChange={setCode} />
+        </div>
 
-      {/* Editor */}
-      <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
-        <CodeEditor value={code} onChange={setCode} />
-      </div>
+        {/* Result */}
+        <div className="mt-4">
+          {panel.kind === "idle" && (
+            <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+              Run against the examples, or judge against every test case.
+            </div>
+          )}
 
-      {/* Result */}
-      <div className="mt-4">
-        {panel.kind === "idle" && (
-          <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
-            Run against the examples, or judge against every test case.
-          </div>
-        )}
+          {panel.kind === "running" && (
+            <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
+              {panel.action === "run" ? "Running examples…" : "Judging…"}
+            </div>
+          )}
 
-        {panel.kind === "running" && (
-          <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
-            {panel.action === "run" ? "Running examples…" : "Judging…"}
-          </div>
-        )}
+          {panel.kind === "error" && (
+            <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
+              {panel.detail}
+            </div>
+          )}
 
-        {panel.kind === "error" && (
-          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
-            {panel.detail}
-          </div>
-        )}
+          {panel.kind === "run" && (
+            <RunResults passed={panel.passed} total={panel.total} cases={panel.cases} message={panel.message} />
+          )}
 
-        {panel.kind === "run" && (
-          <RunResults passed={panel.passed} total={panel.total} cases={panel.cases} message={panel.message} />
-        )}
-
-        {panel.kind === "judge" && (
-          <JudgeResult passed={panel.passed} total={panel.total} status={panel.status} message={panel.message} />
-        )}
-      </div>
-    </section>
+          {panel.kind === "judge" && (
+            <JudgeResult passed={panel.passed} total={panel.total} status={panel.status} message={panel.message} />
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
