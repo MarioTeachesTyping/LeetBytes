@@ -38,6 +38,14 @@ import traceback as _tb
 import copy as _copy
 import contextlib as _ctx
 
+# Peak resident memory is read from getrusage after the run. Unix-only (Piston
+# runs on Linux); absent on Windows (the local dev runner), where memory is
+# reported as null and the client renders a dash.
+try:
+    import resource as _resource
+except Exception:
+    _resource = None
+
 _SENTINEL = ${JSON.stringify(RESULT_SENTINEL)}
 
 # ---- I/O adapters ----------------------------------------------------------
@@ -195,11 +203,21 @@ def _run():
             if overall in ("accepted", "wrong_answer"):
                 overall = "runtime_error"
 
+    # Peak resident set size of the whole process. ru_maxrss is kilobytes on
+    # Linux, so the value already matches the unit the server expects.
+    memory_kb = None
+    if _resource is not None:
+        try:
+            memory_kb = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        except Exception:
+            memory_kb = None
+
     payload = {
         "status": overall,
         "passed": sum(1 for r in results if r["status"] == "accepted"),
         "total": len(results),
         "results": results,
+        "memoryKb": memory_kb,
     }
     print(_SENTINEL + _json.dumps(payload))
 

@@ -32,6 +32,8 @@ type HarnessPayload =
   passed: number;
   total: number;
   results: HarnessCaseResult[];
+  // Peak resident memory in kilobytes, or null when the platform can't measure it.
+  memoryKb?: number | null;
 };
 
 // Runs a submission against a problem's hidden test cases and grades it.
@@ -70,7 +72,7 @@ async function grade(
   tests: TestCase[],
 ): Promise<JudgeSubmissionResponse>
 {
-  const startedAt = performance.now();
+  const wallStartedAt = performance.now();
 
   const run = await runSubmission({
     problemSlug: request.problemSlug,
@@ -85,13 +87,13 @@ async function grade(
     }),
   });
 
-  const runtimeMs = Math.round(performance.now() - startedAt);
+  const wallRuntimeMs = Math.round(performance.now() - wallStartedAt);
   const payload = extractPayload(run.stdout);
 
   // No sentinel means the harness never finished: a crash, timeout, or syntax error.
   if (!payload)
   {
-    return inferFailure(request, tests.length, run, runtimeMs);
+    return inferFailure(request, tests.length, run, wallRuntimeMs);
   }
 
   const inputs = tests.map((test) => formatInput(test.args, problem.paramNames));
@@ -107,6 +109,12 @@ async function grade(
     runtimeMs: result.runtimeMs,
   }));
 
+  // The displayed runtime is the user's solution time across all cases, not the
+  // server's wall-clock (which includes the Piston round-trip).
+  const solutionRuntimeMs = Math.round(
+    payload.results.reduce((sum, result) => sum + (result.runtimeMs ?? 0), 0),
+  );
+
   return {
     status: payload.status,
     problemSlug: request.problemSlug,
@@ -114,7 +122,8 @@ async function grade(
     passed: payload.passed,
     total: payload.total,
     results,
-    runtimeMs,
+    runtimeMs: solutionRuntimeMs,
+    memoryKb: payload.memoryKb ?? undefined,
   };
 }
 

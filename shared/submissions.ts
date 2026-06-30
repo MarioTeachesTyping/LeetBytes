@@ -68,6 +68,10 @@ export type JudgeSubmissionResponse =
   passed: number;
   total: number;
   results: TestCaseResult[];
+  // Total solution runtime (sum of per-case execution times), in milliseconds.
   runtimeMs?: number;
+  // Peak resident memory of the run, in kilobytes. Absent when the runner's
+  // platform can't measure it (e.g. local Windows dev).
+  memoryKb?: number;
   message?: string;
 };

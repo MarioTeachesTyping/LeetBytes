@@ -17,15 +17,17 @@ type SubmissionBody =
   stdin?: unknown;
 };
 
-// Handles POST /submissions/run by grading code against a problem's public
-// example cases (the "Run" path) and returning per-case detail.
+// Handles POST /submissions/run by executing code against a problem's public
+// example cases (the "Run" path) and returning per-case output. This is a
+// testbench, not a verdict — it returns 200 whenever the examples could be run
+// (even if the output differs from expected); only a hard failure to run is an error.
 export async function handleRunSubmission(request: IncomingMessage, response: ServerResponse)
 {
   const body = await readJsonBody(request, config.requestBodyLimitBytes);
   const submission = parseJudgeSubmission(body);
   const result = await runExamples(submission);
 
-  sendJson(response, result.status === "accepted" ? 200 : 422, result);
+  sendJson(response, result.results.length > 0 ? 200 : 422, result);
 }
 
 // Handles POST /submissions/judge by grading code against a problem's test cases.
