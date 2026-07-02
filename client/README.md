@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Client
 
-## Getting Started
+The LeetBytes frontend: a Next.js app for browsing problems, editing and running
+solutions, and revealing spoilers.
 
-First, run the development server:
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Running and judging code needs the server (see `../server`). Point the client at
+it with `NEXT_PUBLIC_SERVER_URL` (defaults to `http://localhost:4000`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structure
 
-## Learn More
+- `app/` — Next.js routes. `app/solutions/[slug]` renders an individual problem page.
+- `components/`
+  - `Question.tsx` — description, examples, constraints, topic/company tags, and the Spoiler toggle
+  - `Solution.tsx` — the code editor, Run/Judge buttons, and the tabbed, resizable test panel
+  - `Result.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
+  - `CodeEditor.tsx` — CodeMirror editor
+  - `Spoiler.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
+  - `react-bits/` — animated visual effects
+- `lib/problems/` — typed problem content (description, examples, starter code, spoiler solutions)
+- `lib/highlight.ts` — Shiki syntax highlighting
 
-To learn more about Next.js, take a look at the following resources:
+## Test panel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The panel under the editor has three tabs:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Test Cases** — the example inputs, split per parameter and editable as raw JSON.
+  Edited inputs are sent to the server on the next Run.
+- **Test Results** — per-case output from Run: your output, plus the expected value
+  for cases you haven't edited (a custom input has no known answer).
+- **Submissions** — the Judge verdict (**Accepted** / **Almost** / **Failed**) with
+  runtime and memory.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Drag the thin handle between the editor and the panel to resize the split; the
+chevron collapses the panel.
