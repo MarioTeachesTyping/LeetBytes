@@ -12,7 +12,7 @@ export type CaseResult = {
   index: number;
   status: string;
   input: string;
-  expected: string;
+  expected?: string;
   actual?: string;
   stdout?: string;
   stderr?: string;
@@ -66,6 +66,86 @@ function Block({ label, value, tone = "default" }: { label: string; value: strin
   );
 }
 
+// A LeetCode-style row of "Case 1 / Case 2 / …" pills.
+function CaseTabs({ count, active, onSelect }: { count: number; active: number; onSelect: (i: number) => void }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {Array.from({ length: count }, (_, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect(i)}
+          className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+            i === active
+              ? "bg-white text-black"
+              : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+          }`}
+        >
+          Case {i + 1}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Test Cases view: the example inputs, always visible (even before a run) and
+// editable. Each parameter gets its own field, pre-filled with the JSON of its
+// default value — the raw JSON is what the run sends back to the server.
+export function TestCasesEditor({
+  paramNames,
+  values,
+  onChange,
+  loading,
+}: {
+  paramNames: string[];
+  values: string[][];
+  onChange: (caseIndex: number, argIndex: number, value: string) => void;
+  loading?: boolean;
+}) {
+  const [active, setActive] = useState(0);
+
+  if (loading) {
+    return (
+      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+        Loading test cases…
+      </div>
+    );
+  }
+
+  if (values.length === 0) {
+    return (
+      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+        No test cases for this problem yet.
+      </div>
+    );
+  }
+
+  const safeIndex = Math.min(active, values.length - 1);
+  const current = values[safeIndex];
+
+  return (
+    <div className="space-y-3">
+      <CaseTabs count={values.length} active={safeIndex} onSelect={setActive} />
+      <div className="space-y-3">
+        {current.map((value, argIndex) => (
+          <div key={argIndex}>
+            <div className="mb-1 font-mono text-xs font-medium text-white/40">
+              {paramNames[argIndex] ?? `arg ${argIndex + 1}`}
+            </div>
+            <textarea
+              value={value}
+              onChange={(event) => onChange(safeIndex, argIndex, event.target.value)}
+              spellCheck={false}
+              rows={1}
+              className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+                         focus:border-white/30 focus:outline-none"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Run view: a LeetCode-style row of Case tabs. Each case shows the input it ran
 // against and the output your code produced — a testbench, not a verdict, so
 // there is no expected value or pass/fail here.
@@ -76,21 +156,7 @@ function RunResults({ cases, message }: { cases: CaseResult[]; message?: string 
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        {cases.map((c, i) => (
-          <button
-            key={c.index}
-            onClick={() => setActive(i)}
-            className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
-              i === safeIndex
-                ? "bg-white text-black"
-                : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
-            }`}
-          >
-            Case {i + 1}
-          </button>
-        ))}
-      </div>
+      <CaseTabs count={cases.length} active={safeIndex} onSelect={setActive} />
 
       {message && <p className="px-1 text-xs text-red-300">{message}</p>}
 
@@ -98,6 +164,7 @@ function RunResults({ cases, message }: { cases: CaseResult[]; message?: string 
         <div className="space-y-2">
           <Block label="Input" value={current.input} />
           <Block label="Output" value={current.actual ?? "—"} />
+          {current.expected !== undefined && <Block label="Expected" value={current.expected} />}
           {current.stdout && <Block label="Stdout" value={current.stdout} />}
           {current.stderr && <Block label="Error" value={current.stderr} tone="error" />}
         </div>
@@ -166,11 +233,11 @@ function JudgeResult({
 
 // The bottom result area for the Solution panel. Renders whichever view the
 // current panel state calls for.
-export default function Result({ panel }: { panel: Panel }) {
+export default function Result({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) {
   if (panel.kind === "idle") {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
-        Run against the examples, or judge against every test case.
+        {idleMessage ?? "Run against the examples, or judge against every test case."}
       </div>
     );
   }
