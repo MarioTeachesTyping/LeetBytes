@@ -4,7 +4,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, Gavel, Play } from "lucide-react";
 import CodeEditor from "./CodeEditor";
 import Result, { TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
@@ -38,6 +38,12 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   const [judgeResult, setJudgeResult] = useState<Panel>({ kind: "idle" });
   const [tab, setTab] = useState<Tab>("cases");
   const [open, setOpen] = useState(true);
+  // Height (px) of the test panel; the editor above takes the remaining space.
+  // Dragging the handle between them adjusts this.
+  const [panelHeight, setPanelHeight] = useState(240);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ startY: number; startHeight: number; maxHeight: number } | null>(null);
 
   // Editable test cases. Each arg is stored as its raw JSON string so the user can
   // freely type; `original`/`expected` let us show the known answer for unedited
@@ -49,6 +55,40 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   const [casesLoading, setCasesLoading] = useState(true);
 
   const busy = runResult.kind === "running" || judgeResult.kind === "running";
+
+  const onResize = useCallback((event: MouseEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    // Dragging up (smaller clientY) grows the panel.
+    const next = drag.startHeight + (drag.startY - event.clientY);
+    setPanelHeight(Math.min(Math.max(next, 120), drag.maxHeight));
+  }, []);
+
+  const stopResize = useCallback(() => {
+    dragRef.current = null;
+    window.removeEventListener("mousemove", onResize);
+    window.removeEventListener("mouseup", stopResize);
+    document.body.style.userSelect = "";
+    document.body.style.cursor = "";
+  }, [onResize]);
+
+  function startResize(event: React.MouseEvent) {
+    event.preventDefault();
+    const containerHeight = containerRef.current?.clientHeight ?? window.innerHeight;
+    dragRef.current = {
+      startY: event.clientY,
+      startHeight: panelHeight,
+      // Leave room for the toolbar and a usable slice of editor above.
+      maxHeight: Math.max(160, containerHeight - 200),
+    };
+    window.addEventListener("mousemove", onResize);
+    window.addEventListener("mouseup", stopResize);
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "row-resize";
+  }
+
+  // Clean up listeners if the component unmounts mid-drag.
+  useEffect(() => stopResize, [stopResize]);
 
   // Load the problem's default inputs into the editor once on mount.
   useEffect(() => {
@@ -172,7 +212,7 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   }
 
   return (
-    <div className="h-full flex flex-col gap-2 min-h-0">
+    <div ref={containerRef} className="h-full flex flex-col gap-2 min-h-0">
       {/* Toolbar panel — stays put while the content below scrolls */}
       <div className="shrink-0 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
         <button
@@ -204,9 +244,24 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
         </div>
       </section>
 
-      {/* Test panel — tabbed (Test Cases / Test Results / Submissions), collapsible */}
-      <div className="shrink-0 rounded-lg border border-zinc-800 bg-zinc-950">
-        <div className="flex items-center justify-between px-2 py-1.5">
+      {/* Drag handle — resize the editor/test split (only while the panel is open) */}
+      {open && (
+        <div
+          onMouseDown={startResize}
+          role="separator"
+          aria-orientation="horizontal"
+          className="group shrink-0 flex h-1 cursor-row-resize items-center justify-center"
+        >
+          <div className="h-0.5 w-8 rounded-full bg-zinc-700 transition-colors group-hover:bg-zinc-500" />
+        </div>
+      )}
+
+      {/* Test panel — tabbed (Test Cases / Test Results / Submissions), collapsible + resizable */}
+      <div
+        className="shrink-0 flex flex-col min-h-0 rounded-lg border border-zinc-800 bg-zinc-950"
+        style={open ? { height: panelHeight } : undefined}
+      >
+        <div className="shrink-0 flex items-center justify-between px-2 py-1.5">
           <div className="flex items-center gap-1">
             {TABS.map(({ key, label }) => (
               <button
@@ -237,7 +292,7 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
         </div>
 
         {open && (
-          <div className="max-h-72 overflow-y-auto border-t border-zinc-800 p-3">
+          <div className="flex-1 min-h-0 overflow-y-auto border-t border-zinc-800 p-3">
             {tab === "cases" && (
               <TestCasesEditor
                 paramNames={paramNames}

@@ -38,13 +38,19 @@ import traceback as _tb
 import copy as _copy
 import contextlib as _ctx
 
-# Peak resident memory is read from getrusage after the run. Unix-only (Piston
-# runs on Linux); absent on Windows (the local dev runner), where memory is
-# reported as null and the client renders a dash.
+# Memory is read from getrusage (peak process RSS, LeetCode-like) when available.
+# resource is Unix-only, so on Windows (the local dev runner) we fall back to the
+# stdlib tracemalloc peak — a smaller Python-allocation figure, but cross-platform
+# so a value still shows during local development.
 try:
     import resource as _resource
 except Exception:
     _resource = None
+
+try:
+    import tracemalloc as _tracemalloc
+except Exception:
+    _tracemalloc = None
 
 _SENTINEL = ${JSON.stringify(RESULT_SENTINEL)}
 
@@ -160,6 +166,10 @@ def _run():
     results = []
     overall = "accepted"
 
+    # Without getrusage, track Python allocations so memory still has a value.
+    if _resource is None and _tracemalloc is not None:
+        _tracemalloc.start()
+
     for i, test in enumerate(tests):
         args = test.get("args", [])
         expected = test.get("expected")
@@ -203,12 +213,17 @@ def _run():
             if overall in ("accepted", "wrong_answer"):
                 overall = "runtime_error"
 
-    # Peak resident set size of the whole process. ru_maxrss is kilobytes on
-    # Linux, so the value already matches the unit the server expects.
+    # Peak memory in kilobytes. ru_maxrss is already KB on Linux; tracemalloc
+    # reports bytes, so convert. Both are the unit the server/client expect.
     memory_kb = None
     if _resource is not None:
         try:
             memory_kb = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        except Exception:
+            memory_kb = None
+    elif _tracemalloc is not None:
+        try:
+            memory_kb = round(_tracemalloc.get_traced_memory()[1] / 1024)
         except Exception:
             memory_kb = None
 

@@ -146,6 +146,54 @@ export function TestCasesEditor({
   );
 }
 
+// A few error types read better with a friendlier title than their Python name.
+const FRIENDLY_ERROR_TITLES: Record<string, string> = {
+  IndentationError: "Indentation Error",
+  TabError: "Indentation Error",
+};
+
+// Pulls a clean error type + message out of a Python traceback. The final line
+// of a traceback is "ErrorType: message"; the frames above it only hold sandbox
+// file paths and line numbers that are offset by the injected harness, so we drop
+// them and keep just the type (as a title) and the human-readable message.
+function cleanError(raw: string): { title: string; body: string } {
+  const lines = raw
+    .split("\n")
+    .map((line) => line.replace(/\s+$/, ""))
+    .filter((line) => line.trim().length > 0);
+  const last = lines[lines.length - 1] ?? raw.trim();
+
+  const colon = last.indexOf(": ");
+  if (colon > 0) {
+    const type = last.slice(0, colon);
+    if (/^[A-Za-z_][\w.]*$/.test(type)) {
+      return { title: FRIENDLY_ERROR_TITLES[type] ?? type, body: last.slice(colon + 2).trim() };
+    }
+  }
+
+  // A bare exception name with no message (e.g. "ValueError").
+  if (/^[A-Za-z_][\w.]*$/.test(last)) {
+    return { title: FRIENDLY_ERROR_TITLES[last] ?? last, body: "" };
+  }
+
+  return { title: "Error", body: last };
+}
+
+// Renders a case's error as a red type title above a clean message box.
+function ErrorDisplay({ stderr }: { stderr: string }) {
+  const { title, body } = cleanError(stderr);
+  return (
+    <div>
+      <div className="mb-1 text-xs font-semibold text-red-400">{title}</div>
+      {body && (
+        <pre className="whitespace-pre-wrap break-all rounded-md border border-red-500/30 bg-red-500/5 px-3 py-2 font-mono text-xs text-red-300/90">
+          {body}
+        </pre>
+      )}
+    </div>
+  );
+}
+
 // Run view: a LeetCode-style row of Case tabs. Each case shows the input it ran
 // against and the output your code produced — a testbench, not a verdict, so
 // there is no expected value or pass/fail here.
@@ -166,7 +214,7 @@ function RunResults({ cases, message }: { cases: CaseResult[]; message?: string 
           <Block label="Output" value={current.actual ?? "—"} />
           {current.expected !== undefined && <Block label="Expected" value={current.expected} />}
           {current.stdout && <Block label="Stdout" value={current.stdout} />}
-          {current.stderr && <Block label="Error" value={current.stderr} tone="error" />}
+          {current.stderr && <ErrorDisplay stderr={current.stderr} />}
         </div>
       )}
     </div>
@@ -183,45 +231,47 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-// Judge view: the submit-style verdict over the full hidden suite, with runtime
-// and memory shown on an accepted run.
+// Judge verdict styling. "almost" = some but not all cases passed; "failed" =
+// none passed (or the run errored). Runtime/memory show only on a full accept.
+const VERDICT_STYLES = {
+  accepted: { label: "Accepted", palette: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300", dot: "bg-emerald-400" },
+  almost: { label: "Almost", palette: "border-amber-500/40 bg-amber-500/10 text-amber-200", dot: "bg-amber-400" },
+  failed: { label: "Failed", palette: "border-red-500/40 bg-red-500/10 text-red-300", dot: "bg-red-400" },
+} as const;
+
+// Judge view: the submit-style verdict over the full hidden suite.
 function JudgeResult({
   passed,
   total,
   status,
   runtimeMs,
   memoryKb,
-  message,
 }: {
   passed: number;
   total: number;
   status: string;
   runtimeMs?: number;
   memoryKb?: number;
-  message?: string;
 }) {
-  const accepted = status === "accepted";
-  const palette = accepted
-    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-    : "border-red-500/40 bg-red-500/10 text-red-300";
-  const detail = message ?? `${passed}/${total} test cases · ${status.replace(/_/g, " ")}`;
+  const verdict = status === "accepted" ? "accepted" : passed > 0 ? "almost" : "failed";
+  const style = VERDICT_STYLES[verdict];
 
   const runtime = formatRuntime(runtimeMs);
   const memory = formatMemory(memoryKb);
 
   return (
     <div className="space-y-2">
-      <div className={`rounded-lg border px-4 py-3 ${palette}`}>
+      <div className={`rounded-lg border px-4 py-3 ${style.palette}`}>
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-lg font-semibold">
-            <span className={`inline-block h-2.5 w-2.5 rounded-full ${accepted ? "bg-emerald-400" : "bg-red-400"}`} />
-            {accepted ? "Accepted" : "Failed"}
+            <span className={`inline-block h-2.5 w-2.5 rounded-full ${style.dot}`} />
+            {style.label}
           </span>
-          <span className="text-xs text-white/60">{accepted ? `${passed}/${total} test cases` : detail}</span>
+          <span className="text-xs text-white/60">{passed}/{total} test cases passed</span>
         </div>
       </div>
 
-      {accepted && (runtime || memory) && (
+      {verdict !== "failed" && (runtime || memory) && (
         <div className="flex gap-2">
           {runtime && <Stat label="Runtime" value={runtime} />}
           {memory && <Stat label="Memory" value={memory} />}
@@ -236,7 +286,7 @@ function JudgeResult({
 export default function Result({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) {
   if (panel.kind === "idle") {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+      <div className="flex h-full items-center justify-center px-4 py-6 text-center text-sm text-white/50">
         {idleMessage ?? "Run against the examples, or judge against every test case."}
       </div>
     );
@@ -251,6 +301,15 @@ export default function Result({ panel, idleMessage }: { panel: Panel; idleMessa
   }
 
   if (panel.kind === "error") {
+    // Compile-time failures (syntax/indentation errors) arrive here as a full
+    // traceback — clean those the same way per-case errors are cleaned. Plain
+    // app messages ("Could not reach the server.") stay as a simple box.
+    const isTraceback = /Traceback \(most recent call last\)|File "/.test(panel.detail);
+
+    if (isTraceback) {
+      return <ErrorDisplay stderr={panel.detail} />;
+    }
+
     return (
       <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
         {panel.detail}
@@ -269,7 +328,6 @@ export default function Result({ panel, idleMessage }: { panel: Panel; idleMessa
       status={panel.status}
       runtimeMs={panel.runtimeMs}
       memoryKb={panel.memoryKb}
-      message={panel.message}
     />
   );
 }
