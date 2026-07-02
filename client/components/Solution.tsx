@@ -4,174 +4,190 @@
 
 "use client";
 
-import React, { useState } from "react";
-import { Gavel, Play } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronDown, Gavel, Play } from "lucide-react";
 import CodeEditor from "./CodeEditor";
+import Result, { TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:4000";
 
-// Mirrors the server's per-case TestCaseResult (kept local so the client does
-// not import across the shared/ package boundary).
-type CaseResult = {
-  index: number;
-  status: string;
-  input: string;
-  expected: string;
-  actual?: string;
-  stdout?: string;
-  stderr?: string;
-  runtimeMs?: number;
-};
+type Tab = "cases" | "results" | "submissions";
 
-// Mirrors the server's JudgeSubmissionResponse. Both /run and /judge return it.
-type GradeResponse = {
-  status: string;
-  passed: number;
-  total: number;
-  results: CaseResult[];
-  message?: string;
-};
+const TABS: { key: Tab; label: string }[] = [
+  { key: "cases", label: "Test Cases" },
+  { key: "results", label: "Test Results" },
+  { key: "submissions", label: "Submissions" },
+];
 
-// The bottom result panel. "run" shows per-example detail; "judge" shows a
-// single pass/fail verdict (the hidden suite stays hidden).
-type Panel =
-  | { kind: "idle" }
-  | { kind: "running"; action: "run" | "judge" }
-  | { kind: "judge"; passed: number; total: number; status: string; message?: string }
-  | { kind: "run"; passed: number; total: number; cases: CaseResult[]; message?: string }
-  | { kind: "error"; detail: string };
+// Structured public cases returned by GET /problems/:slug/cases.
+type CasesResponse = {
+  paramNames: string[];
+  cases: { args: unknown[]; expected: unknown }[];
+};
 
 interface SolutionProps {
   slug: string;
   starterCode: string;
 }
 
-// Per-case status → label + color, shared by the example cards.
-function caseStyle(status: string) {
-  if (status === "accepted") {
-    return { label: "Passed", className: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300", dot: "bg-emerald-400" };
-  }
-  if (status === "runtime_error") {
-    return { label: "Runtime Error", className: "border-red-500/40 bg-red-500/10 text-red-300", dot: "bg-red-400" };
-  }
-  return { label: "Wrong Answer", className: "border-red-500/40 bg-red-500/10 text-red-300", dot: "bg-red-400" };
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex gap-2">
-      <span className="shrink-0 text-white/40">{label}</span>
-      <span className="break-all text-white/90">{value}</span>
-    </div>
-  );
-}
-
-// Renders the result of a "Run": each visible example with its input, your
-// output, the expected output, plus any printed/error output.
-function RunResults({ passed, total, cases, message }: { passed: number; total: number; cases: CaseResult[]; message?: string }) {
-  const allPassed = passed === total;
-
-  return (
-    <div className="space-y-2">
-      <div className={`rounded-lg border px-4 py-2 ${allPassed ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" : "border-amber-500/40 bg-amber-500/10 text-amber-200"}`}>
-        <span className="text-lg font-semibold">
-          {allPassed ? "All examples passed" : "Some examples failed"}
-        </span>
-        <span className="ml-2 text-xs text-white/60">{passed}/{total} examples</span>
-      </div>
-
-      {message && <p className="px-1 text-xs text-red-300">{message}</p>}
-
-      <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
-        {cases.map((c) => {
-          const style = caseStyle(c.status);
-          return (
-            <div key={c.index} className={`rounded-lg border px-3 py-2 ${style.className}`}>
-              <div className="mb-2 flex items-center justify-between">
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} />
-                  Example {c.index + 1}
-                </span>
-                <span className="text-xs text-white/50">{style.label}</span>
-              </div>
-              <div className="space-y-1 font-mono text-xs">
-                <Field label="Input" value={c.input} />
-                <Field label="Output" value={c.actual ?? "—"} />
-                <Field label="Expected" value={c.expected} />
-                {c.stdout && (
-                  <div className="pt-1">
-                    <span className="text-white/40">Stdout</span>
-                    <pre className="mt-1 whitespace-pre-wrap break-all text-white/70">{c.stdout}</pre>
-                  </div>
-                )}
-                {c.stderr && (
-                  <div className="pt-1">
-                    <span className="text-white/40">Error</span>
-                    <pre className="mt-1 whitespace-pre-wrap break-all text-red-300/90">{c.stderr}</pre>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// Renders the result of a "Judge": just the verdict and pass count.
-function JudgeResult({ passed, total, status, message }: { passed: number; total: number; status: string; message?: string }) {
-  const accepted = status === "accepted";
-  const palette = accepted
-    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-    : "border-red-500/40 bg-red-500/10 text-red-300";
-  const detail = message ?? `${passed}/${total} test cases · ${status.replace(/_/g, " ")}`;
-
-  return (
-    <div className={`rounded-lg border px-4 py-3 ${palette}`}>
-      <div className="flex items-center justify-between">
-        <span className="flex items-center gap-2 text-lg font-semibold">
-          <span className={`inline-block h-2.5 w-2.5 rounded-full ${accepted ? "bg-emerald-400" : "bg-red-400"}`} />
-          {accepted ? "Accepted" : "Failed"}
-        </span>
-        <span className="text-xs text-white/60">{accepted ? `${passed}/${total} test cases` : detail}</span>
-      </div>
-    </div>
-  );
-}
-
 export default function Solution({ slug, starterCode }: SolutionProps) {
   const [code, setCode] = useState(starterCode);
-  const [panel, setPanel] = useState<Panel>({ kind: "idle" });
+  // Run output ("Test Results") and judge output ("Submissions") are tracked
+  // separately so switching tabs never discards the other's last result.
+  const [runResult, setRunResult] = useState<Panel>({ kind: "idle" });
+  const [judgeResult, setJudgeResult] = useState<Panel>({ kind: "idle" });
+  const [tab, setTab] = useState<Tab>("cases");
+  const [open, setOpen] = useState(true);
+  // Height (px) of the test panel; the editor above takes the remaining space.
+  // Dragging the handle between them adjusts this.
+  const [panelHeight, setPanelHeight] = useState(240);
 
-  const busy = panel.kind === "running";
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ startY: number; startHeight: number; maxHeight: number } | null>(null);
 
-  // Runs the code against the visible example cases and shows per-case detail.
+  // Editable test cases. Each arg is stored as its raw JSON string so the user can
+  // freely type; `original`/`expected` let us show the known answer for unedited
+  // cases (expected is unknown once an input changes).
+  const [paramNames, setParamNames] = useState<string[]>([]);
+  const [caseValues, setCaseValues] = useState<string[][]>([]);
+  const [originalValues, setOriginalValues] = useState<string[][]>([]);
+  const [caseExpected, setCaseExpected] = useState<unknown[]>([]);
+  const [casesLoading, setCasesLoading] = useState(true);
+
+  const busy = runResult.kind === "running" || judgeResult.kind === "running";
+
+  const onResize = useCallback((event: MouseEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    // Dragging up (smaller clientY) grows the panel.
+    const next = drag.startHeight + (drag.startY - event.clientY);
+    setPanelHeight(Math.min(Math.max(next, 120), drag.maxHeight));
+  }, []);
+
+  const stopResize = useCallback(() => {
+    dragRef.current = null;
+    window.removeEventListener("mousemove", onResize);
+    window.removeEventListener("mouseup", stopResize);
+    document.body.style.userSelect = "";
+    document.body.style.cursor = "";
+  }, [onResize]);
+
+  function startResize(event: React.MouseEvent) {
+    event.preventDefault();
+    const containerHeight = containerRef.current?.clientHeight ?? window.innerHeight;
+    dragRef.current = {
+      startY: event.clientY,
+      startHeight: panelHeight,
+      // Leave room for the toolbar and a usable slice of editor above.
+      maxHeight: Math.max(160, containerHeight - 200),
+    };
+    window.addEventListener("mousemove", onResize);
+    window.addEventListener("mouseup", stopResize);
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "row-resize";
+  }
+
+  // Clean up listeners if the component unmounts mid-drag.
+  useEffect(() => stopResize, [stopResize]);
+
+  // Load the problem's default inputs into the editor once on mount.
+  useEffect(() => {
+    let active = true;
+
+    fetch(`${SERVER_URL}/problems/${slug}/cases`)
+      .then((response) => (response.ok ? (response.json() as Promise<CasesResponse>) : null))
+      .then((data) => {
+        if (!active || !data) {
+          if (active) setCasesLoading(false);
+          return;
+        }
+
+        const values = data.cases.map((c) => c.args.map((arg) => JSON.stringify(arg)));
+        setParamNames(data.paramNames);
+        setCaseValues(values);
+        setOriginalValues(values.map((row) => [...row]));
+        setCaseExpected(data.cases.map((c) => c.expected));
+        setCasesLoading(false);
+      })
+      .catch(() => {
+        if (active) setCasesLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+
+  function updateCase(caseIndex: number, argIndex: number, value: string) {
+    setCaseValues((prev) =>
+      prev.map((row, i) =>
+        i === caseIndex ? row.map((v, j) => (j === argIndex ? value : v)) : row,
+      ),
+    );
+  }
+
+  // Runs the code against the (possibly edited) test cases and shows per-case output.
   async function handleRunExamples() {
-    setPanel({ kind: "running", action: "run" });
+    setOpen(true);
+    setTab("results");
+
+    // Turn each editable JSON field into args to send. Bail early on bad JSON.
+    let cases: { args: unknown[] }[] | undefined;
+    if (caseValues.length > 0) {
+      try {
+        cases = caseValues.map((row) => ({ args: row.map((text) => JSON.parse(text)) }));
+      } catch {
+        setRunResult({
+          kind: "error",
+          detail: "One of your inputs isn't valid JSON — check the Test Cases tab.",
+        });
+        return;
+      }
+    }
+
+    setRunResult({ kind: "running", action: "run" });
 
     try {
       const response = await fetch(`${SERVER_URL}/submissions/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problemSlug: slug, language: "python", code }),
+        body: JSON.stringify({ problemSlug: slug, language: "python", code, cases }),
       });
 
       const data = (await response.json()) as GradeResponse;
 
       if (data.results && data.results.length > 0) {
-        setPanel({ kind: "run", passed: data.passed, total: data.total, cases: data.results, message: data.message });
+        setRunResult({ kind: "run", cases: withExpected(data.results, cases !== undefined), message: data.message });
       } else {
-        setPanel({ kind: "error", detail: data.message ?? "Could not run the examples." });
+        setRunResult({ kind: "error", detail: data.message ?? "Could not run the examples." });
       }
     } catch {
-      setPanel({ kind: "error", detail: "Could not reach the server." });
+      setRunResult({ kind: "error", detail: "Could not reach the server." });
     }
+  }
+
+  // Attaches the known expected answer to each result — but only for cases whose
+  // inputs are unchanged from the defaults, since editing an input makes the
+  // expected answer unknown. When defaults ran, the server's expected is kept.
+  function withExpected(results: CaseResult[], sentCustom: boolean): CaseResult[] {
+    if (!sentCustom) return results;
+
+    return results.map((result) => {
+      const i = result.index;
+      const unchanged =
+        originalValues[i] && caseValues[i]
+          ? caseValues[i].every((text, j) => text === originalValues[i][j])
+          : false;
+
+      return { ...result, expected: unchanged ? JSON.stringify(caseExpected[i]) : undefined };
+    });
   }
 
   // Grades the code against the full hidden test suite.
   async function handleJudge() {
-    setPanel({ kind: "running", action: "judge" });
+    setOpen(true);
+    setTab("submissions");
+    setJudgeResult({ kind: "running", action: "judge" });
 
     try {
       const response = await fetch(`${SERVER_URL}/submissions/judge`, {
@@ -181,16 +197,24 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
       });
 
       const data = (await response.json()) as GradeResponse;
-      setPanel({ kind: "judge", passed: data.passed, total: data.total, status: data.status, message: data.message });
+      setJudgeResult({
+        kind: "judge",
+        passed: data.passed,
+        total: data.total,
+        status: data.status,
+        runtimeMs: data.runtimeMs,
+        memoryKb: data.memoryKb,
+        message: data.message,
+      });
     } catch {
-      setPanel({ kind: "error", detail: "Could not reach the server." });
+      setJudgeResult({ kind: "error", detail: "Could not reach the server." });
     }
   }
 
   return (
-    <section className="h-full p-3 flex flex-col min-h-0">
-      {/* Header */}
-      <div className="mb-3 flex items-center gap-2">
+    <div ref={containerRef} className="h-full flex flex-col gap-2 min-h-0">
+      {/* Toolbar panel — stays put while the content below scrolls */}
+      <div className="shrink-0 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
         <button
           onClick={handleRunExamples}
           disabled={busy}
@@ -199,7 +223,7 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Play className="h-4 w-4" />
-          {panel.kind === "running" && panel.action === "run" ? "Running…" : "Run"}
+          {runResult.kind === "running" ? "Running…" : "Run"}
         </button>
         <button
           onClick={handleJudge}
@@ -209,46 +233,83 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Gavel className="h-4 w-4" />
-          {panel.kind === "running" && panel.action === "judge" ? "Judging…" : "Judge"}
+          {judgeResult.kind === "running" ? "Judging…" : "Judge"}
         </button>
       </div>
 
-      {/* Divider */}
-      <div className="mb-3 border-t border-zinc-700" />
+      {/* Editor panel */}
+      <section className="flex-1 min-h-0 flex flex-col rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+          <CodeEditor value={code} onChange={setCode} />
+        </div>
+      </section>
 
-      {/* Editor */}
-      <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
-        <CodeEditor value={code} onChange={setCode} />
+      {/* Drag handle — resize the editor/test split (only while the panel is open) */}
+      {open && (
+        <div
+          onMouseDown={startResize}
+          role="separator"
+          aria-orientation="horizontal"
+          className="group shrink-0 flex h-1 cursor-row-resize items-center justify-center"
+        >
+          <div className="h-0.5 w-8 rounded-full bg-zinc-700 transition-colors group-hover:bg-zinc-500" />
+        </div>
+      )}
+
+      {/* Test panel — tabbed (Test Cases / Test Results / Submissions), collapsible + resizable */}
+      <div
+        className="shrink-0 flex flex-col min-h-0 rounded-lg border border-zinc-800 bg-zinc-950"
+        style={open ? { height: panelHeight } : undefined}
+      >
+        <div className="shrink-0 flex items-center justify-between px-2 py-1.5">
+          <div className="flex items-center gap-1">
+            {TABS.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setTab(key);
+                  setOpen(true);
+                }}
+                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                  tab === key ? "bg-white text-black" : "text-white/60 hover:text-white"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen((prev) => !prev)}
+            aria-expanded={open}
+            aria-label={open ? "Collapse test panel" : "Expand test panel"}
+            className="p-1 text-white/60 hover:text-white"
+          >
+            <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+          </button>
+        </div>
+
+        {open && (
+          <div className="flex-1 min-h-0 overflow-y-auto border-t border-zinc-800 p-3">
+            {tab === "cases" && (
+              <TestCasesEditor
+                paramNames={paramNames}
+                values={caseValues}
+                onChange={updateCase}
+                loading={casesLoading}
+              />
+            )}
+            {tab === "results" && (
+              <Result panel={runResult} idleMessage="Run your code to see the output for each case." />
+            )}
+            {tab === "submissions" && (
+              <Result panel={judgeResult} idleMessage="Judge your code to test it against every case." />
+            )}
+          </div>
+        )}
       </div>
-
-      {/* Result */}
-      <div className="mt-4">
-        {panel.kind === "idle" && (
-          <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
-            Run against the examples, or judge against every test case.
-          </div>
-        )}
-
-        {panel.kind === "running" && (
-          <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
-            {panel.action === "run" ? "Running examples…" : "Judging…"}
-          </div>
-        )}
-
-        {panel.kind === "error" && (
-          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
-            {panel.detail}
-          </div>
-        )}
-
-        {panel.kind === "run" && (
-          <RunResults passed={panel.passed} total={panel.total} cases={panel.cases} message={panel.message} />
-        )}
-
-        {panel.kind === "judge" && (
-          <JudgeResult passed={panel.passed} total={panel.total} status={panel.status} message={panel.message} />
-        )}
-      </div>
-    </section>
+    </div>
   );
 }

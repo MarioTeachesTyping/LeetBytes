@@ -23,7 +23,7 @@ export default async function Page({ params }: PageProps) {
       <Navbar />
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0 gap-2 py-1 px-1">
-        <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
+        <div className="min-h-0">
           <Question
             title={entry.title}
             link={entry.link}
@@ -34,10 +34,11 @@ export default async function Page({ params }: PageProps) {
             topics={entry.topics}
             companies={entry.companies}
             code={entry.code}
+            solutions={entry.solutions}
           />
         </div>
 
-        <div className="bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
+        <div className="min-h-0">
           <Solution slug={slug} starterCode={entry.starterCode} />
         </div>
       </div>

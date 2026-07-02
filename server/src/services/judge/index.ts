@@ -32,6 +32,8 @@ type HarnessPayload =
   passed: number;
   total: number;
   results: HarnessCaseResult[];
+  // Peak resident memory in kilobytes, or null when the platform can't measure it.
+  memoryKb?: number | null;
 };
 
 // Runs a submission against a problem's hidden test cases and grades it.
@@ -47,19 +49,30 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
   return grade(request, problem, problem.tests);
 }
 
-// Runs a submission against only a problem's public example cases (the "Run"
-// path). Identical grading machinery to the judge, but on the handful of visible
-// examples — so the user can sanity-check inputs/outputs before submitting.
-export async function runExamples(request: JudgeSubmissionRequest): Promise<JudgeSubmissionResponse>
+// Runs a submission against example cases (the "Run" path). Identical grading
+// machinery to the judge, but on the handful of visible examples — so the user
+// can sanity-check inputs/outputs before submitting. When `customTests` are
+// supplied (the user edited the inputs), those are run instead of the defaults.
+export async function runExamples(
+  request: JudgeSubmissionRequest,
+  customTests?: TestCase[],
+): Promise<JudgeSubmissionResponse>
 {
   const problem = getProblem(request.problemSlug);
 
-  if (!problem || !problem.examples || problem.examples.length === 0)
+  if (!problem)
   {
     return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
   }
 
-  return grade(request, problem, problem.examples);
+  const tests = customTests && customTests.length > 0 ? customTests : problem.examples;
+
+  if (!tests || tests.length === 0)
+  {
+    return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
+  }
+
+  return grade(request, problem, tests);
 }
 
 // Shared core: builds the harness around `tests`, runs it, and maps the harness
@@ -70,7 +83,7 @@ async function grade(
   tests: TestCase[],
 ): Promise<JudgeSubmissionResponse>
 {
-  const startedAt = performance.now();
+  const wallStartedAt = performance.now();
 
   const run = await runSubmission({
     problemSlug: request.problemSlug,
@@ -85,13 +98,13 @@ async function grade(
     }),
   });
 
-  const runtimeMs = Math.round(performance.now() - startedAt);
+  const wallRuntimeMs = Math.round(performance.now() - wallStartedAt);
   const payload = extractPayload(run.stdout);
 
   // No sentinel means the harness never finished: a crash, timeout, or syntax error.
   if (!payload)
   {
-    return inferFailure(request, tests.length, run, runtimeMs);
+    return inferFailure(request, tests.length, run, wallRuntimeMs);
   }
 
   const inputs = tests.map((test) => formatInput(test.args, problem.paramNames));
@@ -107,6 +120,12 @@ async function grade(
     runtimeMs: result.runtimeMs,
   }));
 
+  // The displayed runtime is the user's solution time across all cases, not the
+  // server's wall-clock (which includes the Piston round-trip).
+  const solutionRuntimeMs = Math.round(
+    payload.results.reduce((sum, result) => sum + (result.runtimeMs ?? 0), 0),
+  );
+
   return {
     status: payload.status,
     problemSlug: request.problemSlug,
@@ -114,7 +133,8 @@ async function grade(
     passed: payload.passed,
     total: payload.total,
     results,
-    runtimeMs,
+    runtimeMs: solutionRuntimeMs,
+    memoryKb: payload.memoryKb ?? undefined,
   };
 }
 

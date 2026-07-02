@@ -6,7 +6,7 @@
 
 import React, { useRef, useState } from "react";
 import { FileText, EyeOff } from "lucide-react";
-import type { ProblemExample, SolutionEntry } from "@/lib/problems";
+import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@/lib/problems";
 import Spoiler from "./Spoiler";
 
 interface QuestionProps {
@@ -19,6 +19,7 @@ interface QuestionProps {
   topics?: string[];
   companies?: string[];
   code: string;
+  solutions?: SpoilerSolution[];
 }
 
 /**
@@ -50,10 +51,15 @@ export default function Question({
   topics = [],
   companies = [],
   code,
+  solutions,
 }: QuestionProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
   const [view, setView] = useState<"question" | "spoiler">("question");
+
+  // Authored approaches when present; otherwise a single untitled block from `code`.
+  const spoilerSolutions: SpoilerSolution[] =
+    solutions && solutions.length > 0 ? solutions : [{ title: "Solution", code }];
 
   const difficultyStyles =
     difficulty === "Easy"
@@ -73,9 +79,9 @@ export default function Question({
   };
 
   return (
-    <aside className="h-full overflow-y-auto px-3 py-4">
-      {/* Button row */}
-      <div className="mb-3 flex items-center gap-2">
+    <div className="h-full flex flex-col gap-2 min-h-0">
+      {/* Toolbar panel — stays put while the content below scrolls */}
+      <div className="shrink-0 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
         <button
           type="button"
           onClick={() => setView("question")}
@@ -104,11 +110,10 @@ export default function Question({
         </button>
       </div>
 
-      {/* Divider */}
-      <div className="mb-3 border-t border-zinc-700" />
-
+      {/* Content panel */}
+      <aside className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-4">
       {view === "spoiler" ? (
-        <Spoiler code={code} />
+        <Spoiler solutions={spoilerSolutions} />
       ) : (
       <>
 
@@ -275,6 +280,7 @@ export default function Question({
       </div>
       </>
       )}
-    </aside>
+      </aside>
+    </div>
   );
 }

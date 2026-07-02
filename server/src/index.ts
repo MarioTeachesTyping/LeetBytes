@@ -6,6 +6,7 @@ import { createServer } from "node:http";
 import { config } from "./config.js";
 import { sendJson, sendOptions, type HttpError } from "./http.js";
 import { handleRunSubmission, handleJudgeSubmission } from "./routes/submissions.js";
+import { handleProblemCases } from "./routes/problems.js";
 
 // Creates the HTTP server and routes each request to the right handler.
 const server = createServer(async (request, response) =>
@@ -23,6 +24,14 @@ const server = createServer(async (request, response) =>
     if (request.method === "GET" && url.pathname === "/health")
     {
       sendJson(response, 200, { ok: true });
+      return;
+    }
+
+    const casesMatch = url.pathname.match(/^\/problems\/([^/]+)\/cases$/);
+
+    if (request.method === "GET" && casesMatch)
+    {
+      handleProblemCases(request, response, decodeURIComponent(casesMatch[1]));
       return;
     }
 

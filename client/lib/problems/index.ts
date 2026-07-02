@@ -27,4 +27,4 @@ export const PROBLEMS: Record<string, SolutionEntry> = {
   "group-anagrams": groupAnagrams,
 };
 
-export type { ProblemExample, ProblemStat, SolutionEntry } from "./types";
+export type { ProblemExample, ProblemStat, SolutionEntry, SpoilerSolution } from "./types";
