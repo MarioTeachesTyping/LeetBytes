@@ -83,9 +83,9 @@ export default function Spoiler({ solutions }: SpoilerProps) {
         <div key={i} className="space-y-3">
           {/* Title + description section */}
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-white">{solution.title}</h2>
+            <h2 className="text-2xl font-semibold text-white">{solution.title}</h2>
             {solution.description && (
-              <p className="text-sm leading-relaxed text-zinc-300">
+              <p className="text-base leading-relaxed text-zinc-300">
                 {solution.description}
               </p>
             )}

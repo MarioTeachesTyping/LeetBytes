@@ -59,7 +59,9 @@ export default function Question({
 
   // Authored approaches when present; otherwise a single untitled block from `code`.
   const spoilerSolutions: SpoilerSolution[] =
-    solutions && solutions.length > 0 ? solutions : [{ title: "Solution", code }];
+    solutions && solutions.length > 0
+      ? solutions
+      : [{ title: "1. My Solution", description: "This is how I solved it.", code }];
 
   const difficultyStyles =
     difficulty === "Easy"
