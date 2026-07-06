@@ -35,6 +35,7 @@ export default async function Page({ params }: PageProps) {
               constraints={entry.constraints}
               topics={entry.topics}
               companies={entry.companies}
+              hints={entry.hints}
               code={entry.code}
               solutions={entry.solutions}
             />

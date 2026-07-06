@@ -5,6 +5,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { Lock } from "lucide-react";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@/lib/problems";
 import Spoiler from "./Spoiler";
 import { useWorkspace } from "./WorkspaceContext";
@@ -18,6 +19,7 @@ interface QuestionProps {
   constraints?: string[];
   topics?: string[];
   companies?: string[];
+  hints?: string[];
   code: string;
   solutions?: SpoilerSolution[];
 }
@@ -50,11 +52,13 @@ export default function Question({
   constraints = [],
   topics = [],
   companies = [],
+  hints = [],
   code,
   solutions,
 }: QuestionProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
+  const hintsRef = useRef<HTMLDivElement | null>(null);
   const { view } = useWorkspace();
 
   // Authored approaches when present; otherwise a single untitled block from `code`.
@@ -78,6 +82,11 @@ export default function Question({
   const scrollToCompanies = () => {
     if (!companiesRef.current) return;
     companiesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToHints = () => {
+    if (!hintsRef.current) return;
+    hintsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -111,6 +120,17 @@ export default function Question({
         >
           {difficulty}
         </span>
+
+        {hints.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToHints}
+            className="inline-flex items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 px-3 py-0.5 text-base font-medium text-violet-200
+                       hover:bg-violet-400 hover:text-white transition-colors"
+          >
+            Hints
+          </button>
+        )}
 
         {topics.length > 0 && (
           <button
@@ -192,6 +212,32 @@ export default function Question({
               <li key={i}>{renderInlineCode(c)}</li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Hints dropdown */}
+      {hints.length > 0 && (
+        <div ref={hintsRef} className="mt-8 scroll-mt-24">
+          <details className="group rounded-lg border border-violet-300/40 bg-violet-400/10">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
+              <span className="text-lg font-semibold text-violet-200">Hints</span>
+              <span className="text-violet-200/70 transition-transform group-open:rotate-180">
+                ▾
+              </span>
+            </summary>
+
+            <div className="px-4 pb-4 pt-1 space-y-2">
+              {hints.map((_, i) => (
+                <div
+                  key={`hint-${i}`}
+                  className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-sm text-violet-100/80"
+                >
+                  <Lock className="h-4 w-4 shrink-0 text-violet-200/70" />
+                  <span>Complete a Minigame to unlock this hint!</span>
+                </div>
+              ))}
+            </div>
+          </details>
         </div>
       )}
 

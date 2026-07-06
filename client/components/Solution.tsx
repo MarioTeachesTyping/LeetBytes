@@ -38,7 +38,7 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   const [runResult, setRunResult] = useState<Panel>({ kind: "idle" });
   const [judgeResult, setJudgeResult] = useState<Panel>({ kind: "idle" });
   const [tab, setTab] = useState<Tab>("cases");
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   // Height (px) of the test panel; the editor above takes the remaining space.
   // Dragging the handle between them adjusts this.
   const [panelHeight, setPanelHeight] = useState(240);
