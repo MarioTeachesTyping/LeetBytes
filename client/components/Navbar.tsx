@@ -27,7 +27,7 @@ export default function Navbar() {
   const currentSlug = params?.slug as string;
   const { previous, next } = currentSlug ? getAdjacentProblems(currentSlug) : { previous: null, next: null };
 
-  const { view, setView, run, judge, busy } = useWorkspace();
+  const { view, setView, run, judge, busy, openGame } = useWorkspace();
 
   return (
     <nav className="w-full h-11 border-b border-white/10 bg-black flex items-center relative">
@@ -101,9 +101,10 @@ export default function Navbar() {
           Spoiler
         </button>
 
-        {/* Game button (does nothing yet) */}
+        {/* Game button — opens the minigame overlay in place of the editor */}
         <button
           type="button"
+          onClick={openGame}
           className="flex items-center justify-center w-16 h-9 rounded-md border border-white/30 text-white hover:bg-white hover:text-black transition-colors"
         >
           <Gamepad2 className="w-5 h-5" />

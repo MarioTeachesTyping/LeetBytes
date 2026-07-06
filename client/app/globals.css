@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Tailwind v4 gates `hover:` behind `@media (hover: hover)` by default, which
+   skips every hover style on devices/browsers that report a coarse pointer
+   (e.g. touchscreen laptops). Redefine it to a plain `:hover` so hover
+   effects always show, matching how every button/tag here is styled. */
+@custom-variant hover (&:hover);
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

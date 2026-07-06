@@ -15,6 +15,10 @@ type Running = "run" | "judge" | null;
 
 type Actions = { onRun: () => void; onJudge: () => void };
 
+// Score a player must reach (within the minigame's time limit) to unlock the
+// next hint. Index 0 is the target for hint 1, index 1 for hint 2, etc.
+export const HINT_SCORE_TARGETS = [5000, 10000, 15000];
+
 interface WorkspaceContextValue {
   // Question/Spoiler toggle — owned by the context, read by Question.
   view: View;
@@ -31,6 +35,15 @@ interface WorkspaceContextValue {
   // Wired up by Solution so the Navbar's buttons reach its handlers/state.
   setActions: (actions: Actions) => void;
   setStatus: (status: { busy: boolean; running: Running }) => void;
+
+  // Minigame overlay — the Navbar's Game button opens it, Solution swaps its
+  // editor area for the game while it's open. Resets to closed/0 on every
+  // fresh mount (a new problem page), so hints never persist across leaving.
+  gameOpen: boolean;
+  openGame: () => void;
+  closeGame: () => void;
+  hintsUnlocked: number;
+  unlockNextHint: () => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -41,6 +54,14 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     busy: false,
     running: null,
   });
+  const [gameOpen, setGameOpen] = useState(false);
+  const [hintsUnlocked, setHintsUnlocked] = useState(0);
+
+  const openGame = useCallback(() => setGameOpen(true), []);
+  const closeGame = useCallback(() => setGameOpen(false), []);
+  const unlockNextHint = useCallback(() => {
+    setHintsUnlocked((prev) => Math.min(prev + 1, HINT_SCORE_TARGETS.length));
+  }, []);
 
   // Handlers are kept in a ref so Solution can re-register its latest closures
   // every render without triggering a provider re-render (and a render loop).
@@ -68,6 +89,11 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
         judge,
         setActions,
         setStatus: setStatusStable,
+        gameOpen,
+        openGame,
+        closeGame,
+        hintsUnlocked,
+        unlockNextHint,
       }}
     >
       {children}

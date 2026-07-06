@@ -267,7 +267,7 @@ function JudgeResult({
             <span className={`inline-block h-2.5 w-2.5 rounded-full ${style.dot}`} />
             {style.label}
           </span>
-          <span className="text-xs text-white/60">{passed}/{total} test cases passed</span>
+          <span className="text-xs text-white/60">{passed}/{total} Test Cases Passed</span>
         </div>
       </div>
 

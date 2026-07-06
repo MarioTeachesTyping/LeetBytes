@@ -5,7 +5,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Lock } from "lucide-react";
+import { CheckCircle2, Lock } from "lucide-react";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@/lib/problems";
 import Spoiler from "./Spoiler";
 import { useWorkspace } from "./WorkspaceContext";
@@ -59,7 +59,7 @@ export default function Question({
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
   const hintsRef = useRef<HTMLDivElement | null>(null);
-  const { view } = useWorkspace();
+  const { view, hintsUnlocked } = useWorkspace();
 
   // Authored approaches when present; otherwise a single untitled block from `code`.
   const spoilerSolutions: SpoilerSolution[] =
@@ -227,15 +227,22 @@ export default function Question({
             </summary>
 
             <div className="px-4 pb-4 pt-1 space-y-2">
-              {hints.map((_, i) => (
-                <div
-                  key={`hint-${i}`}
-                  className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-sm text-violet-100/80"
-                >
-                  <Lock className="h-4 w-4 shrink-0 text-violet-200/70" />
-                  <span>Complete a Minigame to unlock this hint!</span>
-                </div>
-              ))}
+              {hints.map((hint, i) => {
+                const unlocked = i < hintsUnlocked;
+                return (
+                  <div
+                    key={`hint-${i}`}
+                    className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-sm text-violet-100/80"
+                  >
+                    {unlocked ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
+                    ) : (
+                      <Lock className="h-4 w-4 shrink-0 text-violet-200/70" />
+                    )}
+                    <span>{unlocked ? hint : "Complete a Minigame to unlock this hint!"}</span>
+                  </div>
+                );
+              })}
             </div>
           </details>
         </div>
