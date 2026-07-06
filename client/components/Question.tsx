@@ -4,10 +4,11 @@
 
 "use client";
 
-import React, { useRef, useState } from "react";
-import { FileText, EyeOff } from "lucide-react";
+import React, { useRef } from "react";
+import { CheckCircle2, Lock } from "lucide-react";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@/lib/problems";
 import Spoiler from "./Spoiler";
+import { useWorkspace } from "./WorkspaceContext";
 
 interface QuestionProps {
   title: string;
@@ -18,6 +19,7 @@ interface QuestionProps {
   constraints?: string[];
   topics?: string[];
   companies?: string[];
+  hints?: string[];
   code: string;
   solutions?: SpoilerSolution[];
 }
@@ -50,16 +52,20 @@ export default function Question({
   constraints = [],
   topics = [],
   companies = [],
+  hints = [],
   code,
   solutions,
 }: QuestionProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
-  const [view, setView] = useState<"question" | "spoiler">("question");
+  const hintsRef = useRef<HTMLDivElement | null>(null);
+  const { view, hintsUnlocked } = useWorkspace();
 
   // Authored approaches when present; otherwise a single untitled block from `code`.
   const spoilerSolutions: SpoilerSolution[] =
-    solutions && solutions.length > 0 ? solutions : [{ title: "Solution", code }];
+    solutions && solutions.length > 0
+      ? solutions
+      : [{ title: "1. My Solution", description: "This is how I solved it.", code }];
 
   const difficultyStyles =
     difficulty === "Easy"
@@ -78,38 +84,13 @@ export default function Question({
     companiesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const scrollToHints = () => {
+    if (!hintsRef.current) return;
+    hintsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="h-full flex flex-col gap-2 min-h-0">
-      {/* Toolbar panel — stays put while the content below scrolls */}
-      <div className="shrink-0 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
-        <button
-          type="button"
-          onClick={() => setView("question")}
-          className={`inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
-                     ${
-                       view === "question"
-                         ? "bg-white text-black"
-                         : "bg-black text-white hover:bg-white hover:text-black"
-                     }`}
-        >
-          <FileText className="h-4 w-4" />
-          Question
-        </button>
-        <button
-          type="button"
-          onClick={() => setView("spoiler")}
-          className={`inline-flex items-center gap-1.5 px-4 py-0.5 text-sm font-semibold leading-tight rounded-md border border-white transition-colors
-                     ${
-                       view === "spoiler"
-                         ? "bg-white text-black"
-                         : "bg-black text-white hover:bg-white hover:text-black"
-                     }`}
-        >
-          <EyeOff className="h-4 w-4" />
-          Spoiler
-        </button>
-      </div>
-
       {/* Content panel */}
       <aside className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-4">
       {view === "spoiler" ? (
@@ -139,6 +120,17 @@ export default function Question({
         >
           {difficulty}
         </span>
+
+        {hints.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToHints}
+            className="inline-flex items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 px-3 py-0.5 text-base font-medium text-violet-200
+                       hover:bg-violet-400 hover:text-white transition-colors"
+          >
+            Hints
+          </button>
+        )}
 
         {topics.length > 0 && (
           <button
@@ -220,6 +212,39 @@ export default function Question({
               <li key={i}>{renderInlineCode(c)}</li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Hints dropdown */}
+      {hints.length > 0 && (
+        <div ref={hintsRef} className="mt-8 scroll-mt-24">
+          <details className="group rounded-lg border border-violet-300/40 bg-violet-400/10">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
+              <span className="text-lg font-semibold text-violet-200">Hints</span>
+              <span className="text-violet-200/70 transition-transform group-open:rotate-180">
+                ▾
+              </span>
+            </summary>
+
+            <div className="px-4 pb-4 pt-1 space-y-2">
+              {hints.map((hint, i) => {
+                const unlocked = i < hintsUnlocked;
+                return (
+                  <div
+                    key={`hint-${i}`}
+                    className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-sm text-violet-100/80"
+                  >
+                    {unlocked ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
+                    ) : (
+                      <Lock className="h-4 w-4 shrink-0 text-violet-200/70" />
+                    )}
+                    <span>{unlocked ? hint : "Complete a Minigame to unlock this hint!"}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </details>
         </div>
       )}
 

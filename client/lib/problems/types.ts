@@ -29,6 +29,10 @@ export type SolutionEntry = {
   constraints?: string[];
   topics?: string[];
   companies?: string[];
+  // Up to 3 hints pointing toward this problem's `code` approach. Written now
+  // so the minigame-unlock feature can just reveal them later — the panel
+  // currently renders every slot locked regardless of this content.
+  hints?: string[];
   starterCode: string;
   code: string;
   // Spoiler approaches shown in the Spoiler view. When omitted, the Spoiler view

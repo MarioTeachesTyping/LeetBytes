@@ -45,6 +45,12 @@ export const twoSum: SolutionEntry =
     "Google", "Amazon", "Microsoft",
   ],
 
+  hints: [
+    "Think about what you'd need to remember about the numbers you've already seen as you move through the array once.",
+    "For each number, there's exactly one other value that would complete the pair — that's often called its complement.",
+    "A hash map lets you check whether you've already seen a number's complement in constant time, instead of scanning the array again.",
+  ],
+
   starterCode: `class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         `,
