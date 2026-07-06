@@ -12,6 +12,7 @@ const LetterGlitch = ({
   rainbowSaturation = 0.55,
   rainbowValue = 1.0,
   hueDriftSpeed = 0.4, // 0 = static rainbow, higher = more animated
+  grayscale = false, // true = black-to-white brightness scale instead of rainbow hues
 }: {
   glitchSpeed: number;
   centerVignette: boolean;
@@ -21,6 +22,7 @@ const LetterGlitch = ({
   rainbowSaturation?: number;
   rainbowValue?: number;
   hueDriftSpeed?: number;
+  grayscale?: boolean;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -80,6 +82,12 @@ const LetterGlitch = ({
     return `rgb(${r}, ${g}, ${b})`;
   };
 
+  // 0 (black) to 1 (white) instead of a hue, for grayscale mode.
+  const grayColor = (value: number) => {
+    const v = Math.round(Math.max(0, Math.min(1, value)) * 255);
+    return `rgb(${v}, ${v}, ${v})`;
+  };
+
   const interpolateRgb = (
     start: { r: number; g: number; b: number },
     end: { r: number; g: number; b: number },
@@ -108,6 +116,13 @@ const LetterGlitch = ({
     const totalLetters = columns * rows;
 
     letters.current = Array.from({ length: totalLetters }, (_, idx) => {
+      if (grayscale) {
+        // hue/targetHue double as a 0-1 brightness value in grayscale mode.
+        const value = totalLetters > 1 ? idx / (totalLetters - 1) : 1;
+        const color = grayColor(value);
+        return { char: getRandomChar(), hue: value, targetHue: value, color, targetColor: color, colorProgress: 1 };
+      }
+
       // Spread hues across the grid so it naturally looks rainbow
       const hue = (idx * 360) / Math.max(1, totalLetters);
       const color = rainbowColor(hue);
@@ -174,9 +189,14 @@ const LetterGlitch = ({
 
       letter.char = getRandomChar();
 
-      // NEW: pick a new hue instead of picking from glitchColors
-      letter.targetHue = Math.random() * 360;
-      letter.targetColor = rainbowColor(letter.targetHue);
+      if (grayscale) {
+        letter.targetHue = Math.random();
+        letter.targetColor = grayColor(letter.targetHue);
+      } else {
+        // NEW: pick a new hue instead of picking from glitchColors
+        letter.targetHue = Math.random() * 360;
+        letter.targetColor = rainbowColor(letter.targetHue);
+      }
 
       if (!smooth) {
         letter.hue = letter.targetHue;
@@ -210,7 +230,7 @@ const LetterGlitch = ({
   };
 
   const driftHues = (dtSeconds: number) => {
-    if (!hueDriftSpeed || hueDriftSpeed <= 0) return;
+    if (grayscale || !hueDriftSpeed || hueDriftSpeed <= 0) return;
 
     // Make the whole field slowly "flow" through hues
     letters.current.forEach((letter) => {
@@ -271,7 +291,7 @@ const LetterGlitch = ({
       window.removeEventListener("resize", handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [glitchSpeed, smooth, hueDriftSpeed, rainbowSaturation, rainbowValue]);
+  }, [glitchSpeed, smooth, hueDriftSpeed, rainbowSaturation, rainbowValue, grayscale]);
 
   return (
     <div className="relative w-full h-full bg-black overflow-hidden">

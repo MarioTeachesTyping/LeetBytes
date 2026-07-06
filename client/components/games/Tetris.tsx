@@ -246,6 +246,8 @@ function hardDropState(state: GameState): GameState {
 
 interface TetrisProps {
   running: boolean;
+  secondsLeft: number;
+  targetScore: number;
   onScoreChange: (score: number) => void;
   onTopOut: () => void;
 }
@@ -253,7 +255,8 @@ interface TetrisProps {
 // A falling-blocks board that runs its own gravity/input loop while `running`
 // is true. Score changes are reported upward so the parent can judge a win
 // against its own countdown instead of this component tracking time itself.
-export default function Tetris({ running, onScoreChange, onTopOut }: TetrisProps) {
+// secondsLeft/targetScore are display-only, owned by the parent's round clock.
+export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onTopOut }: TetrisProps) {
   const [state, setState] = useState<GameState>(initialState);
   const onScoreChangeRef = useRef(onScoreChange);
   const onTopOutRef = useRef(onTopOut);
@@ -332,9 +335,18 @@ export default function Tetris({ running, onScoreChange, onTopOut }: TetrisProps
 
   return (
     <div className="flex items-start gap-3">
-      <PiecePanel label="Hold">
-        <PiecePreview type={state.hold} />
-      </PiecePanel>
+      <div className="flex flex-col gap-3">
+        <PiecePanel label="Hold">
+          <PiecePreview type={state.hold} />
+        </PiecePanel>
+        <PiecePanel label="Time">
+          <span className="text-lg font-bold text-white">{secondsLeft}s</span>
+        </PiecePanel>
+        <PiecePanel label="Score">
+          <span className="text-sm font-semibold text-white">{state.score.toLocaleString()}</span>
+          <span className="text-[10px] text-white/50">/ {targetScore.toLocaleString()}</span>
+        </PiecePanel>
+      </div>
 
       <div
         className="border border-zinc-700 bg-black"
@@ -386,10 +398,10 @@ export default function Tetris({ running, onScoreChange, onTopOut }: TetrisProps
   );
 }
 
-// Small bordered box used for both the Hold panel and the Next-pieces panel.
+// Small bordered box used for the Hold/Time/Score panels and the Next panel.
 function PiecePanel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-2">
+    <div className="flex w-28 flex-col items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-3">
       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/50">{label}</span>
       {children}
     </div>

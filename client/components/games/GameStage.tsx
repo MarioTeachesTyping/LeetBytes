@@ -7,6 +7,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Gamepad2, X } from "lucide-react";
 import Tetris from "./Tetris";
+import LetterGlitch from "../react-bits/LetterGlitch";
+
+// How much faster than real time the intro's background video plays.
+const INTRO_VIDEO_PLAYBACK_RATE = 2.5;
 
 const GAME_DURATION_SECONDS = 60;
 
@@ -39,6 +43,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
   // before it renders (e.g. winning hint 1 would display "Hint 2 Unlocked").
   const [roundHintNumber, setRoundHintNumber] = useState(hintNumber);
   const [roundTargetScore, setRoundTargetScore] = useState(targetScore);
+  const [roundAllHintsUnlocked, setRoundAllHintsUnlocked] = useState(allHintsUnlocked);
 
   // 3-2-1 countdown before a round starts.
   useEffect(() => {
@@ -67,7 +72,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     const finalWon = scoreRef.current >= roundTargetScore;
     setWon(finalWon);
     setPhase("result");
-    if (finalWon) onWin();
+    if (finalWon && !roundAllHintsUnlocked) onWin();
   }
 
   // The board filling up to the top also ends the round early, using
@@ -90,6 +95,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     setAttempt((a) => a + 1);
     setRoundHintNumber(hintNumber);
     setRoundTargetScore(targetScore);
+    setRoundAllHintsUnlocked(allHintsUnlocked);
     setPhase("countdown");
   }
 
@@ -99,31 +105,45 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
         type="button"
         onClick={onExit}
         aria-label="Back to code"
-        className="absolute right-3 top-3 rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white"
+        className="absolute right-3 top-3 z-20 rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white"
       >
         <X className="h-4 w-4" />
       </button>
 
       {phase === "intro" && (
-        <div className="max-w-xs space-y-3 text-center">
-          <Gamepad2 className="mx-auto h-10 w-10 text-violet-300" />
-          <p className="text-4xl font-bold">Tetris</p>
-          {allHintsUnlocked ? (
-            <p className="text-sm text-white/60">
-              All hints for this problem are unlocked already — feel free to play anyway.
-            </p>
-          ) : (
-            <p className="text-sm text-white/70">
-              Score {targetScore.toLocaleString()} points in {GAME_DURATION_SECONDS} seconds to unlock Hint {hintNumber}.
-            </p>
-          )}
-          <button
-            type="button"
-            onClick={startRound}
-            className="rounded-md bg-violet-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet-400"
-          >
-            Start
-          </button>
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md">
+          <video
+            ref={(el) => {
+              if (el) el.playbackRate = INTRO_VIDEO_PLAYBACK_RATE;
+            }}
+            className="absolute inset-0 h-full w-full scale-110 object-cover blur-md"
+            src="/videos/tetris-gameplay.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          <div className="relative z-10 max-w-xs space-y-3 rounded-lg border border-white/10 bg-zinc-950/70 p-6 text-center backdrop-blur-sm">
+            <Gamepad2 className="mx-auto h-10 w-10 text-violet-300" />
+            <p className="text-4xl font-bold">Tetris</p>
+            {allHintsUnlocked ? (
+              <p className="text-sm text-white/60">
+                All hints for this problem are unlocked already — feel free to play anyway.
+              </p>
+            ) : (
+              <p className="text-sm text-white/70">
+                Score {targetScore.toLocaleString()} points in {GAME_DURATION_SECONDS} seconds to unlock Hint{" "}
+                {hintNumber}.
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={startRound}
+              className="rounded-md bg-violet-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet-400"
+            >
+              Start
+            </button>
+          </div>
         </div>
       )}
 
@@ -132,15 +152,28 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
       )}
 
       {phase === "playing" && (
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-6 text-sm text-white/80">
-            <span>Time: {secondsLeft}s</span>
-            <span>
-              Score: {score.toLocaleString()} / {roundTargetScore.toLocaleString()}
-            </span>
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-md">
+          <div className="absolute inset-0">
+            <LetterGlitch
+              glitchSpeed={50}
+              centerVignette={false}
+              outerVignette={false}
+              smooth
+              grayscale
+              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789"
+            />
           </div>
-          <Tetris key={attempt} running={phase === "playing"} onScoreChange={handleScoreChange} onTopOut={handleTopOut} />
-          <p className="text-xs text-white/40">← → move · ↑ rotate · ↓ soft drop · Space hard drop · C hold</p>
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            <Tetris
+              key={attempt}
+              running={phase === "playing"}
+              secondsLeft={secondsLeft}
+              targetScore={roundTargetScore}
+              onScoreChange={handleScoreChange}
+              onTopOut={handleTopOut}
+            />
+            <p className="text-xs text-white/40">← → move · ↑ rotate · ↓ soft drop · Space hard drop · C hold</p>
+          </div>
         </div>
       )}
 
@@ -149,7 +182,9 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
           <p className={`text-2xl font-bold ${won ? "text-emerald-300" : "text-red-300"}`}>
             Time&apos;s Up! {won ? "You Win!" : "You Lose"}
           </p>
-          {won && <p className="font-semibold text-violet-300">Hint {roundHintNumber} Unlocked!</p>}
+          {won && !roundAllHintsUnlocked && (
+            <p className="font-semibold text-violet-300">Hint {roundHintNumber} Unlocked!</p>
+          )}
           <p className="text-sm text-white/60">
             Final score: {score.toLocaleString()} / {roundTargetScore.toLocaleString()}
           </p>
