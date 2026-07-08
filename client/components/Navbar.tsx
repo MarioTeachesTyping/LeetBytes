@@ -8,12 +8,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { FileText, EyeOff, Play, Gavel, Gamepad2 } from "lucide-react";
-import { PROBLEMS } from "@/lib/problems";
+import { PROBLEM_ROWS } from "@/lib/problem-list";
 import { useWorkspace } from "@/components/WorkspaceContext";
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 
 function getAdjacentProblems(currentSlug: string) {
-  const slugs = Object.keys(PROBLEMS);
+  const slugs = PROBLEM_ROWS.map((row) => row.slug).filter(
+    (slug): slug is string => Boolean(slug)
+  );
   const currentIndex = slugs.indexOf(currentSlug);
   
   return {

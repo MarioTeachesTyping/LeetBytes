@@ -128,7 +128,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
             <p className="text-4xl font-bold">Tetris</p>
             {allHintsUnlocked ? (
               <p className="text-sm text-white/60">
-                All hints for this problem are unlocked already — feel free to play anyway.
+                All hints for this problem are unlocked already! Feel free to play anyway.
               </p>
             ) : (
               <p className="text-sm text-white/70">

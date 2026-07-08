@@ -40,7 +40,7 @@ export const validParentheses: SolutionEntry =
   ],
 
   constraints: [
-    "`1 <= s.length <= 10^4`.",
+    "`1 <= s.length <= 10⁴`.",
     "`s` consists of parentheses only `'()[]{}'`.",
   ],
 

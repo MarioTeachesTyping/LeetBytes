@@ -32,8 +32,8 @@ export const maximumSubarray: SolutionEntry =
   ],
 
   constraints: [
-    "`1 <= nums.length <= 10^5`",
-    "`-10^4 <= nums[i] <= 10^4`",
+    "`1 <= nums.length <= 10⁵`",
+    "`-10⁴ <= nums[i] <= 10⁴`",
   ],
 
   topics: [
