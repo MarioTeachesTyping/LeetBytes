@@ -6,7 +6,7 @@
 
 import React, { useRef } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
-import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@/lib/problems";
+import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
 import Spoiler from "./Spoiler";
 import { useWorkspace } from "./WorkspaceContext";
 

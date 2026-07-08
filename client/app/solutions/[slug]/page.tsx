@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Question from "@/components/Question";
 import Solution from "@/components/Solution";
 import { WorkspaceProvider } from "@/components/WorkspaceContext";
-import { PROBLEMS } from "@/lib/problems";
+import { getPublicProblem } from "@leetbytes/problems/public";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -16,7 +16,7 @@ type PageProps = {
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
 
-  const entry = PROBLEMS[slug];
+  const entry = getPublicProblem(slug);
   if (!entry) return notFound();
 
   return (

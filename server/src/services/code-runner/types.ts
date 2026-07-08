@@ -6,7 +6,7 @@ import type {
   RunSubmissionRequest,
   RunSubmissionResponse,
   SubmissionLanguage,
-} from "../../../../shared/submissions.js";
+} from "@leetbytes/shared";
 
 export type CodeRunnerSubmission = RunSubmissionRequest &
 {

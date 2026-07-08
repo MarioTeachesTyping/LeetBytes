@@ -5,37 +5,19 @@
 "use client";
 
 import React, { useState } from "react";
+import type { JudgeSubmissionResponse, JudgeVerdict, TestCaseResult } from "@leetbytes/shared";
 
-// Mirrors the server's per-case TestCaseResult (kept local so the client does
-// not import across the shared/ package boundary).
-export type CaseResult = {
-  index: number;
-  status: string;
-  input: string;
-  expected?: string;
-  actual?: string;
-  stdout?: string;
-  stderr?: string;
-  runtimeMs?: number;
-};
-
-// Mirrors the server's JudgeSubmissionResponse. Both /run and /judge return it.
-export type GradeResponse = {
-  status: string;
-  passed: number;
-  total: number;
-  results: CaseResult[];
-  runtimeMs?: number;
-  memoryKb?: number;
-  message?: string;
-};
+// The exact shapes the server responds with, re-exported under the names this
+// panel has always used. Both /run and /judge return a GradeResponse.
+export type CaseResult = TestCaseResult;
+export type GradeResponse = JudgeSubmissionResponse;
 
 // The result panel state. "run" is an output-only testbench over the visible
 // example cases; "judge" is a single verdict over the full hidden suite.
 export type Panel =
   | { kind: "idle" }
   | { kind: "running"; action: "run" | "judge" }
-  | { kind: "judge"; passed: number; total: number; status: string; runtimeMs?: number; memoryKb?: number; message?: string }
+  | { kind: "judge"; passed: number; total: number; status: JudgeVerdict; runtimeMs?: number; memoryKb?: number; message?: string }
   | { kind: "run"; cases: CaseResult[]; message?: string }
   | { kind: "error"; detail: string };
 
@@ -249,7 +231,7 @@ function JudgeResult({
 }: {
   passed: number;
   total: number;
-  status: string;
+  status: JudgeVerdict;
   runtimeMs?: number;
   memoryKb?: number;
 }) {

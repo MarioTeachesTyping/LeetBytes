@@ -5,18 +5,17 @@ Backend API for LeetBytes.
 ## Run locally
 
 ```bash
-npm install
-npm run dev
+pnpm install   # once, at the repo root (installs the whole workspace)
+pnpm dev
 ```
 
 The server listens on `http://localhost:4000` by default.
 
 ## Scripts
 
-- `npm run dev`: run the TypeScript server with watch mode
-- `npm run typecheck`: check TypeScript without emitting files
-- `npm run build`: compile TypeScript into `dist`
-- `npm start`: run the compiled server from `dist`
+- `pnpm dev`: run the TypeScript server with watch mode
+- `pnpm start`: run the server once (via tsx, no build step)
+- `pnpm typecheck`: check TypeScript without emitting files
 
 ## Routes
 
@@ -79,8 +78,10 @@ an overall `status` (`accepted` / `wrong_answer` / `runtime_error` /
 
 The server wraps the submitted code in a Python harness (see
 `src/services/judge/harness.ts`) that calls the method named in the problem
-definition for each test case. Test cases and the method name live server-side in
-`src/problems/`, so the client never sees the answer key. The harness includes JSON
+definition for each test case. Test cases and the method name come from the
+`@leetbytes/problems` workspace package (each problem's `hidden.ts`), which only
+the server imports — the client never sees the answer key. Request bodies are
+validated with the Zod schemas in `@leetbytes/shared`. The harness includes JSON
 adapters for `ListNode`/`TreeNode` arguments and return values, so linked-list and
 tree problems are judged too.
 

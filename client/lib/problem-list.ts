@@ -1,4 +1,4 @@
-import { PROBLEMS, type SolutionEntry } from "./problems";
+import { PROBLEMS, type SolutionEntry } from "@leetbytes/problems/public";
 
 export type ProblemListRow = {
   title: string;

@@ -11,7 +11,10 @@ import GameStage from "./games/GameStage";
 import Result, { TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
 import { HINT_SCORE_TARGETS, useWorkspace } from "./WorkspaceContext";
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:4000";
+// All API calls go through the Next.js /api proxy (see next.config.ts), so the
+// browser stays on one origin. Point NEXT_PUBLIC_SERVER_URL at the API server
+// directly only if you need to bypass the proxy.
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "/api";
 
 type Tab = "cases" | "results" | "submissions";
 

@@ -6,14 +6,16 @@ solutions, and revealing spoilers.
 ## Getting started
 
 ```bash
-npm install
-npm run dev
+pnpm install   # once, at the repo root (installs the whole workspace)
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Running and judging code needs the server (see `../server`). Point the client at
-it with `NEXT_PUBLIC_SERVER_URL` (defaults to `http://localhost:4000`).
+Running and judging code needs the server (see `../server`). The client calls it
+through the Next.js `/api/*` rewrite (see `next.config.ts`), so no CORS or client
+env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
+`NEXT_PUBLIC_SERVER_URL` to bypass the proxy and hit it directly.
 
 ## Structure
 
@@ -36,7 +38,8 @@ it with `NEXT_PUBLIC_SERVER_URL` (defaults to `http://localhost:4000`).
       7-bag piece randomizer instead of independent per-piece randomness
   - `react-bits/` — animated visual effects (backgrounds, glitch text, etc.), used both on the
     landing page and behind the minigame
-- `lib/problems/` — typed problem content (description, examples, starter code, spoiler solutions)
+- problem content (description, examples, starter code, spoiler solutions) comes from the
+  `@leetbytes/problems` workspace package (`../problems/<slug>/public.ts`)
 - `lib/highlight.ts` — Shiki syntax highlighting
 - `public/videos/`, `public/game-images/` — minigame background footage and tetromino sprites
 
@@ -56,7 +59,7 @@ chevron collapses the panel.
 
 ## Hints and the minigame
 
-Each problem has a list of hints (`hints` in its `lib/problems` entry), unlocked one
+Each problem has a list of hints (`hints` in its `problems/<slug>/public.ts` entry), unlocked one
 at a time. `WorkspaceContext` tracks how many are unlocked and the score target for
 the next one (`HINT_SCORE_TARGETS`); hints past that count stay hidden in the Hints
 panel until earned.

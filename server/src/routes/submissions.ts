@@ -5,21 +5,13 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { config } from "../config.js";
 import { httpError, readJsonBody, sendJson } from "../http.js";
-import { isSupportedLanguage } from "../services/code-runner/types.js";
 import { judgeSubmission, runExamples } from "../services/judge/index.js";
-import type { TestCase } from "../problems/types.js";
-import type { JudgeSubmissionRequest } from "../../../shared/submissions.js";
-
-const MAX_CUSTOM_CASES = 20;
-
-type SubmissionBody =
-{
-  problemSlug?: unknown;
-  language?: unknown;
-  code?: unknown;
-  stdin?: unknown;
-  cases?: unknown;
-};
+import type { TestCase } from "@leetbytes/problems/types";
+import {
+  customCasesSchema,
+  judgeSubmissionRequestSchema,
+  type JudgeSubmissionRequest,
+} from "@leetbytes/shared";
 
 // Handles POST /submissions/run by executing code against a problem's public
 // example cases (the "Run" path) and returning per-case output. This is a
@@ -40,35 +32,23 @@ export async function handleRunSubmission(request: IncomingMessage, response: Se
 // for the testbench). Absent/empty means "use the problem's default examples".
 function parseCustomCases(body: unknown): TestCase[] | undefined
 {
-  if (!body || typeof body !== "object")
+  const raw = body && typeof body === "object" ? (body as { cases?: unknown }).cases : undefined;
+
+  if (raw === undefined || (Array.isArray(raw) && raw.length === 0))
   {
     return undefined;
   }
 
-  const raw = (body as SubmissionBody).cases;
+  const parsed = customCasesSchema.safeParse(raw);
 
-  if (!Array.isArray(raw) || raw.length === 0)
+  if (!parsed.success)
   {
-    return undefined;
+    throw httpError(400, parsed.error.issues[0]?.message ?? "Each test case must include an args array.");
   }
 
-  if (raw.length > MAX_CUSTOM_CASES)
-  {
-    throw httpError(400, `A run may include at most ${MAX_CUSTOM_CASES} test cases.`);
-  }
-
-  return raw.map((item) =>
-  {
-    if (!item || typeof item !== "object" || !Array.isArray((item as { args?: unknown }).args))
-    {
-      throw httpError(400, "Each test case must include an args array.");
-    }
-
-    return {
-      args: (item as { args: unknown[] }).args,
-      expected: (item as { expected?: unknown }).expected,
-    };
-  });
+  // TestCase declares `expected` as a required unknown; an omitted expected
+  // simply becomes undefined here.
+  return parsed.data.map((testCase) => ({ args: testCase.args, expected: testCase.expected }));
 }
 
 // Handles POST /submissions/judge by grading code against a problem's test cases.
@@ -81,40 +61,22 @@ export async function handleJudgeSubmission(request: IncomingMessage, response: 
   sendJson(response, result.status === "accepted" ? 200 : 422, result);
 }
 
-// Converts unknown JSON into a graded submission: a problem slug is required so
-// the server knows which test cases to grade against. Shared by run and judge.
+// Validates unknown JSON against the shared submission schema: a problem slug is
+// required so the server knows which test cases to grade against. Shared by run
+// and judge.
 function parseJudgeSubmission(body: unknown): JudgeSubmissionRequest
 {
-  if (!body || typeof body !== "object")
+  const parsed = judgeSubmissionRequestSchema.safeParse(body);
+
+  if (!parsed.success)
   {
-    throw httpError(400, "Request body is required.");
+    const issue = parsed.error.issues[0];
+    const message = issue?.path[0] === "language"
+      ? "Only Python submissions are supported right now."
+      : issue?.message ?? "Request body is required.";
+
+    throw httpError(400, message);
   }
 
-  const submission = body as SubmissionBody;
-
-  if (typeof submission.problemSlug !== "string" || submission.problemSlug.trim().length === 0)
-  {
-    throw httpError(400, "problemSlug is required to judge a submission.");
-  }
-
-  if (!isSupportedLanguage(submission.language))
-  {
-    throw httpError(400, "Only Python submissions are supported right now.");
-  }
-
-  if (typeof submission.code !== "string" || submission.code.trim().length === 0)
-  {
-    throw httpError(400, "Submission code is required.");
-  }
-
-  if (submission.code.length > 50_000)
-  {
-    throw httpError(400, "Submission code is too large.");
-  }
-
-  return {
-    problemSlug: submission.problemSlug,
-    language: submission.language,
-    code: submission.code,
-  };
+  return parsed.data;
 }

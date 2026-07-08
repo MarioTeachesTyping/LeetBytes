@@ -1,0 +1,32 @@
+{
+  "name": "@leetbytes/problems",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./types": {
+      "types": "./types.ts",
+      "import": "./types.ts",
+      "default": "./types.ts"
+    },
+    "./public": {
+      "types": "./public.ts",
+      "import": "./public.ts",
+      "default": "./public.ts"
+    },
+    "./hidden": {
+      "types": "./hidden.ts",
+      "import": "./hidden.ts",
+      "default": "./hidden.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@leetbytes/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}

@@ -6,7 +6,7 @@
 
 import React, { useEffect, useState } from "react";
 import { highlightPython } from "@/lib/highlight";
-import type { SpoilerSolution } from "@/lib/problems";
+import type { SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
 
 interface SpoilerProps {

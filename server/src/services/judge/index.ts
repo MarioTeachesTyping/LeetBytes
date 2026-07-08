@@ -3,7 +3,7 @@
 // =========== //
 
 import { getProblem } from "../../problems/index.js";
-import type { ProblemDefinition, TestCase } from "../../problems/types.js";
+import type { HiddenProblem, TestCase } from "@leetbytes/problems/types";
 import { runSubmission } from "../code-runner/index.js";
 import type { CodeRunnerResult } from "../code-runner/types.js";
 import { buildHarness, RESULT_SENTINEL } from "./harness.js";
@@ -12,7 +12,7 @@ import type {
   JudgeSubmissionResponse,
   JudgeVerdict,
   TestCaseResult,
-} from "../../../../shared/submissions.js";
+} from "@leetbytes/shared";
 
 // The shape the Python harness prints after the sentinel.
 type HarnessCaseResult =
@@ -79,7 +79,7 @@ export async function runExamples(
 // output into a graded, per-case response. Used by both judge and run.
 async function grade(
   request: JudgeSubmissionRequest,
-  problem: ProblemDefinition,
+  problem: HiddenProblem,
   tests: TestCase[],
 ): Promise<JudgeSubmissionResponse>
 {

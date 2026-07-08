@@ -1,6 +1,7 @@
 # Shared
 
-Request and response types shared by the client and server.
+Request/response types and Zod request schemas shared by the client and server,
+as the `@leetbytes/shared` workspace package (both apps import it directly).
 
 - `submissions.ts`
   - `RunSubmissionRequest` / `RunSubmissionResponse` — raw single-file execution
@@ -12,6 +13,10 @@ Request and response types shared by the client and server.
   - `JudgeVerdict` — `accepted` / `wrong_answer` / `runtime_error` /
     `time_limit_exceeded` / `compile_error` / `error`.
 
-The client mirrors these shapes locally (see `client/components/Result.tsx`) rather
-than importing across the package boundary, so keep the two in sync when changing a
-type here.
+- `schemas.ts`
+  - Zod schemas for the bodies the server accepts (`judgeSubmissionRequestSchema`,
+    `customCasesSchema`). Each schema `satisfies` its hand-written type, so the
+    runtime validation and the types can't drift apart.
+
+Both the client (`Result.tsx`, via `transpilePackages`) and the server import
+these types directly, so a change here typechecks against both sides at once.

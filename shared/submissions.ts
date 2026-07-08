@@ -48,12 +48,14 @@ export type JudgeSubmissionRequest =
 
 // One graded test case. Per-case status is always accepted, wrong_answer, or
 // runtime_error; the broader verdicts only show up at the response level.
+// `expected` is optional because the client clears it for user-edited inputs,
+// whose expected answer is unknown; the server always fills it in.
 export type TestCaseResult =
 {
   index: number;
   status: JudgeVerdict;
   input: string;
-  expected: string;
+  expected?: string;
   actual?: string;
   stdout?: string;
   stderr?: string;

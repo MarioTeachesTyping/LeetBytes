@@ -1,0 +1,10 @@
+packages:
+  - client
+  - server
+  - shared
+  - problems
+onlyBuiltDependencies:
+  - esbuild
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

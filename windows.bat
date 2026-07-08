@@ -6,7 +6,7 @@ REM    - Backend  on http://localhost:4000  (local-python runner)
 REM    - Frontend on http://localhost:3000  (Next.js)
 REM
 REM  Requirements: pnpm, Node.js, and Python on PATH.
-REM  First time only, install deps:  pnpm install  (in both server\ and client\)
+REM  First time only, install deps:  pnpm install  (once, at the repo root)
 REM ============================================================
 
 setlocal

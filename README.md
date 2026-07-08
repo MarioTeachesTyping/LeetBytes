@@ -50,17 +50,31 @@
 ## Architecture
 
 ```txt
-leetbytes/
-    client/     Next.js frontend: problem pages, editor, results panel, effects, minigames
-    server/     Node HTTP API: runs/judges code, serves public test cases
-    shared/     Request/response types shared by the client and server
+leetbytes/          pnpm workspace (install once at the root: pnpm install)
+    client/         Next.js frontend: problem pages, editor, results panel, effects, minigames
+    server/         Node HTTP API: runs/judges code, serves public test cases
+    shared/         @leetbytes/shared — request/response types + Zod schemas used by both sides
+    problems/       @leetbytes/problems — one folder per problem, the single source of truth
 ```
 
-The client is a Next.js app; problem content lives as typed TypeScript objects in
-`client/lib/problems`. Running and judging code is delegated to the server, which
-wraps submissions in a Python harness and executes them through a pluggable runner
-(Piston or a local Python install). Test cases and the answer key live server-side
-in `server/src/problems`, so the client never sees the hidden suite.
+The client is a Next.js app. Each problem lives in `problems/<slug>/` split into
+two files: `public.ts` (description, examples, starter code, hints — everything
+the browser may see, imported by the client) and `hidden.ts` (the judged test
+suite and answer key, imported only by the server). A `ProblemSlug` union in
+`problems/types.ts` keys both registries, so the two sides can't drift apart. A
+`public.ts` file must never import from a `hidden.ts` file.
+
+Running and judging code is delegated to the server, which wraps submissions in
+a Python harness and executes them through a pluggable runner (Piston or a local
+Python install). The browser reaches the server through the Next.js `/api/*`
+rewrite, so everything stays on one origin during development.
+
+To run both apps at once from the repo root:
+
+```bash
+pnpm install
+pnpm dev
+```
 
 Hints and the minigame that unlocks them are currently client-only state (see
 `client/components/WorkspaceContext.tsx` and `client/components/games/`) — nothing
@@ -100,6 +114,7 @@ Backend
 -------
 Node.js (built-in http)
 TypeScript (tsx)
+Zod
 Piston or local Python for code execution
 ```
 
@@ -111,7 +126,6 @@ Persistence
 Prisma
 SQLite for local development
 Postgres for deployment
-Zod
 
 AI Hints
 --------
