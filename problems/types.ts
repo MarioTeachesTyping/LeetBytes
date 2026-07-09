@@ -27,6 +27,7 @@ export const PROBLEM_SLUGS = [
   "maximum-subarray",
   "merge-intervals",
   "trapping-rain-water",
+  "subsets",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];

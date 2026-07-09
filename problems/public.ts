@@ -19,6 +19,7 @@ import { mergeTwoSortedLists } from "./merge-two-sorted-lists/public.ts";
 import { generateParentheses } from "./generate-parentheses/public.ts";
 import { trappingRainWater } from "./trapping-rain-water/public.ts";
 import { groupAnagrams } from "./group-anagrams/public.ts";
+import { subsets } from "./subsets/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -34,6 +35,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "maximum-subarray": maximumSubarray,
   "merge-intervals": mergeIntervals,
   "trapping-rain-water": trappingRainWater,
+  "subsets": subsets,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.

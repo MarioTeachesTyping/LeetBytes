@@ -20,6 +20,7 @@ import { groupAnagramsHidden } from "./group-anagrams/hidden.ts";
 import { maximumSubarrayHidden } from "./maximum-subarray/hidden.ts";
 import { mergeIntervalsHidden } from "./merge-intervals/hidden.ts";
 import { trappingRainWaterHidden } from "./trapping-rain-water/hidden.ts";
+import { subsetsHidden } from "./subsets/hidden.ts";
 
 export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
 {
@@ -34,6 +35,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "maximum-subarray": maximumSubarrayHidden,
   "merge-intervals": mergeIntervalsHidden,
   "trapping-rain-water": trappingRainWaterHidden,
+  "subsets": subsetsHidden,
 };
 
 // Slug-indexed lookup for request payloads and other untyped strings.
