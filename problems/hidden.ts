@@ -21,6 +21,9 @@ import { maximumSubarrayHidden } from "./maximum-subarray/hidden.ts";
 import { mergeIntervalsHidden } from "./merge-intervals/hidden.ts";
 import { trappingRainWaterHidden } from "./trapping-rain-water/hidden.ts";
 import { subsetsHidden } from "./subsets/hidden.ts";
+import { wordSearchHidden } from "./word-search/hidden.ts";
+import { sameTreeHidden } from "./same-tree/hidden.ts";
+import { symmetricTreeHidden } from "./symmetric-tree/hidden.ts";
 
 export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
 {
@@ -36,6 +39,9 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "merge-intervals": mergeIntervalsHidden,
   "trapping-rain-water": trappingRainWaterHidden,
   "subsets": subsetsHidden,
+  "word-search": wordSearchHidden,
+  "same-tree": sameTreeHidden,
+  "symmetric-tree": symmetricTreeHidden,
 };
 
 // Slug-indexed lookup for request payloads and other untyped strings.

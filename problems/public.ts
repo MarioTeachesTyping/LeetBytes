@@ -20,6 +20,9 @@ import { generateParentheses } from "./generate-parentheses/public.ts";
 import { trappingRainWater } from "./trapping-rain-water/public.ts";
 import { groupAnagrams } from "./group-anagrams/public.ts";
 import { subsets } from "./subsets/public.ts";
+import { wordSearch } from "./word-search/public.ts";
+import { sameTree } from "./same-tree/public.ts";
+import { symmetricTree } from "./symmetric-tree/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -36,6 +39,9 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "merge-intervals": mergeIntervals,
   "trapping-rain-water": trappingRainWater,
   "subsets": subsets,
+  "word-search": wordSearch,
+  "same-tree": sameTree,
+  "symmetric-tree": symmetricTree,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.

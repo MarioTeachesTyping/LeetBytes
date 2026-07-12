@@ -28,6 +28,9 @@ export const PROBLEM_SLUGS = [
   "merge-intervals",
   "trapping-rain-water",
   "subsets",
+  "word-search",
+  "same-tree",
+  "symmetric-tree",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];
