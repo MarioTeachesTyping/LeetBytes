@@ -8,8 +8,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import CodeEditor from "./CodeEditor";
 import GameStage from "./games/GameStage";
-import Result, { TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
+import Result, { DesignTestCasesEditor, TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
 import { HINT_SCORE_TARGETS, useWorkspace } from "./WorkspaceContext";
+import type { ProblemCasesResponse } from "@leetbytes/shared";
 
 // All API calls go through the Next.js /api proxy (see next.config.ts), so the
 // browser stays on one origin. Point NEXT_PUBLIC_SERVER_URL at the API server
@@ -23,12 +24,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "results", label: "Test Results" },
   { key: "submissions", label: "Submissions" },
 ];
-
-// Structured public cases returned by GET /problems/:slug/cases.
-type CasesResponse = {
-  paramNames: string[];
-  cases: { args: unknown[]; expected: unknown }[];
-};
 
 interface SolutionProps {
   slug: string;
@@ -52,11 +47,18 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
 
   // Editable test cases. Each arg is stored as its raw JSON string so the user can
   // freely type; `original`/`expected` let us show the known answer for unedited
-  // cases (expected is unknown once an input changes).
+  // cases (expected is unknown once an input changes). "design" problems (a
+  // class with a constructor + method calls, e.g. LRUCache) have no single
+  // function's args to edit, so they get a parallel set of state keyed on the
+  // two-field operations/args notation instead.
+  const [mode, setMode] = useState<"function" | "design">("function");
   const [paramNames, setParamNames] = useState<string[]>([]);
   const [caseValues, setCaseValues] = useState<string[][]>([]);
   const [originalValues, setOriginalValues] = useState<string[][]>([]);
   const [caseExpected, setCaseExpected] = useState<unknown[]>([]);
+  const [designCaseValues, setDesignCaseValues] = useState<{ operations: string; args: string }[]>([]);
+  const [designOriginalValues, setDesignOriginalValues] = useState<{ operations: string; args: string }[]>([]);
+  const [designCaseExpected, setDesignCaseExpected] = useState<unknown[][]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
 
   const busy = runResult.kind === "running" || judgeResult.kind === "running";
@@ -122,18 +124,31 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
     let active = true;
 
     fetch(`${SERVER_URL}/problems/${slug}/cases`)
-      .then((response) => (response.ok ? (response.json() as Promise<CasesResponse>) : null))
+      .then((response) => (response.ok ? (response.json() as Promise<ProblemCasesResponse>) : null))
       .then((data) => {
         if (!active || !data) {
           if (active) setCasesLoading(false);
           return;
         }
 
-        const values = data.cases.map((c) => c.args.map((arg) => JSON.stringify(arg)));
-        setParamNames(data.paramNames);
-        setCaseValues(values);
-        setOriginalValues(values.map((row) => [...row]));
-        setCaseExpected(data.cases.map((c) => c.expected));
+        setMode(data.kind);
+
+        if (data.kind === "design") {
+          const values = data.cases.map((c) => ({
+            operations: JSON.stringify(c.operations),
+            args: JSON.stringify(c.args),
+          }));
+          setDesignCaseValues(values);
+          setDesignOriginalValues(values.map((v) => ({ ...v })));
+          setDesignCaseExpected(data.cases.map((c) => c.expected));
+        } else {
+          const values = data.cases.map((c) => c.args.map((arg) => JSON.stringify(arg)));
+          setParamNames(data.paramNames);
+          setCaseValues(values);
+          setOriginalValues(values.map((row) => [...row]));
+          setCaseExpected(data.cases.map((c) => c.expected));
+        }
+
         setCasesLoading(false);
       })
       .catch(() => {
@@ -153,23 +168,37 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
     );
   }
 
+  function updateDesignCase(caseIndex: number, field: "operations" | "args", value: string) {
+    setDesignCaseValues((prev) =>
+      prev.map((row, i) => (i === caseIndex ? { ...row, [field]: value } : row)),
+    );
+  }
+
   // Runs the code against the (possibly edited) test cases and shows per-case output.
   async function handleRunExamples() {
     setOpen(true);
     setTab("results");
 
-    // Turn each editable JSON field into args to send. Bail early on bad JSON.
-    let cases: { args: unknown[] }[] | undefined;
-    if (caseValues.length > 0) {
-      try {
+    // Turn each editable JSON field into the shape /submissions/run expects.
+    // Bail early on bad JSON.
+    let cases: unknown[] | undefined;
+    try {
+      if (mode === "design") {
+        if (designCaseValues.length > 0) {
+          cases = designCaseValues.map((row) => ({
+            operations: JSON.parse(row.operations),
+            args: JSON.parse(row.args),
+          }));
+        }
+      } else if (caseValues.length > 0) {
         cases = caseValues.map((row) => ({ args: row.map((text) => JSON.parse(text)) }));
-      } catch {
-        setRunResult({
-          kind: "error",
-          detail: "One of your inputs isn't valid JSON — check the Test Cases tab.",
-        });
-        return;
       }
+    } catch {
+      setRunResult({
+        kind: "error",
+        detail: "One of your inputs isn't valid JSON — check the Test Cases tab.",
+      });
+      return;
     }
 
     setRunResult({ kind: "running", action: "run" });
@@ -198,6 +227,19 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
   // expected answer unknown. When defaults ran, the server's expected is kept.
   function withExpected(results: CaseResult[], sentCustom: boolean): CaseResult[] {
     if (!sentCustom) return results;
+
+    if (mode === "design") {
+      return results.map((result) => {
+        const i = result.index;
+        const unchanged =
+          designOriginalValues[i] && designCaseValues[i]
+            ? designCaseValues[i].operations === designOriginalValues[i].operations &&
+              designCaseValues[i].args === designOriginalValues[i].args
+            : false;
+
+        return { ...result, expected: unchanged ? JSON.stringify(designCaseExpected[i]) : undefined };
+      });
+    }
 
     return results.map((result) => {
       const i = result.index;
@@ -309,12 +351,20 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
         {open && (
           <div className="flex-1 min-h-0 overflow-y-auto border-t border-zinc-800 p-3">
             {tab === "cases" && (
-              <TestCasesEditor
-                paramNames={paramNames}
-                values={caseValues}
-                onChange={updateCase}
-                loading={casesLoading}
-              />
+              mode === "design" ? (
+                <DesignTestCasesEditor
+                  values={designCaseValues}
+                  onChange={updateDesignCase}
+                  loading={casesLoading}
+                />
+              ) : (
+                <TestCasesEditor
+                  paramNames={paramNames}
+                  values={caseValues}
+                  onChange={updateCase}
+                  loading={casesLoading}
+                />
+              )
             )}
             {tab === "results" && (
               <Result panel={runResult} idleMessage="Run your code to see the output for each case." />

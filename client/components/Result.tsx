@@ -128,6 +128,70 @@ export function TestCasesEditor({
   );
 }
 
+// Test Cases view for "design" problems (a class with a constructor + method
+// calls, e.g. LRUCache): LeetCode's own two-field notation — the operations
+// list and the per-operation args list — as two editable JSON fields per case.
+export function DesignTestCasesEditor({
+  values,
+  onChange,
+  loading,
+}: {
+  values: { operations: string; args: string }[];
+  onChange: (caseIndex: number, field: "operations" | "args", value: string) => void;
+  loading?: boolean;
+}) {
+  const [active, setActive] = useState(0);
+
+  if (loading) {
+    return (
+      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+        Loading test cases…
+      </div>
+    );
+  }
+
+  if (values.length === 0) {
+    return (
+      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+        No test cases for this problem yet.
+      </div>
+    );
+  }
+
+  const safeIndex = Math.min(active, values.length - 1);
+  const current = values[safeIndex];
+
+  return (
+    <div className="space-y-3">
+      <CaseTabs count={values.length} active={safeIndex} onSelect={setActive} />
+      <div className="space-y-3">
+        <div>
+          <div className="mb-1 font-mono text-xs font-medium text-white/40">operations</div>
+          <textarea
+            value={current.operations}
+            onChange={(event) => onChange(safeIndex, "operations", event.target.value)}
+            spellCheck={false}
+            rows={1}
+            className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+                       focus:border-white/30 focus:outline-none"
+          />
+        </div>
+        <div>
+          <div className="mb-1 font-mono text-xs font-medium text-white/40">args</div>
+          <textarea
+            value={current.args}
+            onChange={(event) => onChange(safeIndex, "args", event.target.value)}
+            spellCheck={false}
+            rows={1}
+            className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+                       focus:border-white/30 focus:outline-none"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // A few error types read better with a friendlier title than their Python name.
 const FRIENDLY_ERROR_TITLES: Record<string, string> = {
   IndentationError: "Indentation Error",

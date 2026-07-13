@@ -77,3 +77,28 @@ export type JudgeSubmissionResponse =
   memoryKb?: number;
   message?: string;
 };
+
+// ============= //
+// Problem Cases //
+// ============= //
+
+// GET /problems/:slug/cases — the public example inputs shown in the Test
+// Cases editor. Most problems are a single graded function; a "design"
+// problem (a class with a constructor + method calls, e.g. LRUCache) has no
+// single function to call, so it gets its own shape: each case is a sequence
+// of operations (LeetCode's own notation — operations[0] is the class name)
+// instead of one args list.
+export type FunctionProblemCases =
+{
+  kind: "function";
+  paramNames: string[];
+  cases: { args: unknown[]; expected: unknown }[];
+};
+
+export type DesignProblemCases =
+{
+  kind: "design";
+  cases: { operations: string[]; args: unknown[][]; expected: unknown[] }[];
+};
+
+export type ProblemCasesResponse = FunctionProblemCases | DesignProblemCases;

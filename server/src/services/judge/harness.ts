@@ -76,6 +76,17 @@ def _from_listnode(node):
         node = node.next
     return out
 
+def _to_listnode_cycle(value):
+    spec = value or {}
+    values = list(spec.get("values") or [])
+    pos = spec.get("pos", -1)
+    nodes = [ListNode(v) for v in values]
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    if nodes and 0 <= pos < len(nodes):
+        nodes[-1].next = nodes[pos]
+    return nodes[0] if nodes else None
+
 def _to_treenode(value):
     values = list(value or [])
     if not values:
@@ -118,6 +129,7 @@ _DECODERS = {
     "TreeNode": _to_treenode,
     "ListNode[]": _array_of(_to_listnode),
     "TreeNode[]": _array_of(_to_treenode),
+    "ListNodeCycle": _to_listnode_cycle,
 }
 
 _ENCODERS = {
@@ -156,19 +168,45 @@ def _serialize(value):
     except Exception:
         return repr(value)
 
-def _run():
-    spec = _json.load(_sys.stdin)
+# Peak memory in kilobytes. ru_maxrss is already KB on Linux; tracemalloc
+# reports bytes, so convert. Both are the unit the server/client expect.
+def _peak_memory_kb():
+    if _resource is not None:
+        try:
+            return _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        except Exception:
+            return None
+    if _tracemalloc is not None:
+        try:
+            return round(_tracemalloc.get_traced_memory()[1] / 1024)
+        except Exception:
+            return None
+    return None
+
+def _overall_status(results):
+    if any(r["status"] == "runtime_error" for r in results):
+        return "runtime_error"
+    if any(r["status"] == "wrong_answer" for r in results):
+        return "wrong_answer"
+    return "accepted"
+
+def _payload(results):
+    return {
+        "status": _overall_status(results),
+        "passed": sum(1 for r in results if r["status"] == "accepted"),
+        "total": len(results),
+        "results": results,
+        "memoryKb": _peak_memory_kb(),
+    }
+
+# A regular problem: one Solution method is called per test case.
+def _run_function(spec):
     fn = spec["functionName"]
     mode = spec.get("compare", "exact")
     arg_types = spec.get("argTypes") or []
     return_type = spec.get("returnType")
     tests = spec.get("tests", [])
     results = []
-    overall = "accepted"
-
-    # Without getrusage, track Python allocations so memory still has a value.
-    if _resource is None and _tracemalloc is not None:
-        _tracemalloc.start()
 
     for i, test in enumerate(tests):
         args = test.get("args", [])
@@ -198,8 +236,6 @@ def _run():
                 "stdout": buf.getvalue(),
                 "runtimeMs": round(elapsed, 3),
             })
-            if not passed and overall == "accepted":
-                overall = "wrong_answer"
         except Exception:
             elapsed = (_time.perf_counter() - start) * 1000
             results.append({
@@ -210,31 +246,69 @@ def _run():
                 "stderr": _tb.format_exc(),
                 "runtimeMs": round(elapsed, 3),
             })
-            if overall in ("accepted", "wrong_answer"):
-                overall = "runtime_error"
 
-    # Peak memory in kilobytes. ru_maxrss is already KB on Linux; tracemalloc
-    # reports bytes, so convert. Both are the unit the server/client expect.
-    memory_kb = None
-    if _resource is not None:
-        try:
-            memory_kb = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
-        except Exception:
-            memory_kb = None
-    elif _tracemalloc is not None:
-        try:
-            memory_kb = round(_tracemalloc.get_traced_memory()[1] / 1024)
-        except Exception:
-            memory_kb = None
+    print(_SENTINEL + _json.dumps(_payload(results)))
 
-    payload = {
-        "status": overall,
-        "passed": sum(1 for r in results if r["status"] == "accepted"),
-        "total": len(results),
-        "results": results,
-        "memoryKb": memory_kb,
-    }
-    print(_SENTINEL + _json.dumps(payload))
+# A "design" problem: each test case instantiates class_name (operations[0])
+# then calls the rest of operations in sequence on that one instance,
+# args-aligned, comparing the whole per-operation output list against expected.
+def _run_design(spec, class_name):
+    tests = spec.get("tests", [])
+    results = []
+
+    for i, test in enumerate(tests):
+        operations = test.get("operations", [])
+        args_list = test.get("args", [])
+        expected = test.get("expected", [])
+        buf = _io.StringIO()
+        start = _time.perf_counter()
+        try:
+            cls = globals().get(class_name)
+            instance = None
+            actual = []
+            with _ctx.redirect_stdout(buf):
+                for j, op in enumerate(operations):
+                    call_args = _copy.deepcopy(args_list[j]) if j < len(args_list) else []
+                    if j == 0:
+                        instance = cls(*call_args)
+                        actual.append(None)
+                    else:
+                        actual.append(getattr(instance, op)(*call_args))
+            elapsed = (_time.perf_counter() - start) * 1000
+            passed = _equal(actual, expected, "exact")
+            results.append({
+                "index": i,
+                "status": "accepted" if passed else "wrong_answer",
+                "expected": _serialize(expected),
+                "actual": _serialize(actual),
+                "stdout": buf.getvalue(),
+                "runtimeMs": round(elapsed, 3),
+            })
+        except Exception:
+            elapsed = (_time.perf_counter() - start) * 1000
+            results.append({
+                "index": i,
+                "status": "runtime_error",
+                "expected": _serialize(expected),
+                "stdout": buf.getvalue(),
+                "stderr": _tb.format_exc(),
+                "runtimeMs": round(elapsed, 3),
+            })
+
+    print(_SENTINEL + _json.dumps(_payload(results)))
+
+def _run():
+    spec = _json.load(_sys.stdin)
+
+    # Without getrusage, track Python allocations so memory still has a value.
+    if _resource is None and _tracemalloc is not None:
+        _tracemalloc.start()
+
+    class_name = spec.get("className")
+    if class_name:
+        _run_design(spec, class_name)
+    else:
+        _run_function(spec)
 
 _run()
 `;

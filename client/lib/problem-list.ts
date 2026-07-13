@@ -8,10 +8,6 @@ export type ProblemListRow = {
 };
 
 const BACKLOG_ROWS: ProblemListRow[] = [
-  { title: "Maximum Depth of Binary Tree", difficulty: "Easy", topics: ["Tree", "DFS", "BFS", "Binary Tree"] },
-  { title: "Best Time to Buy and Sell Stock", difficulty: "Easy", topics: ["Array", "Dynamic Programming"] },
-  { title: "Linked List Cycle", difficulty: "Easy", topics: ["Hash Table", "Linked List", "Two Pointers"] },
-  { title: "LRU Cache", difficulty: "Medium", topics: ["Hash Table", "Linked List", "Design"] },
   { title: "Min Stack", difficulty: "Medium", topics: ["Stack", "Design"] },
   { title: "Majority Element", difficulty: "Easy", topics: ["Array", "Hash Table", "Divide and Conquer", "Sorting", "Counting"] },
   { title: "Number of Islands", difficulty: "Medium", topics: ["Array", "DFS", "BFS", "Union Find", "Matrix"] },

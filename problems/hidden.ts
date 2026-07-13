@@ -24,6 +24,10 @@ import { subsetsHidden } from "./subsets/hidden.ts";
 import { wordSearchHidden } from "./word-search/hidden.ts";
 import { sameTreeHidden } from "./same-tree/hidden.ts";
 import { symmetricTreeHidden } from "./symmetric-tree/hidden.ts";
+import { maximumDepthOfBinaryTreeHidden } from "./maximum-depth-of-binary-tree/hidden.ts";
+import { bestTimeToBuyAndSellStockHidden } from "./best-time-to-buy-and-sell-stock/hidden.ts";
+import { linkedListCycleHidden } from "./linked-list-cycle/hidden.ts";
+import { lruCacheHidden } from "./lru-cache/hidden.ts";
 
 export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
 {
@@ -42,6 +46,10 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "word-search": wordSearchHidden,
   "same-tree": sameTreeHidden,
   "symmetric-tree": symmetricTreeHidden,
+  "maximum-depth-of-binary-tree": maximumDepthOfBinaryTreeHidden,
+  "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStockHidden,
+  "linked-list-cycle": linkedListCycleHidden,
+  "lru-cache": lruCacheHidden,
 };
 
 // Slug-indexed lookup for request payloads and other untyped strings.

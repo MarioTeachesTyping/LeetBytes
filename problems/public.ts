@@ -23,6 +23,10 @@ import { subsets } from "./subsets/public.ts";
 import { wordSearch } from "./word-search/public.ts";
 import { sameTree } from "./same-tree/public.ts";
 import { symmetricTree } from "./symmetric-tree/public.ts";
+import { maximumDepthOfBinaryTree } from "./maximum-depth-of-binary-tree/public.ts";
+import { bestTimeToBuyAndSellStock } from "./best-time-to-buy-and-sell-stock/public.ts";
+import { linkedListCycle } from "./linked-list-cycle/public.ts";
+import { lruCache } from "./lru-cache/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -42,6 +46,10 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "word-search": wordSearch,
   "same-tree": sameTree,
   "symmetric-tree": symmetricTree,
+  "maximum-depth-of-binary-tree": maximumDepthOfBinaryTree,
+  "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStock,
+  "linked-list-cycle": linkedListCycle,
+  "lru-cache": lruCache,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.

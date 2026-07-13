@@ -8,6 +8,7 @@
 
 import { getHiddenProblem, HIDDEN_PROBLEMS } from "@leetbytes/problems/hidden";
 import type { HiddenProblem } from "@leetbytes/problems/types";
+import type { ProblemCasesResponse } from "@leetbytes/shared";
 
 // Returns the answer key for a slug, or undefined when the problem is not judged yet.
 export function getProblem(slug: string): HiddenProblem | undefined
@@ -17,7 +18,7 @@ export function getProblem(slug: string): HiddenProblem | undefined
 
 // The public example inputs a client may show and edit in the Test Cases tab.
 // Only the published examples are exposed — the hidden judged suite stays server-side.
-export function publicCases(slug: string): { paramNames: string[]; cases: { args: unknown[]; expected: unknown }[] } | undefined
+export function publicCases(slug: string): ProblemCasesResponse | undefined
 {
   const problem = getHiddenProblem(slug);
 
@@ -26,9 +27,20 @@ export function publicCases(slug: string): { paramNames: string[]; cases: { args
     return undefined;
   }
 
+  if (problem.kind === "design")
+  {
+    const source = problem.examples ?? [];
+
+    return {
+      kind: "design",
+      cases: source.map((test) => ({ operations: test.operations, args: test.args, expected: test.expected })),
+    };
+  }
+
   const source = problem.examples ?? [];
 
   return {
+    kind: "function",
     paramNames: problem.paramNames ?? [],
     cases: source.map((test) => ({ args: test.args, expected: test.expected })),
   };

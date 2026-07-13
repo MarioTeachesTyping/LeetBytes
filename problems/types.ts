@@ -31,6 +31,10 @@ export const PROBLEM_SLUGS = [
   "word-search",
   "same-tree",
   "symmetric-tree",
+  "maximum-depth-of-binary-tree",
+  "best-time-to-buy-and-sell-stock",
+  "linked-list-cycle",
+  "lru-cache",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];
@@ -107,7 +111,12 @@ export type CompareMode = "exact" | "unordered" | "unordered_deep";
 //   - "TreeNode":   level-order array with null for missing children, LeetCode
 //                   style, e.g. [3,9,20,null,null,15,7] <-> a binary tree
 //   - "ListNode[]" / "TreeNode[]": an array of the above (e.g. merge-k-lists)
-export type IOType = "json" | "ListNode" | "ListNode[]" | "TreeNode" | "TreeNode[]";
+//   - "ListNodeCycle": input-only, `{ values: [...], pos: number }`, LeetCode's
+//                      own cycle notation — `pos` is the 0-indexed node the
+//                      tail's `next` connects back to, or -1 for no cycle
+//                      (e.g. linked-list-cycle). Never used as a return type,
+//                      since a cyclic list can't be serialized back to JSON.
+export type IOType = "json" | "ListNode" | "ListNode[]" | "TreeNode" | "TreeNode[]" | "ListNodeCycle";
 
 export type TestCase =
 {
@@ -115,11 +124,32 @@ export type TestCase =
   expected: unknown;
 };
 
+// A "design" problem's test case: LeetCode's own notation for a class with a
+// constructor and a sequence of method calls, e.g.
+//   operations: ["LRUCache", "put", "put", "get"]
+//   args:       [[2],        [1,1], [2,2], [1]]
+//   expected:   [null,       null,  null,  1]
+// `operations[0]` is always the class name (the constructor call) and its
+// expected slot is always null. Every other index calls that method on the
+// same instance, args-aligned, and records its return value.
+export type DesignTestCase =
+{
+  operations: string[];
+  args: unknown[][];
+  expected: unknown[];
+};
+
 // The server-owned "answer key" for a problem. The client never imports these,
 // which keeps the judged path honest the same way the real site does. The slug
 // is not repeated here — the registry in hidden.ts keys each entry by slug.
-export type HiddenProblem =
+// Most problems are a single graded function (`kind` omitted); a "design"
+// problem (e.g. LRUCache) grades a constructor + sequence of method calls
+// instead, since there is no single function to call.
+export type HiddenProblem = FunctionHiddenProblem | DesignHiddenProblem;
+
+export type FunctionHiddenProblem =
 {
+  kind?: "function";
   // The method to call on the user's `Solution` class, e.g. "twoSum".
   functionName: string;
   language: SubmissionLanguage;
@@ -137,4 +167,14 @@ export type HiddenProblem =
   // hidden suite used by the judge.
   examples?: TestCase[];
   tests: TestCase[];
+};
+
+export type DesignHiddenProblem =
+{
+  kind: "design";
+  // The class to instantiate, e.g. "LRUCache". Matches operations[0] in every test case.
+  className: string;
+  language: SubmissionLanguage;
+  examples?: DesignTestCase[];
+  tests: DesignTestCase[];
 };

@@ -27,6 +27,28 @@ problems/
    it in `hidden.ts` (this registry is `Partial`, so a problem can ship without
    tests; the judge answers "No judged test cases yet" until then).
 
+## "Design" problems
+
+Most problems grade a single function. A "design" problem (a class with a
+constructor plus method calls, e.g. LRU Cache, Min Stack) has no single
+function to call, so its `hidden.ts` exports a `DesignHiddenProblem` instead:
+`kind: "design"`, `className` (matching the class the user's code defines),
+and `tests`/`examples` as `DesignTestCase[]` — LeetCode's own notation, where
+`operations[0]` is the class name (the constructor call) and every other
+index calls that method on the same instance, args-aligned:
+
+```ts
+{
+  operations: ["LRUCache", "put", "put", "get"],
+  args:       [[2],        [1, 1], [2, 2], [1]],
+  expected:   [null,       null,   null,   1],
+}
+```
+
+The client's Test Cases tab detects `kind: "design"` from
+`GET /problems/:slug/cases` and swaps in a two-field `operations`/`args`
+editor automatically — no client changes needed per design problem.
+
 ## The one rule
 
 A `public.ts` file (and anything the client imports) must NEVER import from a

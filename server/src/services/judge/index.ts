@@ -3,7 +3,7 @@
 // =========== //
 
 import { getProblem } from "../../problems/index.js";
-import type { HiddenProblem, TestCase } from "@leetbytes/problems/types";
+import type { DesignHiddenProblem, DesignTestCase, FunctionHiddenProblem, TestCase } from "@leetbytes/problems/types";
 import { runSubmission } from "../code-runner/index.js";
 import type { CodeRunnerResult } from "../code-runner/types.js";
 import { buildHarness, RESULT_SENTINEL } from "./harness.js";
@@ -46,7 +46,9 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
     return failure(request, 0, "error", `No judged test cases for "${request.problemSlug}" yet.`);
   }
 
-  return grade(request, problem, problem.tests);
+  return problem.kind === "design"
+    ? gradeDesign(request, problem, problem.tests)
+    : gradeFunction(request, problem, problem.tests);
 }
 
 // Runs a submission against example cases (the "Run" path). Identical grading
@@ -55,7 +57,7 @@ export async function judgeSubmission(request: JudgeSubmissionRequest): Promise<
 // supplied (the user edited the inputs), those are run instead of the defaults.
 export async function runExamples(
   request: JudgeSubmissionRequest,
-  customTests?: TestCase[],
+  customTests?: TestCase[] | DesignTestCase[],
 ): Promise<JudgeSubmissionResponse>
 {
   const problem = getProblem(request.problemSlug);
@@ -65,22 +67,37 @@ export async function runExamples(
     return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
   }
 
-  const tests = customTests && customTests.length > 0 ? customTests : problem.examples;
+  if (problem.kind === "design")
+  {
+    const custom = customTests as DesignTestCase[] | undefined;
+    const tests = custom && custom.length > 0 ? custom : problem.examples;
+
+    if (!tests || tests.length === 0)
+    {
+      return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
+    }
+
+    return gradeDesign(request, problem, tests);
+  }
+
+  const custom = customTests as TestCase[] | undefined;
+  const tests = custom && custom.length > 0 ? custom : problem.examples;
 
   if (!tests || tests.length === 0)
   {
     return failure(request, 0, "error", `No example cases for "${request.problemSlug}" yet.`);
   }
 
-  return grade(request, problem, tests);
+  return gradeFunction(request, problem, tests);
 }
 
 // Shared core: builds the harness around `tests`, runs it, and maps the harness
-// output into a graded, per-case response. Used by both judge and run.
-async function grade(
+// output into a graded, per-case response. Used by both grade variants below.
+async function gradeCore<T>(
   request: JudgeSubmissionRequest,
-  problem: HiddenProblem,
-  tests: TestCase[],
+  stdinPayload: object,
+  tests: T[],
+  formatCaseInput: (test: T) => string,
 ): Promise<JudgeSubmissionResponse>
 {
   const wallStartedAt = performance.now();
@@ -89,13 +106,7 @@ async function grade(
     problemSlug: request.problemSlug,
     language: request.language,
     code: buildHarness(request.code),
-    stdin: JSON.stringify({
-      functionName: problem.functionName,
-      compare: problem.compare,
-      argTypes: problem.argTypes,
-      returnType: problem.returnType,
-      tests,
-    }),
+    stdin: JSON.stringify(stdinPayload),
   });
 
   const wallRuntimeMs = Math.round(performance.now() - wallStartedAt);
@@ -107,7 +118,7 @@ async function grade(
     return inferFailure(request, tests.length, run, wallRuntimeMs);
   }
 
-  const inputs = tests.map((test) => formatInput(test.args, problem.paramNames));
+  const inputs = tests.map(formatCaseInput);
 
   const results: TestCaseResult[] = payload.results.map((result) => ({
     index: result.index,
@@ -136,6 +147,47 @@ async function grade(
     runtimeMs: solutionRuntimeMs,
     memoryKb: payload.memoryKb ?? undefined,
   };
+}
+
+function gradeFunction(
+  request: JudgeSubmissionRequest,
+  problem: FunctionHiddenProblem,
+  tests: TestCase[],
+): Promise<JudgeSubmissionResponse>
+{
+  return gradeCore(
+    request,
+    {
+      functionName: problem.functionName,
+      compare: problem.compare,
+      argTypes: problem.argTypes,
+      returnType: problem.returnType,
+      tests,
+    },
+    tests,
+    (test) => formatInput(test.args, problem.paramNames),
+  );
+}
+
+function gradeDesign(
+  request: JudgeSubmissionRequest,
+  problem: DesignHiddenProblem,
+  tests: DesignTestCase[],
+): Promise<JudgeSubmissionResponse>
+{
+  return gradeCore(
+    request,
+    { className: problem.className, tests },
+    tests,
+    formatDesignInput,
+  );
+}
+
+// Renders a design test case's operations/args the way LeetCode itself shows
+// them: the operations list and the per-operation args list, stacked.
+function formatDesignInput(test: DesignTestCase): string
+{
+  return `operations = ${JSON.stringify(test.operations)}\nargs = ${JSON.stringify(test.args)}`;
 }
 
 // Pulls the JSON payload out of the harness's sentinel-prefixed line.

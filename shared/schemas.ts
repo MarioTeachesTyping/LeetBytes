@@ -39,3 +39,18 @@ export const customCasesSchema = z
   .max(MAX_CUSTOM_CASES, `A run may include at most ${MAX_CUSTOM_CASES} test cases.`);
 
 export type CustomCases = z.infer<typeof customCasesSchema>;
+
+// The run-body equivalent of customCasesSchema for "design" problems (a class
+// with a constructor + method calls, e.g. LRUCache): each case is an
+// operations/args sequence instead of a single args list.
+export const designCustomCasesSchema = z
+  .array(
+    z.object(
+    {
+      operations: z.array(z.string()),
+      args: z.array(z.array(z.unknown())),
+    }),
+  )
+  .max(MAX_CUSTOM_CASES, `A run may include at most ${MAX_CUSTOM_CASES} test cases.`);
+
+export type DesignCustomCases = z.infer<typeof designCustomCasesSchema>;
