@@ -31,9 +31,9 @@ export const lruCache: SolutionEntry =
 
   constraints: [
     "`1 <= capacity <= 3000`.",
-    "`0 <= key <= 10^4`.",
-    "`0 <= value <= 10^5`.",
-    "At most `2 * 10^5` calls will be made to `get` and `put`.",
+    "`0 <= key <= 10⁴`.",
+    "`0 <= value <= 10⁵`.",
+    "At most `2 * 10⁵` calls will be made to `get` and `put`.",
   ],
 
   topics: [

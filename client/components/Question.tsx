@@ -177,7 +177,7 @@ export default function Question({
                     <img
                       src={ex.image}
                       alt={`Example ${i + 1} illustration`}
-                      className="max-w-full h-auto rounded-lg border border-white/20 bg-white p-2"
+                      className="max-w-[85%] h-auto rounded-lg border border-white/20 bg-white p-2"
                     />
                   </div>
                 )}

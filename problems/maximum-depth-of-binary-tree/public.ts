@@ -30,7 +30,7 @@ export const maximumDepthOfBinaryTree: SolutionEntry =
   ],
 
   constraints: [
-    "The number of nodes in the tree is in the range `[0, 10^4]`.",
+    "The number of nodes in the tree is in the range `[0, 10⁴]`.",
     "`-100 <= Node.val <= 100`.",
   ],
 

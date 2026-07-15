@@ -37,7 +37,7 @@ export const sameTree: SolutionEntry =
 
   constraints: [
     "The number of nodes in both trees is in the range `[0, 100]`.",
-    "`-10^4 <= Node.val <= 10^4`.",
+    "`-10⁴ <= Node.val <= 10⁴`.",
   ],
 
   topics: [

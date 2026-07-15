@@ -28,6 +28,21 @@ import { maximumDepthOfBinaryTreeHidden } from "./maximum-depth-of-binary-tree/h
 import { bestTimeToBuyAndSellStockHidden } from "./best-time-to-buy-and-sell-stock/hidden.ts";
 import { linkedListCycleHidden } from "./linked-list-cycle/hidden.ts";
 import { lruCacheHidden } from "./lru-cache/hidden.ts";
+import { minStackHidden } from "./min-stack/hidden.ts";
+import { majorityElementHidden } from "./majority-element/hidden.ts";
+import { numberOfIslandsHidden } from "./number-of-islands/hidden.ts";
+import { isomorphicStringsHidden } from "./isomorphic-strings/hidden.ts";
+import { reverseLinkedListHidden } from "./reverse-linked-list/hidden.ts";
+import { kthLargestElementInAnArrayHidden } from "./kth-largest-element-in-an-array/hidden.ts";
+import { containsDuplicateHidden } from "./contains-duplicate/hidden.ts";
+import { containsDuplicateIiHidden } from "./contains-duplicate-ii/hidden.ts";
+import { invertBinaryTreeHidden } from "./invert-binary-tree/hidden.ts";
+import { validAnagramHidden } from "./valid-anagram/hidden.ts";
+import { meetingRoomsHidden } from "./meeting-rooms/hidden.ts";
+import { binaryTreeVerticalOrderTraversalHidden } from "./binary-tree-vertical-order-traversal/hidden.ts";
+import { minimumRemoveToMakeValidParenthesesHidden } from "./minimum-remove-to-make-valid-parentheses/hidden.ts";
+import { sequentialDigitsHidden } from "./sequential-digits/hidden.ts";
+import { checkIfAll1SAreAtLeastLengthKPlacesAwayHidden } from "./check-if-all-1s-are-at-least-length-k-places-away/hidden.ts";
 
 export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
 {
@@ -50,6 +65,21 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStockHidden,
   "linked-list-cycle": linkedListCycleHidden,
   "lru-cache": lruCacheHidden,
+  "min-stack": minStackHidden,
+  "majority-element": majorityElementHidden,
+  "number-of-islands": numberOfIslandsHidden,
+  "isomorphic-strings": isomorphicStringsHidden,
+  "reverse-linked-list": reverseLinkedListHidden,
+  "kth-largest-element-in-an-array": kthLargestElementInAnArrayHidden,
+  "contains-duplicate": containsDuplicateHidden,
+  "contains-duplicate-ii": containsDuplicateIiHidden,
+  "invert-binary-tree": invertBinaryTreeHidden,
+  "valid-anagram": validAnagramHidden,
+  "meeting-rooms": meetingRoomsHidden,
+  "binary-tree-vertical-order-traversal": binaryTreeVerticalOrderTraversalHidden,
+  "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParenthesesHidden,
+  "sequential-digits": sequentialDigitsHidden,
+  "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAwayHidden,
 };
 
 // Slug-indexed lookup for request payloads and other untyped strings.

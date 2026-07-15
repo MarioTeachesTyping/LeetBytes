@@ -35,6 +35,21 @@ export const PROBLEM_SLUGS = [
   "best-time-to-buy-and-sell-stock",
   "linked-list-cycle",
   "lru-cache",
+  "min-stack",
+  "majority-element",
+  "number-of-islands",
+  "isomorphic-strings",
+  "reverse-linked-list",
+  "kth-largest-element-in-an-array",
+  "contains-duplicate",
+  "contains-duplicate-ii",
+  "invert-binary-tree",
+  "valid-anagram",
+  "meeting-rooms",
+  "binary-tree-vertical-order-traversal",
+  "minimum-remove-to-make-valid-parentheses",
+  "sequential-digits",
+  "check-if-all-1s-are-at-least-length-k-places-away",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];

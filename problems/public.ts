@@ -27,6 +27,21 @@ import { maximumDepthOfBinaryTree } from "./maximum-depth-of-binary-tree/public.
 import { bestTimeToBuyAndSellStock } from "./best-time-to-buy-and-sell-stock/public.ts";
 import { linkedListCycle } from "./linked-list-cycle/public.ts";
 import { lruCache } from "./lru-cache/public.ts";
+import { minStack } from "./min-stack/public.ts";
+import { majorityElement } from "./majority-element/public.ts";
+import { numberOfIslands } from "./number-of-islands/public.ts";
+import { isomorphicStrings } from "./isomorphic-strings/public.ts";
+import { reverseLinkedList } from "./reverse-linked-list/public.ts";
+import { kthLargestElementInAnArray } from "./kth-largest-element-in-an-array/public.ts";
+import { containsDuplicate } from "./contains-duplicate/public.ts";
+import { containsDuplicateIi } from "./contains-duplicate-ii/public.ts";
+import { invertBinaryTree } from "./invert-binary-tree/public.ts";
+import { validAnagram } from "./valid-anagram/public.ts";
+import { meetingRooms } from "./meeting-rooms/public.ts";
+import { binaryTreeVerticalOrderTraversal } from "./binary-tree-vertical-order-traversal/public.ts";
+import { minimumRemoveToMakeValidParentheses } from "./minimum-remove-to-make-valid-parentheses/public.ts";
+import { sequentialDigits } from "./sequential-digits/public.ts";
+import { checkIfAll1SAreAtLeastLengthKPlacesAway } from "./check-if-all-1s-are-at-least-length-k-places-away/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -50,6 +65,21 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStock,
   "linked-list-cycle": linkedListCycle,
   "lru-cache": lruCache,
+  "min-stack": minStack,
+  "majority-element": majorityElement,
+  "number-of-islands": numberOfIslands,
+  "isomorphic-strings": isomorphicStrings,
+  "reverse-linked-list": reverseLinkedList,
+  "kth-largest-element-in-an-array": kthLargestElementInAnArray,
+  "contains-duplicate": containsDuplicate,
+  "contains-duplicate-ii": containsDuplicateIi,
+  "invert-binary-tree": invertBinaryTree,
+  "valid-anagram": validAnagram,
+  "meeting-rooms": meetingRooms,
+  "binary-tree-vertical-order-traversal": binaryTreeVerticalOrderTraversal,
+  "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParentheses,
+  "sequential-digits": sequentialDigits,
+  "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAway,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.

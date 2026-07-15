@@ -91,7 +91,7 @@ export default function Solutions() {
                       </span>
                     </div>
 
-                    <div className="p-6 border-r border-white/10">
+                    <div className="p-6 border-r border-white/10 flex items-center">
                       <p className="text-white text-lg font-medium">
                         {row.title}
                       </p>
@@ -106,7 +106,7 @@ export default function Solutions() {
                     </div>
 
                     <div className="p-6 flex items-center justify-center">
-                      <p className="text-white/60 text-sm">{topicsText}</p>
+                      <p className="text-white/60 text-sm text-center">{topicsText}</p>
                     </div>
                   </div>
                 );
