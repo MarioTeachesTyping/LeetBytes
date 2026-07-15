@@ -49,9 +49,9 @@ export default function Landing()
           </div>
         </div>
 
-        <Link href="/solutions">
+        <Link href="/questions">
           <button className="px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white hover:bg-white hover:text-black transition-colors">
-            Solutions
+            Questions
           </button>
         </Link>
       </div>

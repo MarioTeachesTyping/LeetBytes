@@ -1,5 +1,5 @@
 // ============== //
-// Solutions Page //
+// Questions Page //
 // ============== //
 
 "use client";
@@ -32,7 +32,7 @@ const navItems = PROBLEM_TOPICS.map((topic) => ({
   href: topicHref(topic),
 }));
 
-export default function Solutions() {
+export default function Questions() {
   const [selectedTopic, setSelectedTopic] = useState<string>("All");
 
   // Recomputes visible rows whenever the selected topic changes.
@@ -115,7 +115,7 @@ export default function Solutions() {
                 return row.slug ? (
                   <Link
                     key={`${row.title}-${index}`}
-                    href={`/solutions/${row.slug}`}
+                    href={`/questions/${row.slug}`}
                     className="block"
                   >
                     {content}
@@ -127,7 +127,7 @@ export default function Solutions() {
 
               {filtered.length === 0 && (
                 <div className="p-10 text-center text-white/60">
-                  No Solutions Match{" "}
+                  No Questions Match{" "}
                   <span className="text-white">{selectedTopic}</span>
                 </div>
               )}

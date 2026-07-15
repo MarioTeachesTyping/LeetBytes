@@ -26,7 +26,7 @@ interface GameStageProps {
 }
 
 // Drives the minigame overlay through intro -> countdown -> playing -> result.
-// Mounted fresh each time the Navbar's Game button opens it (Solution.tsx
+// Mounted fresh each time the Navbar's Game button opens it (CodePanel.tsx
 // unmounts it on exit), so every field here resets for free between rounds.
 export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, onWin, onExit }: GameStageProps) {
   const [phase, setPhase] = useState<Phase>("intro");

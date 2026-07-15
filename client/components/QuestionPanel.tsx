@@ -7,10 +7,10 @@
 import React, { useRef } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
-import Spoiler from "./Spoiler";
+import SolutionPanel from "./SolutionPanel";
 import { useWorkspace } from "./WorkspaceContext";
 
-interface QuestionProps {
+interface QuestionPanelProps {
   title: string;
   link?: string;
   difficulty?: SolutionEntry["difficulty"];
@@ -43,7 +43,7 @@ function renderInlineCode(text: string) {
   );
 }
 
-export default function Question({
+export default function QuestionPanel({
   title,
   link,
   difficulty = "Easy",
@@ -55,7 +55,7 @@ export default function Question({
   hints = [],
   code,
   solutions,
-}: QuestionProps) {
+}: QuestionPanelProps) {
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
   const hintsRef = useRef<HTMLDivElement | null>(null);
@@ -69,10 +69,10 @@ export default function Question({
 
   const difficultyStyles =
     difficulty === "Easy"
-      ? "border-emerald-400/40 text-emerald-300 bg-emerald-500/10"
+      ? "border-emerald-400/40 text-emerald-300 bg-black/40"
       : difficulty === "Medium"
-      ? "border-amber-400/40 text-amber-300 bg-amber-500/10"
-      : "border-rose-400/40 text-rose-300 bg-rose-500/10";
+      ? "border-amber-400/40 text-amber-300 bg-black/40"
+      : "border-rose-400/40 text-rose-300 bg-black/40";
 
   const scrollToTopics = () => {
     if (!topicsRef.current) return;
@@ -94,7 +94,7 @@ export default function Question({
       {/* Content panel */}
       <aside className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-4">
       {view === "spoiler" ? (
-        <Spoiler solutions={spoilerSolutions} />
+        <SolutionPanel solutions={spoilerSolutions} />
       ) : (
       <>
 
@@ -125,7 +125,7 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToHints}
-            className="inline-flex items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 px-3 py-0.5 text-base font-medium text-violet-200
+            className="inline-flex items-center justify-center rounded-full border border-violet-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-violet-200
                        hover:bg-violet-400 hover:text-white transition-colors"
           >
             Hints
@@ -136,7 +136,7 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToTopics}
-            className="inline-flex items-center justify-center rounded-full border border-orange-300/40 bg-orange-400/10 px-3 py-0.5 text-base font-medium text-orange-200
+            className="inline-flex items-center justify-center rounded-full border border-orange-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-orange-200
                        hover:bg-orange-400 hover:text-white transition-colors"
           >
             Topics
@@ -147,7 +147,7 @@ export default function Question({
           <button
             type="button"
             onClick={scrollToCompanies}
-            className="inline-flex items-center justify-center rounded-full border border-sky-300/40 bg-sky-400/10 px-3 py-0.5 text-base font-medium text-sky-200
+            className="inline-flex items-center justify-center rounded-full border border-sky-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-sky-200
                        hover:bg-sky-400 hover:text-white transition-colors"
           >
             Companies
@@ -218,7 +218,7 @@ export default function Question({
       {/* Hints dropdown */}
       {hints.length > 0 && (
         <div ref={hintsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-violet-300/40 bg-violet-400/10">
+          <details className="group rounded-lg border border-violet-300/40 bg-black/40">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
               <span className="text-lg font-semibold text-violet-200">Hints</span>
               <span className="text-violet-200/70 transition-transform group-open:rotate-180">
@@ -232,7 +232,7 @@ export default function Question({
                 return (
                   <div
                     key={`hint-${i}`}
-                    className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-sm text-violet-100/80"
+                    className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-black/30 px-3 py-2 text-sm text-violet-100/80"
                   >
                     {unlocked ? (
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
@@ -251,7 +251,7 @@ export default function Question({
       {/* Topics dropdown */}
       {topics.length > 0 && (
         <div ref={topicsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-orange-300/40 bg-orange-400/10">
+          <details className="group rounded-lg border border-orange-300/40 bg-black/40">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
               <span className="text-lg font-semibold text-orange-200">Topics</span>
               <span className="text-orange-200/70 transition-transform group-open:rotate-180">
@@ -263,7 +263,7 @@ export default function Question({
               {topics.map((t) => (
                 <span
                   key={`dropdown-${t}`}
-                  className="inline-flex items-center justify-center rounded-full border border-orange-300/30 bg-orange-400/20 px-3 py-1 text-sm font-medium text-orange-100"
+                  className="inline-flex items-center justify-center rounded-full border border-orange-300/30 bg-black/30 px-3 py-1 text-sm font-medium text-orange-100"
                 >
                   {t}
                 </span>
@@ -276,7 +276,7 @@ export default function Question({
       {/* Companies dropdown */}
       {companies.length > 0 && (
         <div ref={companiesRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-sky-300/40 bg-sky-400/10">
+          <details className="group rounded-lg border border-sky-300/40 bg-black/40">
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
               <span className="text-lg font-semibold text-sky-200">Companies</span>
               <span className="text-sky-200/70 transition-transform group-open:rotate-180">
@@ -288,7 +288,7 @@ export default function Question({
               {companies.map((c) => (
                 <span
                   key={`company-${c}`}
-                  className="inline-flex items-center justify-center rounded-full border border-sky-300/30 bg-sky-400/20 px-3 py-1 text-sm font-medium text-sky-100"
+                  className="inline-flex items-center justify-center rounded-full border border-sky-300/30 bg-black/30 px-3 py-1 text-sm font-medium text-sky-100"
                 >
                   {c}
                 </span>

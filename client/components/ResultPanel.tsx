@@ -327,9 +327,9 @@ function JudgeResult({
   );
 }
 
-// The bottom result area for the Solution panel. Renders whichever view the
+// The bottom result area for the Code panel. Renders whichever view the
 // current panel state calls for.
-export default function Result({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) {
+export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) {
   if (panel.kind === "idle") {
     return (
       <div className="flex h-full items-center justify-center px-4 py-6 text-center text-sm text-white/50">

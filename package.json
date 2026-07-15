@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n server,client -c blue,green \"pnpm --filter leetbytes-server dev\" \"pnpm --filter client dev\"",
+    "dev:local": "cross-env CODE_RUNNER=local-python pnpm dev",
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "cross-env": "^10.1.0"
   }
 }

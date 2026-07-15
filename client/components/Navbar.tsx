@@ -36,7 +36,7 @@ export default function Navbar() {
       {/* Left cluster: previous arrow, logo, next arrow */}
       <div className="flex items-center gap-2 pl-4">
         {previous ? (
-          <Link href={`/solutions/${previous}`}>
+          <Link href={`/questions/${previous}`}>
             <button className="flex items-center justify-center w-8 h-8 rounded-full border border-white/30 text-white hover:bg-white hover:text-black transition-colors">
               <FaChevronCircleLeft className="w-4 h-4" />
             </button>
@@ -48,7 +48,7 @@ export default function Navbar() {
         )}
 
         <Link
-          href="/solutions"
+          href="/questions"
           className="group flex items-center justify-center w-8 h-8 rounded-full border border-white/30 overflow-hidden"
         >
           <Image
@@ -62,7 +62,7 @@ export default function Navbar() {
         </Link>
 
         {next ? (
-          <Link href={`/solutions/${next}`}>
+          <Link href={`/questions/${next}`}>
             <button className="flex items-center justify-center w-8 h-8 rounded-full border border-white/30 text-white hover:bg-white hover:text-black transition-colors">
               <FaChevronCircleRight className="w-4 h-4" />
             </button>

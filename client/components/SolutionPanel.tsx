@@ -1,6 +1,6 @@
-// ============= //
-// Spoiler Panel //
-// ============= //
+// =============== //
+// Solution Panel  //
+// =============== //
 
 "use client";
 
@@ -9,7 +9,7 @@ import { highlightPython } from "@/lib/highlight";
 import type { SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
 
-interface SpoilerProps {
+interface SolutionPanelProps {
   solutions: SpoilerSolution[];
 }
 
@@ -17,7 +17,7 @@ interface SpoilerProps {
  * One read-only, syntax-highlighted code block hidden behind a Balatro overlay.
  * Highlights with Shiki on the client and reveals independently of its siblings.
  */
-function SpoilerBlock({ code }: { code: string }) {
+function SolutionBlock({ code }: { code: string }) {
   const [html, setHtml] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -76,7 +76,7 @@ function SpoilerBlock({ code }: { code: string }) {
  * Spoiler view: each approach gets a title + description section above its own
  * revealable code block, so multiple ways of solving the problem can be listed.
  */
-export default function Spoiler({ solutions }: SpoilerProps) {
+export default function SolutionPanel({ solutions }: SolutionPanelProps) {
   return (
     <div className="space-y-8">
       {solutions.map((solution, i) => (
@@ -91,7 +91,7 @@ export default function Spoiler({ solutions }: SpoilerProps) {
             )}
           </div>
 
-          <SpoilerBlock code={solution.code} />
+          <SolutionBlock code={solution.code} />
         </div>
       ))}
     </div>

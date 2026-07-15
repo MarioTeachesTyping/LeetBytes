@@ -1,6 +1,6 @@
-// =============== //
-// Solutions Panel //
-// =============== //
+// ========== //
+// Code Panel //
+// ========== //
 
 "use client";
 
@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import CodeEditor from "./CodeEditor";
 import GameStage from "./games/GameStage";
-import Result, { DesignTestCasesEditor, TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./Result";
+import ResultPanel, { DesignTestCasesEditor, TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./ResultPanel";
 import { HINT_SCORE_TARGETS, useWorkspace } from "./WorkspaceContext";
 import type { ProblemCasesResponse } from "@leetbytes/shared";
 
@@ -25,12 +25,12 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "submissions", label: "Submissions" },
 ];
 
-interface SolutionProps {
+interface CodePanelProps {
   slug: string;
   starterCode: string;
 }
 
-export default function Solution({ slug, starterCode }: SolutionProps) {
+export default function CodePanel({ slug, starterCode }: CodePanelProps) {
   const [code, setCode] = useState(starterCode);
   // Run output ("Test Results") and judge output ("Submissions") are tracked
   // separately so switching tabs never discards the other's last result.
@@ -367,10 +367,10 @@ export default function Solution({ slug, starterCode }: SolutionProps) {
               )
             )}
             {tab === "results" && (
-              <Result panel={runResult} idleMessage="Run your code to see the output for each case." />
+              <ResultPanel panel={runResult} idleMessage="Run your code to see the output for each case." />
             )}
             {tab === "submissions" && (
-              <Result panel={judgeResult} idleMessage="Judge your code to test it against every case." />
+              <ResultPanel panel={judgeResult} idleMessage="Judge your code to test it against every case." />
             )}
           </div>
         )}

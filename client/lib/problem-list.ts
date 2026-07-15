@@ -11,7 +11,7 @@ export type ProblemListRow = {
 const BACKLOG_ROWS: ProblemListRow[] = [
 ];
 
-const titleWithoutProblemNumber = (title: string) =>
+export const titleWithoutProblemNumber = (title: string) =>
   title.replace(/^\d+\.\s*/, "");
 
 const problemNumber = (title: string) => {
@@ -19,7 +19,7 @@ const problemNumber = (title: string) => {
   return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
 };
 
-const solutionRows: ProblemListRow[] = Object.entries(PROBLEMS)
+const questionRows: ProblemListRow[] = Object.entries(PROBLEMS)
   .map(([slug, entry]) => ({
     title: titleWithoutProblemNumber(entry.title),
     difficulty: entry.difficulty,
@@ -35,7 +35,7 @@ const solutionRows: ProblemListRow[] = Object.entries(PROBLEMS)
     slug: row.slug,
   }));
 
-export const PROBLEM_ROWS = [...solutionRows, ...BACKLOG_ROWS];
+export const PROBLEM_ROWS = [...questionRows, ...BACKLOG_ROWS];
 
 export const PROBLEM_TOPICS = [
   "All",
