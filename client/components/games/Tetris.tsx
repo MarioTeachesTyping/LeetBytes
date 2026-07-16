@@ -99,7 +99,8 @@ type GameState = {
   toppedOut: boolean;
 };
 
-function emptyBoard(): Board {
+function emptyBoard(): Board
+{
   return Array.from({ length: ROWS }, () => Array<TetrominoType | null>(COLUMNS).fill(null));
 }
 
@@ -109,13 +110,16 @@ function emptyBoard(): Board {
 // repeats, so you never get long droughts of one piece or clumps of another.
 // avoidFirst swaps the bag's first slot if it would land right after the
 // previous bag's last piece, so a type can never repeat back-to-back either.
-function shuffledBag(avoidFirst?: TetrominoType): TetrominoType[] {
+function shuffledBag(avoidFirst?: TetrominoType): TetrominoType[]
+{
   const bag = [...TETROMINO_TYPES];
-  for (let i = bag.length - 1; i > 0; i--) {
+  for (let i = bag.length - 1; i > 0; i--)
+  {
     const j = Math.floor(Math.random() * (i + 1));
     [bag[i], bag[j]] = [bag[j], bag[i]];
   }
-  if (avoidFirst && bag[0] === avoidFirst) {
+  if (avoidFirst && bag[0] === avoidFirst)
+  {
     const swapWith = 1 + Math.floor(Math.random() * (bag.length - 1));
     [bag[0], bag[swapWith]] = [bag[swapWith], bag[0]];
   }
@@ -124,9 +128,11 @@ function shuffledBag(avoidFirst?: TetrominoType): TetrominoType[] {
 
 // Tops the queue back up to NEXT_COUNT pieces so the Next panel always has a
 // full lookahead to show, drawing whole bags at a time.
-function fillQueue(queue: TetrominoType[]): TetrominoType[] {
+function fillQueue(queue: TetrominoType[]): TetrominoType[]
+{
   const filled = [...queue];
-  while (filled.length < NEXT_COUNT) {
+  while (filled.length < NEXT_COUNT)
+  {
     filled.push(...shuffledBag(filled[filled.length - 1]));
   }
   return filled;
@@ -134,32 +140,39 @@ function fillQueue(queue: TetrominoType[]): TetrominoType[] {
 
 // Draws the next piece off the front of the queue, refilling it back up to
 // NEXT_COUNT so the caller always gets a fresh, fully-stocked queue back.
-function drawFromQueue(queue: TetrominoType[]): { piece: ActivePiece; queue: TetrominoType[] } {
+function drawFromQueue(queue: TetrominoType[]): { piece: ActivePiece; queue: TetrominoType[] }
+{
   const [type, ...rest] = fillQueue(queue);
   return { piece: { type, rotation: 0, x: 3, y: 0 }, queue: fillQueue(rest) };
 }
 
-function initialState(): GameState {
+function initialState(): GameState
+{
   const { piece, queue } = drawFromQueue([]);
   return { board: emptyBoard(), piece, queue, hold: null, canHold: true, score: 0, combo: 0, toppedOut: false };
 }
 
-function cellsFor(piece: ActivePiece): [number, number][] {
+function cellsFor(piece: ActivePiece): [number, number][]
+{
   return ROTATIONS[piece.type][piece.rotation].map(([dx, dy]) => [piece.x + dx, piece.y + dy]);
 }
 
 // Where the active piece would land if hard-dropped right now, for the ghost
 // preview. Doesn't touch score/combo — it's a pure look-ahead, not a drop.
-function ghostCellsFor(board: Board, piece: ActivePiece): [number, number][] {
+function ghostCellsFor(board: Board, piece: ActivePiece): [number, number][]
+{
   let ghost = piece;
-  while (!collides(board, { ...ghost, y: ghost.y + 1 })) {
+  while (!collides(board, { ...ghost, y: ghost.y + 1 }))
+  {
     ghost = { ...ghost, y: ghost.y + 1 };
   }
   return cellsFor(ghost);
 }
 
-function collides(board: Board, piece: ActivePiece): boolean {
-  return cellsFor(piece).some(([x, y]) => {
+function collides(board: Board, piece: ActivePiece): boolean
+{
+  return cellsFor(piece).some(([x, y]) =>
+  {
     if (x < 0 || x >= COLUMNS || y >= ROWS) return true;
     if (y < 0) return false;
     return board[y][x] !== null;
@@ -170,15 +183,18 @@ function collides(board: Board, piece: ActivePiece): boolean {
 // clear (with a combo bonus for back-to-back clears), and spawns the next
 // piece — or flags a top-out if the next piece has nowhere to spawn. Pure:
 // takes the previous state and returns a new one, no outside mutation.
-function lockInto(state: GameState, pieceToLock: ActivePiece): GameState {
+function lockInto(state: GameState, pieceToLock: ActivePiece): GameState
+{
   const merged = state.board.map((row) => [...row]);
-  cellsFor(pieceToLock).forEach(([x, y]) => {
+  cellsFor(pieceToLock).forEach(([x, y]) =>
+  {
     if (y >= 0 && y < ROWS && x >= 0 && x < COLUMNS) merged[y][x] = pieceToLock.type;
   });
 
   const remaining = merged.filter((row) => row.some((cell) => cell === null));
   const clearedCount = ROWS - remaining.length;
-  while (remaining.length < ROWS) {
+  while (remaining.length < ROWS)
+  {
     remaining.unshift(Array<TetrominoType | null>(COLUMNS).fill(null));
   }
 
@@ -187,31 +203,36 @@ function lockInto(state: GameState, pieceToLock: ActivePiece): GameState {
   const score = state.score + gained;
 
   const { piece: next, queue } = drawFromQueue(state.queue);
-  if (collides(remaining, next)) {
+  if (collides(remaining, next))
+  {
     return { ...state, board: remaining, piece: pieceToLock, queue, score, combo, toppedOut: true };
   }
   return { ...state, board: remaining, piece: next, queue, score, combo, toppedOut: false, canHold: true };
 }
 
-function tick(state: GameState): GameState {
+function tick(state: GameState): GameState
+{
   const dropped = { ...state.piece, y: state.piece.y + 1 };
   if (collides(state.board, dropped)) return lockInto(state, state.piece);
   return { ...state, piece: dropped };
 }
 
-function moveState(state: GameState, dx: number, dy: number): GameState {
+function moveState(state: GameState, dx: number, dy: number): GameState
+{
   const moved = { ...state.piece, x: state.piece.x + dx, y: state.piece.y + dy };
   if (collides(state.board, moved)) return state;
   return { ...state, piece: moved };
 }
 
-function softDropState(state: GameState): GameState {
+function softDropState(state: GameState): GameState
+{
   const moved = { ...state.piece, y: state.piece.y + 1 };
   if (collides(state.board, moved)) return state;
   return { ...state, piece: moved, score: state.score + 1 };
 }
 
-function rotateState(state: GameState): GameState {
+function rotateState(state: GameState): GameState
+{
   const rotated = { ...state.piece, rotation: (state.piece.rotation + 1) % 4 };
   if (collides(state.board, rotated)) return state;
   return { ...state, piece: rotated };
@@ -221,10 +242,12 @@ function rotateState(state: GameState): GameState {
 // from an empty hold (draw the next queued piece) or from whatever was
 // already held. Limited to once per piece in play via canHold, so a piece
 // can't be bounced in and out of hold repeatedly before it locks.
-function holdState(state: GameState): GameState {
+function holdState(state: GameState): GameState
+{
   if (!state.canHold) return state;
 
-  if (state.hold === null) {
+  if (state.hold === null)
+  {
     const { piece, queue } = drawFromQueue(state.queue);
     return { ...state, hold: state.piece.type, piece, queue, canHold: false };
   }
@@ -234,17 +257,20 @@ function holdState(state: GameState): GameState {
   return { ...state, hold: state.piece.type, piece: swapped, canHold: false };
 }
 
-function hardDropState(state: GameState): GameState {
+function hardDropState(state: GameState): GameState
+{
   let landed = state.piece;
   let distance = 0;
-  while (!collides(state.board, { ...landed, y: landed.y + 1 })) {
+  while (!collides(state.board, { ...landed, y: landed.y + 1 }))
+  {
     landed = { ...landed, y: landed.y + 1 };
     distance += 1;
   }
   return lockInto({ ...state, score: state.score + distance * 2 }, landed);
 }
 
-interface TetrisProps {
+interface TetrisProps
+{
   running: boolean;
   secondsLeft: number;
   targetScore: number;
@@ -256,32 +282,39 @@ interface TetrisProps {
 // is true. Score changes are reported upward so the parent can judge a win
 // against its own countdown instead of this component tracking time itself.
 // secondsLeft/targetScore are display-only, owned by the parent's round clock.
-export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onTopOut }: TetrisProps) {
+export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onTopOut }: TetrisProps)
+{
   const [state, setState] = useState<GameState>(initialState);
   const onScoreChangeRef = useRef(onScoreChange);
   const onTopOutRef = useRef(onTopOut);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     onScoreChangeRef.current = onScoreChange;
   }, [onScoreChange]);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     onTopOutRef.current = onTopOut;
   }, [onTopOut]);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     onScoreChangeRef.current(state.score);
   }, [state.score]);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (state.toppedOut) onTopOutRef.current();
   }, [state.toppedOut]);
 
   // Gravity loop — only active while the round is running, and stops nudging
   // the board once it's topped out (the parent reacts to that separately).
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (!running) return;
-    const interval = setInterval(() => {
+    const interval = setInterval(() =>
+    {
       setState((prev) => (prev.toppedOut ? prev : tick(prev)));
     }, DROP_INTERVAL_MS);
     return () => clearInterval(interval);
@@ -289,11 +322,14 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
 
   // Keyboard controls — only listening while the round is running, so input
   // never leaks to the page once the game ends or is exited.
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (!running) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      switch (event.key) {
+    function handleKeyDown(event: KeyboardEvent)
+    {
+      switch (event.key)
+      {
         case "ArrowLeft":
           event.preventDefault();
           setState((prev) => (prev.toppedOut ? prev : moveState(prev, -1, 0)));
@@ -354,7 +390,8 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
       >
         {state.board.map((row, y) => (
           <div key={y} className="flex">
-            {row.map((cell, x) => {
+            {row.map((cell, x) =>
+            {
               const key = `${x},${y}`;
               const type = activeCells.has(key) ? state.piece.type : cell;
               const isGhost = !type && ghostCells.has(key);
@@ -399,7 +436,8 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
 }
 
 // Small bordered box used for the Hold/Time/Score panels and the Next panel.
-function PiecePanel({ label, children }: { label: string; children: React.ReactNode }) {
+function PiecePanel({ label, children }: { label: string; children: React.ReactNode })
+{
   return (
     <div className="flex w-28 flex-col items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-3">
       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/50">{label}</span>
@@ -413,9 +451,11 @@ const PREVIEW_CELL_SIZE = 16;
 // Renders a piece at its spawn rotation inside a fixed 4x4 box, for the Hold
 // and Next panels. Renders an empty box of the same size when there's nothing
 // to show, so panels don't jump around as pieces come and go.
-function PiecePreview({ type }: { type: TetrominoType | null }) {
+function PiecePreview({ type }: { type: TetrominoType | null })
+{
   const size = PREVIEW_CELL_SIZE;
-  if (!type) {
+  if (!type)
+  {
     return <div style={{ width: size * 4, height: size * 4 }} />;
   }
   const cells = new Set(ROTATIONS[type][0].map(([x, y]) => `${x},${y}`));

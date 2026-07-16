@@ -44,6 +44,12 @@ export const bestTimeToBuyAndSellStock: SolutionEntry =
     "Amazon", "Google", "Bloomberg", "Meta", "Microsoft", "Apple",
   ],
 
+  hints: [
+    "You need to buy before you sell, so as you scan through the prices, what value would you want to keep track of from everything you've already seen?",
+    "At each day, ask two questions: is this the cheapest price so far, and if I sold today instead, what profit would that give me? Both answers only depend on days before the current one.",
+    "Track a running minimum price as you iterate; at each day compute `prices[i] - min_price_so_far` and keep the max of that across the whole pass — no need for two nested loops.",
+  ],
+
   starterCode: `class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         `,

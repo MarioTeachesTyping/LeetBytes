@@ -4,7 +4,8 @@
 
 import { createHighlighter } from "shiki";
 
-interface CodeBlockProps {
+interface CodeBlockProps
+{
   code: string;
   lang?: string;
 }
@@ -12,7 +13,8 @@ interface CodeBlockProps {
 export default async function CodeBlock({
   code,
   lang = "python",
-}: CodeBlockProps) {
+}: CodeBlockProps)
+{
   const highlighter = await createHighlighter({
     themes: ["vesper"],
     langs: ["python"],

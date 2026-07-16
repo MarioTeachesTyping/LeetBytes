@@ -32,14 +32,17 @@ const navItems = PROBLEM_TOPICS.map((topic) => ({
   href: topicHref(topic),
 }));
 
-export default function Questions() {
+export default function Questions()
+{
   const [selectedTopic, setSelectedTopic] = useState<string>("All");
 
   // Recomputes visible rows whenever the selected topic changes.
-  const filtered = useMemo(() => {
+  const filtered = useMemo(() =>
+  {
     if (selectedTopic === "All") return PROBLEM_ROWS;
 
-    return PROBLEM_ROWS.filter((row) => {
+    return PROBLEM_ROWS.filter((row) =>
+    {
       return row.topics.includes(selectedTopic);
     });
   }, [selectedTopic]);
@@ -73,7 +76,8 @@ export default function Questions() {
         <div className="w-full h-full max-w-6xl mx-auto relative z-10">
           <div className="w-full h-full bg-black/80 backdrop-blur-sm border-2 border-white/20 rounded-lg overflow-hidden">
             <div className="w-full h-full overflow-y-auto pr-2">
-              {filtered.map((row, index) => {
+              {filtered.map((row, index) =>
+              {
                 const diffColor =
                   difficultyTextClass[row.difficulty] ?? "text-white/70";
                 const topicsText = row.topics.join(", ");

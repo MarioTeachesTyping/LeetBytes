@@ -43,6 +43,12 @@ export const meetingRooms: SolutionEntry =
     "Amazon",
   ],
 
+  hints: [
+    "Overlaps are easiest to spot when meetings are in a predictable order — what would you do to the list first so that any conflict would only ever appear between two meetings sitting right next to each other?",
+    "Once sorted by start time, what relationship between one meeting's end time and the very next meeting's start time would tell you they overlap?",
+    "Sort `intervals` by start time, then loop through adjacent pairs checking if `intervals[i][1] > intervals[i + 1][0]` — if that's ever true, return False; otherwise return True after the loop.",
+  ],
+
   starterCode: `class Solution:
     def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
         `,

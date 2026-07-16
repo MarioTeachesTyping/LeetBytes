@@ -46,6 +46,12 @@ export const reverseLinkedList: SolutionEntry =
     "Google", "Amazon", "Bloomberg", "Microsoft",
   ],
 
+  hints: [
+    "If you already had the rest of the list reversed starting from the second node, what single pointer change would attach the current node to the end of that reversed portion?",
+    "Recursing all the way to the last node first, then working backwards as the calls return, means each node only needs to worry about pointing its old 'next' node back at itself — what would happen if you didn't also clear the original `next` pointer?",
+    "Recurse to the base case (`head` is null or `head.next` is null, return `head`), then on the way back up set `head.next.next = head`, set `head.next = None` to break the old forward link, and return the same reversed head all the way up.",
+  ],
+
   starterCode: `# Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):

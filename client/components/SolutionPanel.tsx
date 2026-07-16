@@ -9,31 +9,35 @@ import { highlightPython } from "@/lib/highlight";
 import type { SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
 
-interface SolutionPanelProps {
+interface SolutionPanelProps 
+{
   solutions: SpoilerSolution[];
 }
 
-/**
- * One read-only, syntax-highlighted code block hidden behind a Balatro overlay.
- * Highlights with Shiki on the client and reveals independently of its siblings.
- */
-function SolutionBlock({ code }: { code: string }) {
+// One read-only, syntax-highlighted code block hidden behind a Balatro overlay.
+// Highlights with Shiki on the client and reveals independently of its siblings.
+function SolutionBlock({ code }: { code: string })
+{
   const [html, setHtml] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     let active = true;
 
-    highlightPython(code).then((result) => {
+    highlightPython(code).then((result) =>
+    {
       if (active) setHtml(result);
     });
 
-    return () => {
+    return () =>
+    {
       active = false;
     };
   }, [code]);
 
-  if (!html) {
+  if (!html) 
+  {
     return (
       <div className="rounded-md bg-[#0d1117] p-4 text-sm text-white/40">
         Loading…
@@ -72,11 +76,10 @@ function SolutionBlock({ code }: { code: string }) {
   );
 }
 
-/**
- * Spoiler view: each approach gets a title + description section above its own
- * revealable code block, so multiple ways of solving the problem can be listed.
- */
-export default function SolutionPanel({ solutions }: SolutionPanelProps) {
+// Spoiler view: each approach gets a title + description section above its own
+// revealable code block, so multiple ways of solving the problem can be listed.
+export default function SolutionPanel({ solutions }: SolutionPanelProps)
+{
   return (
     <div className="space-y-8">
       {solutions.map((solution, i) => (

@@ -46,6 +46,12 @@ export const invertBinaryTree: SolutionEntry =
     "Google", "Meta",
   ],
 
+  hints: [
+    "Inverting the whole tree is really just inverting every subtree the same way — what would happen if you assumed you already had the correctly inverted left and right subtrees in hand?",
+    "What's the simplest base case that stops the recursion from going past the bottom of the tree?",
+    "Recursively invert `root.left` and `root.right` first, storing each result, then swap them onto the root — `root.left, root.right = inverted_right, inverted_left` — before returning `root`.",
+  ],
+
   starterCode: `# Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):

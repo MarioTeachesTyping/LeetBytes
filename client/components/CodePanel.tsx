@@ -25,12 +25,14 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "submissions", label: "Submissions" },
 ];
 
-interface CodePanelProps {
+interface CodePanelProps
+{
   slug: string;
   starterCode: string;
 }
 
-export default function CodePanel({ slug, starterCode }: CodePanelProps) {
+export default function CodePanel({ slug, starterCode }: CodePanelProps)
+{
   const [code, setCode] = useState(starterCode);
   // Run output ("Test Results") and judge output ("Submissions") are tracked
   // separately so switching tabs never discards the other's last result.
@@ -71,21 +73,25 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
 
   // The minigame replaces the editor, so the (usually collapsed) test panel
   // has no reason to be open underneath it while a round is showing.
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (gameOpen) setOpen(false);
   }, [gameOpen]);
 
   // Re-register every render so the Navbar always calls our latest closures.
   // setActions only writes a ref, so this doesn't cause a re-render loop.
-  useEffect(() => {
+  useEffect(() =>
+  {
     setActions({ onRun: handleRunExamples, onJudge: handleJudge });
   });
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     setStatus({ busy, running });
   }, [busy, running, setStatus]);
 
-  const onResize = useCallback((event: MouseEvent) => {
+  const onResize = useCallback((event: MouseEvent) =>
+  {
     const drag = dragRef.current;
     if (!drag) return;
     // Dragging up (smaller clientY) grows the panel.
@@ -93,7 +99,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
     setPanelHeight(Math.min(Math.max(next, 120), drag.maxHeight));
   }, []);
 
-  const stopResize = useCallback(() => {
+  const stopResize = useCallback(() =>
+  {
     dragRef.current = null;
     window.removeEventListener("mousemove", onResize);
     window.removeEventListener("mouseup", stopResize);
@@ -101,7 +108,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
     document.body.style.cursor = "";
   }, [onResize]);
 
-  function startResize(event: React.MouseEvent) {
+  function startResize(event: React.MouseEvent)
+  {
     event.preventDefault();
     const containerHeight = containerRef.current?.clientHeight ?? window.innerHeight;
     dragRef.current = {
@@ -120,20 +128,24 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
   useEffect(() => stopResize, [stopResize]);
 
   // Load the problem's default inputs into the editor once on mount.
-  useEffect(() => {
+  useEffect(() =>
+  {
     let active = true;
 
     fetch(`${SERVER_URL}/problems/${slug}/cases`)
       .then((response) => (response.ok ? (response.json() as Promise<ProblemCasesResponse>) : null))
-      .then((data) => {
-        if (!active || !data) {
+      .then((data) =>
+      {
+        if (!active || !data)
+        {
           if (active) setCasesLoading(false);
           return;
         }
 
         setMode(data.kind);
 
-        if (data.kind === "design") {
+        if (data.kind === "design")
+        {
           const values = data.cases.map((c) => ({
             operations: JSON.stringify(c.operations),
             args: JSON.stringify(c.args),
@@ -141,7 +153,9 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
           setDesignCaseValues(values);
           setDesignOriginalValues(values.map((v) => ({ ...v })));
           setDesignCaseExpected(data.cases.map((c) => c.expected));
-        } else {
+        }
+        else
+        {
           const values = data.cases.map((c) => c.args.map((arg) => JSON.stringify(arg)));
           setParamNames(data.paramNames);
           setCaseValues(values);
@@ -151,16 +165,19 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
 
         setCasesLoading(false);
       })
-      .catch(() => {
+      .catch(() =>
+      {
         if (active) setCasesLoading(false);
       });
 
-    return () => {
+    return () =>
+    {
       active = false;
     };
   }, [slug]);
 
-  function updateCase(caseIndex: number, argIndex: number, value: string) {
+  function updateCase(caseIndex: number, argIndex: number, value: string)
+  {
     setCaseValues((prev) =>
       prev.map((row, i) =>
         i === caseIndex ? row.map((v, j) => (j === argIndex ? value : v)) : row,
@@ -168,32 +185,41 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
     );
   }
 
-  function updateDesignCase(caseIndex: number, field: "operations" | "args", value: string) {
+  function updateDesignCase(caseIndex: number, field: "operations" | "args", value: string)
+  {
     setDesignCaseValues((prev) =>
       prev.map((row, i) => (i === caseIndex ? { ...row, [field]: value } : row)),
     );
   }
 
   // Runs the code against the (possibly edited) test cases and shows per-case output.
-  async function handleRunExamples() {
+  async function handleRunExamples()
+  {
     setOpen(true);
     setTab("results");
 
     // Turn each editable JSON field into the shape /submissions/run expects.
     // Bail early on bad JSON.
     let cases: unknown[] | undefined;
-    try {
-      if (mode === "design") {
-        if (designCaseValues.length > 0) {
+    try
+    {
+      if (mode === "design")
+      {
+        if (designCaseValues.length > 0)
+        {
           cases = designCaseValues.map((row) => ({
             operations: JSON.parse(row.operations),
             args: JSON.parse(row.args),
           }));
         }
-      } else if (caseValues.length > 0) {
+      }
+      else if (caseValues.length > 0)
+      {
         cases = caseValues.map((row) => ({ args: row.map((text) => JSON.parse(text)) }));
       }
-    } catch {
+    }
+    catch
+    {
       setRunResult({
         kind: "error",
         detail: "One of your inputs isn't valid JSON — check the Test Cases tab.",
@@ -203,7 +229,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
 
     setRunResult({ kind: "running", action: "run" });
 
-    try {
+    try
+    {
       const response = await fetch(`${SERVER_URL}/submissions/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -212,12 +239,17 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
 
       const data = (await response.json()) as GradeResponse;
 
-      if (data.results && data.results.length > 0) {
+      if (data.results && data.results.length > 0)
+      {
         setRunResult({ kind: "run", cases: withExpected(data.results, cases !== undefined), message: data.message });
-      } else {
+      }
+      else
+      {
         setRunResult({ kind: "error", detail: data.message ?? "Could not run the examples." });
       }
-    } catch {
+    }
+    catch
+    {
       setRunResult({ kind: "error", detail: "Could not reach the server." });
     }
   }
@@ -225,11 +257,14 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
   // Attaches the known expected answer to each result — but only for cases whose
   // inputs are unchanged from the defaults, since editing an input makes the
   // expected answer unknown. When defaults ran, the server's expected is kept.
-  function withExpected(results: CaseResult[], sentCustom: boolean): CaseResult[] {
+  function withExpected(results: CaseResult[], sentCustom: boolean): CaseResult[]
+  {
     if (!sentCustom) return results;
 
-    if (mode === "design") {
-      return results.map((result) => {
+    if (mode === "design")
+    {
+      return results.map((result) =>
+      {
         const i = result.index;
         const unchanged =
           designOriginalValues[i] && designCaseValues[i]
@@ -241,7 +276,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
       });
     }
 
-    return results.map((result) => {
+    return results.map((result) =>
+    {
       const i = result.index;
       const unchanged =
         originalValues[i] && caseValues[i]
@@ -253,12 +289,14 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
   }
 
   // Grades the code against the full hidden test suite.
-  async function handleJudge() {
+  async function handleJudge()
+  {
     setOpen(true);
     setTab("submissions");
     setJudgeResult({ kind: "running", action: "judge" });
 
-    try {
+    try
+    {
       const response = await fetch(`${SERVER_URL}/submissions/judge`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -275,7 +313,9 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
         memoryKb: data.memoryKb,
         message: data.message,
       });
-    } catch {
+    }
+    catch
+    {
       setJudgeResult({ kind: "error", detail: "Could not reach the server." });
     }
   }
@@ -323,7 +363,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps) {
                 key={key}
                 type="button"
                 disabled={gameOpen}
-                onClick={() => {
+                onClick={() =>
+                {
                   setTab(key);
                   setOpen(true);
                 }}

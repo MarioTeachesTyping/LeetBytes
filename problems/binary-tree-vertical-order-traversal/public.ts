@@ -48,6 +48,12 @@ export const binaryTreeVerticalOrderTraversal: SolutionEntry =
     "Meta", "Bloomberg", "Apple",
   ],
 
+  hints: [
+    "Since nodes in the same column but different rows still need to appear top-to-bottom, and same row/column ties broken left-to-right, which traversal order — depth-first or breadth-first — naturally visits nodes level by level in the right left-to-right order within each level?",
+    "You need to track more than just the node as you traverse — what extra piece of information would tell you which 'column' a node belongs to, and how would moving left or right change it?",
+    "BFS with a queue of `(node, column)` pairs, starting the root at column 0; each left child gets `column - 1` and each right child gets `column + 1`. Group values into a dict keyed by column, tracking the min/max column seen, then return the dict's lists in column order.",
+  ],
+
   starterCode: `# Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):

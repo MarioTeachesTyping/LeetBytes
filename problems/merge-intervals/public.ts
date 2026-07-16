@@ -48,6 +48,12 @@ export const mergeIntervals: SolutionEntry =
     "Google", "Bloomberg", "Amazon", "CleverTap",
   ],
 
+  hints: [
+    "Overlaps are hard to spot when the intervals are in arbitrary order — what could you do to the input first that would make overlapping intervals sit next to each other?",
+    "Once sorted by start time, you only ever need to compare each interval against the last one you've already merged — how would you decide whether to extend that last interval or start a brand new one?",
+    "If the current interval's start is greater than the end of the last merged interval, append it as a new group; otherwise, update the last merged interval's end to `max(last_end, current_end)`.",
+  ],
+
   starterCode: `class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         `,

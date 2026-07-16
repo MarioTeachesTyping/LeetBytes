@@ -42,6 +42,12 @@ export const kthLargestElementInAnArray: SolutionEntry =
     "Google", "Meta", "Amazon", "Spotify", "Bloomberg",
   ],
 
+  hints: [
+    "The problem hints that sorting the whole array might be overkill — since you only care about the top k values, what data structure is built to efficiently track 'the smallest of the largest values seen so far'?",
+    "If you maintain a heap that never grows past size k, what would popping its smallest element represent, and what would be left in the heap once you're done?",
+    "Push every number onto a min-heap, and whenever the heap's size exceeds `k`, pop the smallest — by the end the heap holds exactly the k largest values, and `heap[0]` is the kth largest.",
+  ],
+
   starterCode: `class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         `,

@@ -45,6 +45,12 @@ export const checkIfAll1SAreAtLeastLengthKPlacesAway: SolutionEntry =
     "Google",
   ],
 
+  hints: [
+    "You only really care about the gap between consecutive 1s — what single counter could you maintain as you scan through the array to measure that gap?",
+    "What should happen to your counter every time you pass a 0 versus every time you hit a 1 — and at what point does hitting a 1 tell you the array already fails?",
+    "Keep a `count` starting at `k` (so the very first 1 never fails); increment it on every 0, and on every 1 check if `count < k` (return False if so) before resetting `count` back to 0.",
+  ],
+
   starterCode: `class Solution:
     def kLengthApart(self, nums: List[int], k: int) -> bool:
         `,

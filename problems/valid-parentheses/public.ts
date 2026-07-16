@@ -56,6 +56,12 @@ export const validParentheses: SolutionEntry =
     "Google", "Bloomberg", "Meta",
   ],
 
+  hints: [
+    "The most recently opened bracket needs to be the next one closed — what data structure naturally gives you last-in-first-out access like that?",
+    "A dictionary mapping each closing bracket to its matching opener can save you a lot of if/else branching when you need to check a match.",
+    "Push opening brackets onto a stack; on a closing bracket, check whether the stack's top matches the dictionary lookup for it — if not (or the stack's empty), it's invalid, and at the end the stack must be empty too.",
+  ],
+
   starterCode: `class Solution:
     def isValid(self, s: str) -> bool:
         `,

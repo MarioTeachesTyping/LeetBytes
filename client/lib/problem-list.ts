@@ -1,6 +1,7 @@
 import { PROBLEMS, type SolutionEntry } from "@leetbytes/problems/public";
 
-export type ProblemListRow = {
+export type ProblemListRow =
+{
   title: string;
   difficulty: SolutionEntry["difficulty"];
   topics: string[];
@@ -14,7 +15,8 @@ const BACKLOG_ROWS: ProblemListRow[] = [
 export const titleWithoutProblemNumber = (title: string) =>
   title.replace(/^\d+\.\s*/, "");
 
-const problemNumber = (title: string) => {
+const problemNumber = (title: string) =>
+{
   const match = title.match(/^(\d+)\./);
   return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
 };

@@ -40,6 +40,12 @@ export const generateParentheses: SolutionEntry =
     "Amazon", "Google", "Meta",
   ],
 
+  hints: [
+    "Seeing 'all combinations' should point you away from iteration and toward exploring choices recursively — what problem-solving technique is built for trying every valid path and undoing bad ones?",
+    "At each step in your recursion you're choosing to add either '(' or ')' — track how many of each you've placed so far so you know which choices are still legal.",
+    "You can add '(' as long as you haven't used all n yet, and you can only add ')' when it wouldn't outnumber the '(' already placed — stop and record the string once its length hits 2n.",
+  ],
+
   starterCode: `class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         `,

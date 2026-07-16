@@ -46,6 +46,12 @@ export const groupAnagrams: SolutionEntry =
     "Amazon", "Bloomberg", "Google",
   ],
 
+  hints: [
+    "Anagrams share something in common even though the letters are in a different order — what property of a word stays identical no matter how you rearrange its characters?",
+    "You need a way to group words by that shared property, which usually means picking a key you can hash and look up — what would you use as the key in a dictionary of groups?",
+    "Instead of sorting each word into a key (which costs extra time), try counting how many of each of the 26 letters appear and using that fixed-size count as an immutable key, like a tuple, in a hash map.",
+  ],
+
   starterCode: `class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         `,

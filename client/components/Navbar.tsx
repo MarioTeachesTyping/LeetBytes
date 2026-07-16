@@ -12,7 +12,8 @@ import { PROBLEM_ROWS } from "@/lib/problem-list";
 import { useWorkspace } from "@/components/WorkspaceContext";
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 
-function getAdjacentProblems(currentSlug: string) {
+function getAdjacentProblems(currentSlug: string)
+{
   const slugs = PROBLEM_ROWS.map((row) => row.slug).filter(
     (slug): slug is string => Boolean(slug)
   );
@@ -24,7 +25,8 @@ function getAdjacentProblems(currentSlug: string) {
   };
 }
 
-export default function Navbar() {
+export default function Navbar()
+{
   const params = useParams();
   const currentSlug = params?.slug as string;
   const { previous, next } = currentSlug ? getAdjacentProblems(currentSlug) : { previous: null, next: null };

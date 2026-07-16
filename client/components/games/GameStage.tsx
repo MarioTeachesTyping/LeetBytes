@@ -16,7 +16,8 @@ const GAME_DURATION_SECONDS = 60;
 
 type Phase = "intro" | "countdown" | "playing" | "result";
 
-interface GameStageProps {
+interface GameStageProps
+{
   // 1-based — which hint number a win unlocks, for display only.
   hintNumber: number;
   targetScore: number;
@@ -28,7 +29,8 @@ interface GameStageProps {
 // Drives the minigame overlay through intro -> countdown -> playing -> result.
 // Mounted fresh each time the Navbar's Game button opens it (CodePanel.tsx
 // unmounts it on exit), so every field here resets for free between rounds.
-export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, onWin, onExit }: GameStageProps) {
+export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, onWin, onExit }: GameStageProps)
+{
   const [phase, setPhase] = useState<Phase>("intro");
   const [countdown, setCountdown] = useState(3);
   const [secondsLeft, setSecondsLeft] = useState(GAME_DURATION_SECONDS);
@@ -46,9 +48,11 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
   const [roundAllHintsUnlocked, setRoundAllHintsUnlocked] = useState(allHintsUnlocked);
 
   // 3-2-1 countdown before a round starts.
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (phase !== "countdown") return;
-    if (countdown === 0) {
+    if (countdown === 0)
+    {
       setPhase("playing");
       return;
     }
@@ -57,9 +61,11 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
   }, [phase, countdown]);
 
   // The 60-second play clock.
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (phase !== "playing") return;
-    if (secondsLeft === 0) {
+    if (secondsLeft === 0)
+    {
       finishRound();
       return;
     }
@@ -68,7 +74,8 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, secondsLeft]);
 
-  function finishRound() {
+  function finishRound()
+  {
     const finalWon = scoreRef.current >= roundTargetScore;
     setWon(finalWon);
     setPhase("result");
@@ -77,16 +84,19 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
 
   // The board filling up to the top also ends the round early, using
   // whatever score was reached before running out of room.
-  function handleTopOut() {
+  function handleTopOut()
+  {
     finishRound();
   }
 
-  function handleScoreChange(next: number) {
+  function handleScoreChange(next: number)
+  {
     scoreRef.current = next;
     setScore(next);
   }
 
-  function startRound() {
+  function startRound()
+  {
     scoreRef.current = 0;
     setScore(0);
     setWon(false);
@@ -113,7 +123,8 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
       {phase === "intro" && (
         <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md">
           <video
-            ref={(el) => {
+            ref={(el) =>
+            {
               if (el) el.playbackRate = INTRO_VIDEO_PLAYBACK_RATE;
             }}
             className="absolute inset-0 h-full w-full scale-110 object-cover blur-md"

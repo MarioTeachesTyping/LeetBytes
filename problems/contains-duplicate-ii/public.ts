@@ -45,6 +45,12 @@ export const containsDuplicateIi: SolutionEntry =
     "Google", "Amazon",
   ],
 
+  hints: [
+    "Checking every pair of indices would work but is wasteful — what would you need to remember about a number's last position so you could answer 'have I seen this recently' in constant time?",
+    "A hash map from value to its most recent index lets you instantly check both 'have I seen this number before' and 'how far away was it' — which built-in function would let you get both the index and value together as you loop?",
+    "Iterate with `enumerate(nums)`; if `num` is already in your `last_seen` dict and `i - last_seen[num] <= k`, return True — otherwise update `last_seen[num] = i` and keep going.",
+  ],
+
   starterCode: `class Solution:
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
         `,

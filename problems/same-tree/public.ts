@@ -48,6 +48,12 @@ export const sameTree: SolutionEntry =
     "Google", "Amazon", "Meta",
   ],
 
+  hints: [
+    "Two trees only match if every corresponding pair of nodes matches — what would it mean if you compared `p` and `q` at the root, then made the exact same comparison one level down?",
+    "Before you can compare values, you need to handle the shape mismatches first — what should happen if one node is null and the other isn't, versus if they're both null?",
+    "Check the base cases first (`if not p and not q: return True`, `if not p or not q: return False`, `if p.val != q.val: return False`), then return `isSameTree(p.left, q.left) and isSameTree(p.right, q.right)`.",
+  ],
+
   starterCode: `# Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):

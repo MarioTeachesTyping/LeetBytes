@@ -22,18 +22,21 @@ export type Panel =
   | { kind: "error"; detail: string };
 
 // Kilobytes → a LeetCode-style "16.4 MB" string.
-function formatMemory(memoryKb?: number): string | null {
+function formatMemory(memoryKb?: number): string | null 
+{
   if (memoryKb === undefined || memoryKb === null) return null;
   return `${(memoryKb / 1024).toFixed(1)} MB`;
 }
 
-function formatRuntime(runtimeMs?: number): string | null {
+function formatRuntime(runtimeMs?: number): string | null 
+{
   if (runtimeMs === undefined || runtimeMs === null) return null;
   return `${runtimeMs} ms`;
 }
 
 // A labeled output block (Input / Output / Stdout / Error).
-function Block({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "error" }) {
+function Block({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "error" })
+{
   return (
     <div>
       <div className="mb-1 text-xs font-medium text-white/40">{label}</div>
@@ -49,7 +52,8 @@ function Block({ label, value, tone = "default" }: { label: string; value: strin
 }
 
 // A LeetCode-style row of "Case 1 / Case 2 / …" pills.
-function CaseTabs({ count, active, onSelect }: { count: number; active: number; onSelect: (i: number) => void }) {
+function CaseTabs({ count, active, onSelect }: { count: number; active: number; onSelect: (i: number) => void })
+{
   return (
     <div className="flex flex-wrap gap-2">
       {Array.from({ length: count }, (_, i) => (
@@ -82,10 +86,12 @@ export function TestCasesEditor({
   values: string[][];
   onChange: (caseIndex: number, argIndex: number, value: string) => void;
   loading?: boolean;
-}) {
+})
+{
   const [active, setActive] = useState(0);
 
-  if (loading) {
+  if (loading) 
+  {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         Loading test cases…
@@ -93,7 +99,8 @@ export function TestCasesEditor({
     );
   }
 
-  if (values.length === 0) {
+  if (values.length === 0) 
+  {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         No test cases for this problem yet.
@@ -139,10 +146,12 @@ export function DesignTestCasesEditor({
   values: { operations: string; args: string }[];
   onChange: (caseIndex: number, field: "operations" | "args", value: string) => void;
   loading?: boolean;
-}) {
+})
+{
   const [active, setActive] = useState(0);
 
-  if (loading) {
+  if (loading)
+  {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         Loading test cases…
@@ -150,7 +159,8 @@ export function DesignTestCasesEditor({
     );
   }
 
-  if (values.length === 0) {
+  if (values.length === 0) 
+  {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         No test cases for this problem yet.
@@ -202,7 +212,8 @@ const FRIENDLY_ERROR_TITLES: Record<string, string> = {
 // of a traceback is "ErrorType: message"; the frames above it only hold sandbox
 // file paths and line numbers that are offset by the injected harness, so we drop
 // them and keep just the type (as a title) and the human-readable message.
-function cleanError(raw: string): { title: string; body: string } {
+function cleanError(raw: string): { title: string; body: string } 
+{
   const lines = raw
     .split("\n")
     .map((line) => line.replace(/\s+$/, ""))
@@ -210,15 +221,18 @@ function cleanError(raw: string): { title: string; body: string } {
   const last = lines[lines.length - 1] ?? raw.trim();
 
   const colon = last.indexOf(": ");
-  if (colon > 0) {
+  if (colon > 0) 
+  {
     const type = last.slice(0, colon);
-    if (/^[A-Za-z_][\w.]*$/.test(type)) {
+    if (/^[A-Za-z_][\w.]*$/.test(type)) 
+    {
       return { title: FRIENDLY_ERROR_TITLES[type] ?? type, body: last.slice(colon + 2).trim() };
     }
   }
 
   // A bare exception name with no message (e.g. "ValueError").
-  if (/^[A-Za-z_][\w.]*$/.test(last)) {
+  if (/^[A-Za-z_][\w.]*$/.test(last)) 
+  {
     return { title: FRIENDLY_ERROR_TITLES[last] ?? last, body: "" };
   }
 
@@ -226,7 +240,8 @@ function cleanError(raw: string): { title: string; body: string } {
 }
 
 // Renders a case's error as a red type title above a clean message box.
-function ErrorDisplay({ stderr }: { stderr: string }) {
+function ErrorDisplay({ stderr }: { stderr: string }) 
+{
   const { title, body } = cleanError(stderr);
   return (
     <div>
@@ -243,7 +258,8 @@ function ErrorDisplay({ stderr }: { stderr: string }) {
 // Run view: a LeetCode-style row of Case tabs. Each case shows the input it ran
 // against and the output your code produced — a testbench, not a verdict, so
 // there is no expected value or pass/fail here.
-function RunResults({ cases, message }: { cases: CaseResult[]; message?: string }) {
+function RunResults({ cases, message }: { cases: CaseResult[]; message?: string }) 
+{
   const [active, setActive] = useState(0);
   const safeIndex = Math.min(active, cases.length - 1);
   const current = cases[safeIndex];
@@ -268,7 +284,8 @@ function RunResults({ cases, message }: { cases: CaseResult[]; message?: string 
 }
 
 // One Judge stat chip (Runtime or Memory).
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value }: { label: string; value: string }) 
+{
   return (
     <div className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2">
       <div className="text-xs text-white/40">{label}</div>
@@ -298,7 +315,8 @@ function JudgeResult({
   status: JudgeVerdict;
   runtimeMs?: number;
   memoryKb?: number;
-}) {
+})
+{
   const verdict = status === "accepted" ? "accepted" : passed > 0 ? "almost" : "failed";
   const style = VERDICT_STYLES[verdict];
 
@@ -329,8 +347,10 @@ function JudgeResult({
 
 // The bottom result area for the Code panel. Renders whichever view the
 // current panel state calls for.
-export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) {
-  if (panel.kind === "idle") {
+export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idleMessage?: string }) 
+{
+  if (panel.kind === "idle") 
+  {
     return (
       <div className="flex h-full items-center justify-center px-4 py-6 text-center text-sm text-white/50">
         {idleMessage ?? "Run against the examples, or judge against every test case."}
@@ -338,7 +358,8 @@ export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idle
     );
   }
 
-  if (panel.kind === "running") {
+  if (panel.kind === "running") 
+  {
     return (
       <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
         {panel.action === "run" ? "Running examples…" : "Judging…"}
@@ -346,13 +367,15 @@ export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idle
     );
   }
 
-  if (panel.kind === "error") {
+  if (panel.kind === "error") 
+  {
     // Compile-time failures (syntax/indentation errors) arrive here as a full
     // traceback — clean those the same way per-case errors are cleaned. Plain
     // app messages ("Could not reach the server.") stay as a simple box.
     const isTraceback = /Traceback \(most recent call last\)|File "/.test(panel.detail);
 
-    if (isTraceback) {
+    if (isTraceback) 
+    {
       return <ErrorDisplay stderr={panel.detail} />;
     }
 
@@ -363,7 +386,8 @@ export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idle
     );
   }
 
-  if (panel.kind === "run") {
+  if (panel.kind === "run") 
+  {
     return <RunResults cases={panel.cases} message={panel.message} />;
   }
 

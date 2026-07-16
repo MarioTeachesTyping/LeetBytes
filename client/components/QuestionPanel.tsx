@@ -10,7 +10,8 @@ import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/
 import SolutionPanel from "./SolutionPanel";
 import { useWorkspace } from "./WorkspaceContext";
 
-interface QuestionPanelProps {
+interface QuestionPanelProps 
+{
   title: string;
   link?: string;
   difficulty?: SolutionEntry["difficulty"];
@@ -24,11 +25,10 @@ interface QuestionPanelProps {
   solutions?: SpoilerSolution[];
 }
 
-/**
- * Renders text with backtick-wrapped segments as inline code.
- * Example: "use `nums[i]` here" → nums[i] is styled like code
- */
-function renderInlineCode(text: string) {
+// Renders text with backtick-wrapped segments as inline code.
+// Example: "use `nums[i]` here" → nums[i] is styled like code
+function renderInlineCode(text: string) 
+{
   return text.split(/(`[^`]+`)/g).map((part, i) =>
     part.startsWith("`") ? (
       <code
@@ -55,7 +55,8 @@ export default function QuestionPanel({
   hints = [],
   code,
   solutions,
-}: QuestionPanelProps) {
+}: QuestionPanelProps)
+{
   const topicsRef = useRef<HTMLDivElement | null>(null);
   const companiesRef = useRef<HTMLDivElement | null>(null);
   const hintsRef = useRef<HTMLDivElement | null>(null);
@@ -74,17 +75,20 @@ export default function QuestionPanel({
       ? "border-amber-400/40 text-amber-300 bg-black/40"
       : "border-rose-400/40 text-rose-300 bg-black/40";
 
-  const scrollToTopics = () => {
+  const scrollToTopics = () =>
+  {
     if (!topicsRef.current) return;
     topicsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const scrollToCompanies = () => {
+  const scrollToCompanies = () =>
+  {
     if (!companiesRef.current) return;
     companiesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const scrollToHints = () => {
+  const scrollToHints = () =>
+  {
     if (!hintsRef.current) return;
     hintsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -227,7 +231,8 @@ export default function QuestionPanel({
             </summary>
 
             <div className="px-4 pb-4 pt-1 space-y-2">
-              {hints.map((hint, i) => {
+              {hints.map((hint, i) =>
+              {
                 const unlocked = i < hintsUnlocked;
                 return (
                   <div

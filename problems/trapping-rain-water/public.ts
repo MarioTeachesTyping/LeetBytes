@@ -43,6 +43,12 @@ export const trappingRainWater: SolutionEntry =
     "Amazon", "Google", "Microsoft",
   ],
 
+  hints: [
+    "The water trapped above any single bar depends on the tallest wall to its left and the tallest wall to its right — which of those two is the limiting factor?",
+    "You don't need to precompute both the full left-max and right-max arrays up front — could two pointers starting at opposite ends, each tracking the max they've seen so far, get you the same answer in one pass?",
+    "Move whichever pointer currently has the smaller max wall, since that side is the bottleneck: add `left_max - height[left]` (or the right equivalent) to your running total before advancing that pointer.",
+  ],
+
   starterCode: `class Solution:
     def trap(self, height: List[int]) -> int:
         `,

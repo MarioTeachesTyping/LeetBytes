@@ -40,6 +40,12 @@ export const sequentialDigits: SolutionEntry =
     "Google", "Amazon", "Bloomberg", "Meta",
   ],
 
+  hints: [
+    "Every sequential-digit number is just a contiguous run of digits from the fixed string `\"123456789\"` — so instead of generating and checking numbers one by one, could you slide a window across that one string?",
+    "What determines the possible window lengths you need to try, and how does that relate to the number of digits in `low` and `high`?",
+    "For each `length` from `len(str(low))` to `len(str(high))`, slide a window of that size across `\"123456789\"`, converting each slice to an int; keep it if it falls between `low` and `high` inclusive.",
+  ],
+
   starterCode: `class Solution:
     def sequentialDigits(self, low: int, high: int) -> List[int]:
         `,

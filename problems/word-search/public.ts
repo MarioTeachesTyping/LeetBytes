@@ -51,6 +51,12 @@ export const wordSearch: SolutionEntry =
     "Amazon", "Google", "Bloomberg", "Uber",
   ],
 
+  hints: [
+    "You'll have to try a path, and if it fails partway through, undo it and try a different direction — what technique is built around exploring a path and reversing course when it doesn't work out?",
+    "You need to prevent revisiting a cell you're already using in the current path — how would you mark a cell as 'in use' and then unmark it once you're done exploring from there?",
+    "Try starting the search from every cell on the board; recursively check up/down/left/right for the next matching letter, tracking visited cells in a set that you add to before recursing and remove from right after, so other starting points aren't affected.",
+  ],
+
   starterCode: `class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
         `,

@@ -43,6 +43,12 @@ export const majorityElement: SolutionEntry =
     "Google", "Amazon", "Bloomberg", "Meta", "Microsoft",
   ],
 
+  hints: [
+    "Since the majority element appears more than half the time, is there a way to track a 'current leading candidate' as you scan, without needing to count every value with a hash map?",
+    "Imagine each occurrence of your candidate as a point in its favor, and every other value as a point against it — what should happen to your candidate if that score ever hits zero?",
+    "Track a `candidate` and a `count` starting at 0; when `count` is 0, set `candidate` to the current number, then increment `count` if the current number matches `candidate`, otherwise decrement it — `candidate` at the end is your answer.",
+  ],
+
   starterCode: `class Solution:
     def majorityElement(self, nums: List[int]) -> int:
         `,

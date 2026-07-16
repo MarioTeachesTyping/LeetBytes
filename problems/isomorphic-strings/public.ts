@@ -49,6 +49,12 @@ export const isomorphicStrings: SolutionEntry =
     "Amazon", "Google", "Microsoft", "Bloomberg",
   ],
 
+  hints: [
+    "Mapping characters from one string to another is a hint toward a hash map — but is a mapping in just one direction (s to t) enough to catch every invalid case?",
+    "Think about what goes wrong if two different characters in `s` both try to map to the same character in `t` — a single dictionary from `s` to `t` wouldn't catch that on its own.",
+    "Keep two dictionaries, one mapping s→t and one mapping t→s, and walk both strings together with `zip(s, t)`; if a character pair hasn't been mapped yet, record it in both, otherwise check the existing mappings agree — return False on any mismatch.",
+  ],
+
   starterCode: `class Solution:
     def isIsomorphic(self, s: str, t: str) -> bool:
         `,

@@ -46,6 +46,12 @@ export const containsDuplicate: SolutionEntry =
     "Google", "Amazon", "Meta", "Microsoft", "Bloomberg",
   ],
 
+  hints: [
+    "What data structure gives you constant-time membership checks and would let you tell instantly whether you've already come across a value?",
+    "As you walk through the array, you only need to remember every value you've already seen — a lookup structure that discards duplicates automatically would fit nicely here.",
+    "Keep a `set()`; for each number, check if it's already in the set (return True if so), otherwise add it and continue — return False once the loop finishes.",
+  ],
+
   starterCode: `class Solution:
     def containsDuplicate(self, nums: List[int]) -> bool:
         `,

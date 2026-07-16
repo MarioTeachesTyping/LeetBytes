@@ -44,6 +44,12 @@ export const lruCache: SolutionEntry =
     "Amazon", "Google", "Apple", "TikTok", "Microsoft", "Bloomberg",
   ],
 
+  hints: [
+    "O(1) get and put rules out a plain list you'd have to scan, so what structure gives you O(1) lookups by key while still letting you track usage order?",
+    "You need to know both 'is this key here' and 'which key was used longest ago' — is there a built-in structure that keeps insertion order and lets you move an existing item to the end cheaply?",
+    "Use `collections.OrderedDict`: on `get`, if the key exists call `move_to_end(key)` and return its value (else -1); on `put`, set the key (moving it to the end if it already existed), then if `len(dict) > capacity`, call `popitem(last=False)` to evict the oldest.",
+  ],
+
   starterCode: `import collections
 
 class LRUCache:

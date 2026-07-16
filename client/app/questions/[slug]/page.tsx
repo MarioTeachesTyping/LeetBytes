@@ -11,11 +11,13 @@ import { WorkspaceProvider } from "@/components/WorkspaceContext";
 import { getPublicProblem } from "@leetbytes/problems/public";
 import { titleWithoutProblemNumber } from "@/lib/problem-list";
 
-type PageProps = {
+type PageProps =
+{
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata>
+{
   const { slug } = await params;
   const entry = getPublicProblem(slug);
   if (!entry) return {};
@@ -23,7 +25,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return { title: `${titleWithoutProblemNumber(entry.title)} - LeetBytes` };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: PageProps)
+{
   const { slug } = await params;
 
   const entry = getPublicProblem(slug);

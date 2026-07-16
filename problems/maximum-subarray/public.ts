@@ -48,6 +48,12 @@ export const maximumSubarray: SolutionEntry =
     "Microsoft", "Amazon", "Apple", "Google",
   ],
 
+  hints: [
+    "As you scan left to right, at each number you have a choice: keep extending the subarray you're building, or abandon it and start fresh from here — what would decide which choice is better?",
+    "Keep a running sum for 'best subarray ending right here' and compare it against just starting over at the current number — one of those two options will always be the larger value.",
+    "Track that running value in one variable and a separate variable for the best you've seen anywhere so far, updating both on every step: `curr = max(num, curr + num)` and `best = max(best, curr)`.",
+  ],
+
   starterCode: `class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
         `,

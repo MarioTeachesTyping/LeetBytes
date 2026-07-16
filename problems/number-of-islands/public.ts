@@ -43,6 +43,12 @@ export const numberOfIslands: SolutionEntry =
     "Amazon", "Google", "Bloomberg", "TikTok", "Microsoft", "Meta",
   ],
 
+  hints: [
+    "Every time you find an unvisited piece of land, it's the start of a whole new island — what search technique would let you 'consume' every connected land cell from there so you don't count it again?",
+    "You need some way to mark a cell as visited so you don't recount it later — could you avoid a separate visited set by just changing the grid value itself once you've explored it?",
+    "Scan every cell in the grid; when you hit a `'1'`, increment your island count and call a DFS that flips the current cell to `'0'` and recurses into all four neighbors, stopping when out of bounds or on a `'0'`.",
+  ],
+
   starterCode: `class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
         `,
