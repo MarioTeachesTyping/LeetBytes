@@ -12,6 +12,7 @@ import type { HiddenProblem, ProblemSlug } from "./types.ts";
 import { twoSumHidden } from "./two-sum/hidden.ts";
 import { addTwoNumbersHidden } from "./add-two-numbers/hidden.ts";
 import { longestSubstringWithoutRepeatingCharactersHidden } from "./longest-substring-without-repeating-characters/hidden.ts";
+import { longestPalindromicSubstringHidden } from "./longest-palindromic-substring/hidden.ts";
 import { palindromeNumberHidden } from "./palindrome-number/hidden.ts";
 import { validParenthesesHidden } from "./valid-parentheses/hidden.ts";
 import { mergeTwoSortedListsHidden } from "./merge-two-sorted-lists/hidden.ts";
@@ -49,6 +50,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "two-sum": twoSumHidden,
   "add-two-numbers": addTwoNumbersHidden,
   "longest-substring-without-repeating-characters": longestSubstringWithoutRepeatingCharactersHidden,
+  "longest-palindromic-substring": longestPalindromicSubstringHidden,
   "palindrome-number": palindromeNumberHidden,
   "valid-parentheses": validParenthesesHidden,
   "merge-two-sorted-lists": mergeTwoSortedListsHidden,

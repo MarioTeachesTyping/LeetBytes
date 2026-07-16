@@ -25,16 +25,31 @@ Returns `{ "ok": true }`.
 
 ### `GET /problems/:slug/cases`
 
-Returns a problem's public example inputs for the Test Cases editor: the parameter
-names and each case's `args`/`expected`. Only the published examples are exposed —
-the hidden judged suite stays server-side.
+Returns a problem's public example inputs for the Test Cases editor. Only the
+published examples are exposed — the hidden judged suite stays server-side. The
+response is one of two shapes depending on the problem's `kind`:
 
 ```json
 {
+  "kind": "function",
   "paramNames": ["nums", "target"],
   "cases": [{ "args": [[2, 7, 11, 15], 9], "expected": [0, 1] }]
 }
 ```
+
+Design problems (a class with a constructor + method calls, e.g. LRU Cache) have
+no single function's args to show, so they use LeetCode's own two-field notation
+instead:
+
+```json
+{
+  "kind": "design",
+  "cases": [{ "operations": ["LRUCache", "put", "get"], "args": [[2], [1, 1], [1]], "expected": [null, null, 1] }]
+}
+```
+
+404s with `{ "message": "No test cases for \"<slug>\" yet." }` when the slug has no
+`hidden.ts` entry at all.
 
 ### `POST /submissions/run`
 
@@ -78,12 +93,21 @@ an overall `status` (`accepted` / `wrong_answer` / `runtime_error` /
 
 The server wraps the submitted code in a Python harness (see
 `src/services/judge/harness.ts`) that calls the method named in the problem
-definition for each test case. Test cases and the method name come from the
-`@leetbytes/problems` workspace package (each problem's `hidden.ts`), which only
-the server imports — the client never sees the answer key. Request bodies are
-validated with the Zod schemas in `@leetbytes/shared`. The harness includes JSON
-adapters for `ListNode`/`TreeNode` arguments and return values, so linked-list and
-tree problems are judged too.
+definition (`functionName`) for each test case — or, for "design" problems (a
+class with a constructor + method calls, e.g. LRU Cache, Min Stack), instantiates
+the class once and calls each queued method in sequence, graded via LeetCode's own
+`operations`/`args`/`expected` notation instead of a single function. Test cases
+and the answer key come from the `@leetbytes/problems` workspace package (each
+problem's `hidden.ts`), which only the server imports — the client never sees the
+hidden suite. Request bodies are validated with the Zod schemas in
+`@leetbytes/shared`.
+
+The harness includes JSON adapters for `ListNode`/`TreeNode`/`ListNode[]`/
+`TreeNode[]`/`ListNodeCycle` arguments and return values (per the problem's
+`IOType`), so linked-list and tree problems are judged too. Each result is
+compared using the problem's `CompareMode` — `exact` (order matters), `unordered`
+(one list, order-independent), or `unordered_deep` (list of lists, neither inner
+nor outer order matters).
 
 Memory is measured inside the harness: peak RSS via `resource.getrusage` on Linux
 (e.g. self-hosted Piston), falling back to `tracemalloc` on Windows where `resource`
@@ -123,3 +147,10 @@ Environment variables:
 - `PISTON_API_URL`: Piston base URL, defaults to `https://emkc.org/api/v2/piston`
 - `PISTON_PYTHON_VERSION`: optional fixed Python runtime version
 - `LOCAL_PYTHON_COMMAND`: Python executable for local dev runner, defaults to `python`
+
+## Limits
+
+These are fixed in `src/config.ts`, not configurable via env:
+
+- Request bodies are capped at 64 KiB (`413` if exceeded).
+- Each case gets a 3000ms run timeout and 3000ms compile timeout.

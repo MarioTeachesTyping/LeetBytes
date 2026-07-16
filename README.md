@@ -12,6 +12,7 @@
 
 - Landing page with animated visual effects
 - Solutions list with topic filtering
+- 35 problems added, 34 of them with a judged hidden test suite
 - Individual problem pages with:
   - Question details, examples, and constraints
   - Topics and company tags
@@ -21,7 +22,6 @@
   - Editable per-parameter inputs, so you can try your own cases
   - Runtime and memory reported on judged runs
   - Spoiler view with one or more titled solution approaches behind a reveal overlay
-  - Local notes per problem
   - Hints panel, gated behind a score threshold per hint
   - **Tetris** minigame that unlocks the next hint when you hit that round's target score
     - Hold and 6-piece Next queue, ghost piece landing preview, 7-bag piece randomizer
@@ -43,7 +43,7 @@
 - [x] Add a server-backed code runner / judge
 - [x] Add hint unlocks
 - [x] Add first minigame
-- [ ] Add my solutions
+- [x] Add my solutions
 - [ ] Add more minigames + a roulette to pick one at random
 - [ ] Add company question tracking
 

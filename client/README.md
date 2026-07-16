@@ -19,28 +19,36 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
 
 ## Structure
 
-- `app/` — Next.js routes. `app/solutions/[slug]` renders an individual problem page.
+- `app/` — Next.js routes.
+  - `app/page.tsx` — the landing page.
+  - `app/questions/page.tsx` — the solutions list, topic-filterable.
+  - `app/questions/[slug]/page.tsx` — an individual problem page.
 - `components/`
   - `Navbar.tsx` — prev/next problem navigation, Question/Spoiler toggle, Game button, Run/Judge
   - `WorkspaceContext.tsx` — shared toolbar state (Question/Spoiler view, Run/Judge status) plus
     hint-unlock progress, read by both the Navbar and the panels that own the actual handlers
-  - `Question.tsx` — description, examples, constraints, topic/company tags, and the Hints panel
-    (each hint stays locked until its minigame round is won)
-  - `Solution.tsx` — the code editor, Run/Judge buttons, and the tabbed, resizable test panel;
+  - `QuestionPanel.tsx` — description, examples, constraints, topic/company tags, and the Hints
+    panel (each hint stays locked until its minigame round is won)
+  - `CodePanel.tsx` — the code editor, Run/Judge buttons, and the tabbed, resizable test panel;
     swaps the editor out for the minigame overlay while it's open
-  - `Result.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
-  - `CodeEditor.tsx` — CodeMirror editor
-  - `Spoiler.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
+  - `ResultPanel.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
+  - `CodeEditor.tsx` — the CodeMirror editor
+  - `CodeBlock.tsx` — a small read-only, syntax-highlighted code block helper
+  - `SolutionPanel.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
   - `games/` — the hint-unlocking minigames
     - `GameStage.tsx` — drives a round through intro → countdown → playing → result, judging the
       score reached against the target for the next hint
     - `Tetris.tsx` — the current minigame: Hold slot, 6-piece Next queue, ghost piece, and a
       7-bag piece randomizer instead of independent per-piece randomness
-  - `react-bits/` — animated visual effects (backgrounds, glitch text, etc.), used both on the
-    landing page and behind the minigame
+  - `react-bits/` — animated visual effects used across the landing page, the solutions list, and
+    behind the minigame/spoiler overlays: `Particles`, `CircularText`, `Balatro`, `PillNav`,
+    `Cubes`, `Iridescence`, `LetterGlitch`
+- `lib/`
+  - `problem-list.ts` — builds the solutions-list rows/topics from `@leetbytes/problems/public`
+  - `highlight.ts` — Shiki syntax highlighting
+  - `utils.ts` — small shared helpers (e.g. the `cn` class-name utility)
 - problem content (description, examples, starter code, spoiler solutions) comes from the
   `@leetbytes/problems` workspace package (`../problems/<slug>/public.ts`)
-- `lib/highlight.ts` — Shiki syntax highlighting
 - `public/videos/`, `public/game-images/` — minigame background footage and tetromino sprites
 
 ## Test panel
