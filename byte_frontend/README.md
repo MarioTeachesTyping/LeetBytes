@@ -12,7 +12,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Running and judging code needs the server (see `../server`). The client calls it
+Running and judging code needs the server (see `../byte_backend`). The client calls it
 through the Next.js `/api/*` rewrite (see `next.config.ts`), so no CORS or client
 env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
 `NEXT_PUBLIC_SERVER_URL` to bypass the proxy and hit it directly.
@@ -48,7 +48,7 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `highlight.ts` — Shiki syntax highlighting
   - `utils.ts` — small shared helpers (e.g. the `cn` class-name utility)
 - problem content (description, examples, starter code, spoiler solutions) comes from the
-  `@leetbytes/problems` workspace package (`../problems/<slug>/public.ts`)
+  `@leetbytes/problems` workspace package (`../byte_problems/<slug>/public.ts`)
 - `public/videos/`, `public/game-images/` — minigame background footage and tetromino sprites
 
 ## Test panel
@@ -67,7 +67,7 @@ chevron collapses the panel.
 
 ## Hints and the minigame
 
-Each problem has a list of hints (`hints` in its `problems/<slug>/public.ts` entry), unlocked one
+Each problem has a list of hints (`hints` in its `byte_problems/<slug>/public.ts` entry), unlocked one
 at a time. `WorkspaceContext` tracks how many are unlocked and the score target for
 the next one (`HINT_SCORE_TARGETS`); hints past that count stay hidden in the Hints
 panel until earned.

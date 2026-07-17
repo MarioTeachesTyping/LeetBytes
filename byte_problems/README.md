@@ -8,7 +8,7 @@ as the `@leetbytes/problems` workspace package.
 Each problem is one folder named by its slug:
 
 ```txt
-problems/
+byte_problems/
     types.ts             Shared types + the PROBLEM_SLUGS union
     public.ts            Registry of every problem's public content (client-safe)
     hidden.ts            Registry of every problem's judged tests (server-only)
@@ -20,10 +20,10 @@ problems/
 ## Adding a problem
 
 1. Add the slug to `PROBLEM_SLUGS` in `types.ts`.
-2. Create `problems/<slug>/public.ts` exporting a `SolutionEntry`.
+2. Create `byte_problems/<slug>/public.ts` exporting a `SolutionEntry`.
 3. Register it in `public.ts` — the `Record<ProblemSlug, SolutionEntry>` type
    fails to compile until every slug has an entry.
-4. When the judged suite is ready, add `problems/<slug>/hidden.ts` and register
+4. When the judged suite is ready, add `byte_problems/<slug>/hidden.ts` and register
    it in `hidden.ts` (this registry is `Partial`, so a problem can ship without
    tests; the judge answers "No judged test cases yet" until then).
 

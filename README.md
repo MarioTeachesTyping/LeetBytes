@@ -50,18 +50,18 @@
 ## Architecture
 
 ```txt
-leetbytes/          pnpm workspace (install once at the root: pnpm install)
-    client/         Next.js frontend: problem pages, editor, results panel, effects, minigames
-    server/         Node HTTP API: runs/judges code, serves public test cases
-    shared/         @leetbytes/shared — request/response types + Zod schemas used by both sides
-    problems/       @leetbytes/problems — one folder per problem, the single source of truth
+leetbytes/               pnpm workspace (install once at the root: pnpm install)
+    byte_frontend/       Next.js frontend: problem pages, editor, results panel, effects, minigames
+    byte_backend/        Node HTTP API: runs/judges code, serves public test cases
+    byte_shared/         @leetbytes/shared — request/response types + Zod schemas used by both sides
+    byte_problems/       @leetbytes/problems — one folder per problem, the single source of truth
 ```
 
-The client is a Next.js app. Each problem lives in `problems/<slug>/` split into
+The client is a Next.js app. Each problem lives in `byte_problems/<slug>/` split into
 two files: `public.ts` (description, examples, starter code, hints — everything
 the browser may see, imported by the client) and `hidden.ts` (the judged test
 suite and answer key, imported only by the server). A `ProblemSlug` union in
-`problems/types.ts` keys both registries, so the two sides can't drift apart. A
+`byte_problems/types.ts` keys both registries, so the two sides can't drift apart. A
 `public.ts` file must never import from a `hidden.ts` file.
 
 Running and judging code is delegated to the server, which wraps submissions in
@@ -77,7 +77,7 @@ pnpm dev
 ```
 
 Hints and the minigame that unlocks them are currently client-only state (see
-`client/components/WorkspaceContext.tsx` and `client/components/games/`) — nothing
+`byte_frontend/components/WorkspaceContext.tsx` and `byte_frontend/components/games/`) — nothing
 about hint progress or minigame results is persisted or sent to the server yet.
 
 ### Planned
