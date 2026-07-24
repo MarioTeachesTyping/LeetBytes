@@ -53,7 +53,7 @@ export default function Questions()
       <div className="px-4 md:px-8 py-3 border-b border-white/20 bg-black relative z-20">
         <div className="w-full flex items-center justify-center">
           <PillNav
-            logo="/icon-dark.png"
+            logo="/base/icon-dark.png"
             items={navItems}
             activeHref={topicHref(selectedTopic)}
             onSelect={(item) => setSelectedTopic(item.label)}

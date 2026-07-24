@@ -54,7 +54,7 @@ export default function Navbar()
           className="group flex items-center justify-center w-8 h-8 rounded-full border border-white/30 overflow-hidden"
         >
           <Image
-            src="/icon-logo.png" // or icon-dark.png
+            src="/base/icon-logo-light.png" // or icon-dark.png
             alt="LeetBytes Logo"
             width={20}
             height={20}

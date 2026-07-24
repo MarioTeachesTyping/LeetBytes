@@ -6,53 +6,34 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Particles from "@/components/react-bits/Particles";
-import CircularText from "@/components/react-bits/CircularText";
+import Balatro from "@/components/react-bits/Balatro";
 
-export default function Landing() 
+export default function Landing()
 {
   return (
     <div className="relative min-h-screen bg-black flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
-        <Particles
-          particleColors={["#ffffff", "#ffffff"]}
-          particleCount={200}
-          particleSpread={10}
-          speed={0.1}
-          particleBaseSize={100}
-          moveParticlesOnHover={true}
-          alphaParticles={false}
-          disableRotation={false}
-        />
+        <Balatro isRotate={false} mouseInteraction={true} pixelFilter={700} />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-6">
-        {/* ONE wrapper defines the center */}
-        <div className="relative w-[290px] h-[290px]">
-          {/* Ring: force it to fill wrapper + cancel mx-auto */}
-          <CircularText
-            text="L E E T B Y T E S ● L E E T B Y T E S ● "
-            onHover="speedUp"
-            spinDuration={20}
-            className="absolute inset-0 w-full h-full mx-0 pointer-events-none"
+      <div className="relative z-10 flex items-center gap-16 sm:gap-24">
+        <Image
+          src="/base/icon-dark.png"
+          alt="LeetBytes Icon"
+          width={170}
+          height={170}
+          priority
+          style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.55)) drop-shadow(0 0 24px rgba(255,255,255,0.35))" }}
+        />
+
+        <Link href="/questions" className="transition-transform hover:scale-105 active:scale-95">
+          <Image
+            src="/base/play-button.png"
+            alt="Play"
+            width={240}
+            height={112}
+            priority
           />
-
-          {/* Logo: absolute center */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <Image
-              src="/icon-logo.png"
-              alt="LeetBytes Icon"
-              width={170}
-              height={170}
-              priority
-            />
-          </div>
-        </div>
-
-        <Link href="/questions">
-          <button className="px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white hover:bg-white hover:text-black transition-colors">
-            Questions
-          </button>
         </Link>
       </div>
     </div>

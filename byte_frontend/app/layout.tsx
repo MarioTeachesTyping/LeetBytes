@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "LeetBytes",
   description: "My LeetCode solutions.",
   icons: {
-    icon: "/icon.png",
+    icon: "/base/icon-dark.png",
   },
 };
 
