@@ -1,4 +1,4 @@
-![banner](byte_frontend/public/base/banner.png)
+![banner](byte_frontend/public/base/full-title.png)
 
 <h1 align="center">LeetBytes</h1>
 

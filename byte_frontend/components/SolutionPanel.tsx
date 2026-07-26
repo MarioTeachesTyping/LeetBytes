@@ -68,7 +68,7 @@ function SolutionBlock({ code }: { code: string })
             className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
                        hover:bg-white hover:text-black transition-colors"
           >
-            Spoiler
+            Solution
           </button>
         )}
       </div>

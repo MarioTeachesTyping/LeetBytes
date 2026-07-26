@@ -102,7 +102,7 @@ export default function Navbar()
           }`}
         >
           <EyeOff className="w-4 h-4" />
-          Spoiler
+          Solution
         </button>
 
         {/* Game button — opens the minigame overlay in place of the editor */}
