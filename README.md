@@ -1,3 +1,5 @@
+![banner](byte_frontend/public/base/banner.png)
+
 <h1 align="center">LeetBytes</h1>
 
 <p align="center">Lil website to shove my LeetCode solutions. Also testing frontend libs for fun.</p>
