@@ -166,3 +166,18 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Stepped/notched corners for a retro game window frame, in place of rounded-corner panels. */
+.pixel-frame {
+  --pixel-notch: 10px;
+  clip-path: polygon(
+    0 var(--pixel-notch), var(--pixel-notch) var(--pixel-notch), var(--pixel-notch) 0,
+    calc(100% - var(--pixel-notch)) 0, calc(100% - var(--pixel-notch)) var(--pixel-notch), 100% var(--pixel-notch),
+    100% calc(100% - var(--pixel-notch)), calc(100% - var(--pixel-notch)) calc(100% - var(--pixel-notch)), calc(100% - var(--pixel-notch)) 100%,
+    var(--pixel-notch) 100%, var(--pixel-notch) calc(100% - var(--pixel-notch)), 0 calc(100% - var(--pixel-notch))
+  );
+}
+
+.pixel-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0;
+}

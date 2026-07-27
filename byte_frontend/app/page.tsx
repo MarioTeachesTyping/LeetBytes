@@ -39,7 +39,7 @@ export default function Landing()
       <div className="relative z-10 flex items-center gap-8 sm:gap-12 pb-16 sm:pb-24">
         <Link href="/questions" className="transition-transform hover:scale-105 active:scale-95">
           <Image
-            src="/base/play-button.png"
+            src="/base/button-play.png"
             alt="Play"
             width={240}
             height={90}
@@ -50,7 +50,7 @@ export default function Landing()
 
         <button type="button" className="transition-transform hover:scale-105 active:scale-95">
           <Image
-            src="/base/options-button.png"
+            src="/base/button-options.png"
             alt="Options"
             width={240}
             height={90}
@@ -60,7 +60,7 @@ export default function Landing()
 
         <button type="button" className="transition-transform hover:scale-105 active:scale-95">
           <Image
-            src="/base/quit-button.png"
+            src="/base/button-quit.png"
             alt="Quit"
             width={240}
             height={90}
