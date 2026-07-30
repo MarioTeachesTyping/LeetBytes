@@ -6,7 +6,7 @@
 
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { vesperTheme } from "@/lib/vesperTheme";
 
 interface CodeEditorProps
 {
@@ -22,7 +22,7 @@ export default function CodeEditor({ value, onChange }: CodeEditorProps)
     <CodeMirror
       value={value}
       onChange={onChange}
-      theme={oneDark}
+      theme={vesperTheme}
       extensions={[python()]}
       height="100%"
       className="h-full text-sm [&_.cm-editor]:h-full [&_.cm-scroller]:overflow-auto"

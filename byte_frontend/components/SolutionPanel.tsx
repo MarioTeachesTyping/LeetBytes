@@ -5,6 +5,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { highlightPython } from "@/lib/highlight";
 import type { SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
@@ -12,9 +13,39 @@ import PixelHoverButton from "./PixelHoverButton";
 
 const SOLUTION_BUTTON_FRAMES = ["/base/button-solution.png", "/base/button-solution-2.png", "/base/button-solution-3.png"];
 
-interface SolutionPanelProps 
+interface SolutionPanelProps
 {
   solutions: SpoilerSolution[];
+}
+
+// Copies the solution's code to the clipboard, flashing a checkmark for a
+// moment as confirmation before reverting back to the copy icon.
+function CopyButton({ code }: { code: string })
+{
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() =>
+  {
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+      {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+      }}
+      aria-label="Copy code"
+      className="absolute right-2 top-2 z-20 flex items-center gap-1 border border-white/10 bg-black/60 px-2 py-1 text-xs text-white/70 transition-colors hover:bg-black/80 hover:text-white"
+    >
+      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+      {copied ? "Copied" : "Copy"}
+    </button>
+  );
 }
 
 // One read-only, syntax-highlighted code block hidden behind a Balatro overlay.
@@ -77,6 +108,8 @@ function SolutionBlock({ code }: { code: string })
           </div>
         )}
       </div>
+
+      {revealed && <CopyButton code={code} />}
     </div>
   );
 }
