@@ -120,10 +120,16 @@ void main() {
 }
 `;
 
+// Module-level so the default stays referentially stable across renders — an inline
+// array literal default is re-created every render, which was retriggering the
+// WebGL setup effect below (teardown + rebuild of the canvas) any time an ancestor
+// re-rendered without passing its own `offset`.
+const DEFAULT_OFFSET: [number, number] = [0.0, 0.0];
+
 export default function Balatro({
   spinRotation = -2.0,
   spinSpeed = 7.0,
-  offset = [0.0, 0.0],
+  offset = DEFAULT_OFFSET,
   color1 = '#FFFFFF',
   color2 = '#888888',
   color3 = '#000000',

@@ -5,9 +5,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Gamepad2, X } from "lucide-react";
+import { X } from "lucide-react";
 import Tetris from "./Tetris";
 import LetterGlitch from "../react-bits/LetterGlitch";
+import PixelHoverButton from "../PixelHoverButton";
+
+const PLAY_BUTTON_FRAMES = ["/base/button-play.png", "/base/button-play-2.png", "/base/button-play-3.png"];
 
 // How much faster than real time the intro's background video plays.
 const INTRO_VIDEO_PLAYBACK_RATE = 2.5;
@@ -135,7 +138,6 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
             playsInline
           />
           <div className="relative z-10 max-w-xs space-y-3 rounded-lg border border-white/10 bg-zinc-950/70 p-6 text-center backdrop-blur-sm">
-            <Gamepad2 className="mx-auto h-10 w-10 text-violet-300" />
             <p className="text-4xl font-bold">Tetris</p>
             {allHintsUnlocked ? (
               <p className="text-sm text-white/60">
@@ -147,19 +149,15 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
                 {hintNumber}.
               </p>
             )}
-            <button
-              type="button"
-              onClick={startRound}
-              className="rounded-md bg-violet-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet-400"
-            >
-              Start
-            </button>
+            <div className="flex justify-center">
+              <PixelHoverButton frames={PLAY_BUTTON_FRAMES} alt="Start" width={160} height={60} onClick={startRound} />
+            </div>
           </div>
         </div>
       )}
 
       {phase === "countdown" && (
-        <div className="text-6xl font-bold text-violet-300">{countdown === 0 ? "Go!" : countdown}</div>
+        <div className="text-6xl font-bold text-white">{countdown === 0 ? "Go!" : countdown}</div>
       )}
 
       {phase === "playing" && (

@@ -4,10 +4,13 @@
 
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import Balatro from "@/components/react-bits/Balatro";
+import PixelHoverButton from "@/components/PixelHoverButton";
 import { PROBLEM_ROWS, type ProblemListRow } from "@/lib/problem-list";
+
+const BACK_BUTTON_FRAMES = ["/base/button-back.png", "/base/button-back-2.png", "/base/button-back-3.png"];
+const OPTIONS_BUTTON_FRAMES = ["/base/button-options.png", "/base/button-options-2.png", "/base/button-options-3.png"];
 
 const difficultyBadgeClass: Record<ProblemListRow["difficulty"], string> = {
   Easy: "border-emerald-400 text-emerald-400 bg-emerald-400/10",
@@ -36,27 +39,9 @@ export default function Questions()
 
       {/* Header */}
       <div className="px-4 md:px-8 py-3 relative z-20 flex items-center justify-center gap-6">
-        <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
-          <Image
-            src="/base/button-back.png"
-            alt="Back"
-            width={140}
-            height={52}
-            priority
-            style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.55)) drop-shadow(0 0 24px rgba(255,255,255,0.35))" }}
-          />
-        </Link>
+        <PixelHoverButton href="/" frames={BACK_BUTTON_FRAMES} alt="Back" width={140} height={52} />
 
-        <button type="button" className="transition-transform hover:scale-105 active:scale-95">
-          <Image
-            src="/base/button-options.png"
-            alt="Options"
-            width={140}
-            height={52}
-            priority
-            style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.55)) drop-shadow(0 0 24px rgba(255,255,255,0.35))" }}
-          />
-        </button>
+        <PixelHoverButton frames={OPTIONS_BUTTON_FRAMES} alt="Options" width={140} height={52} />
       </div>
 
       {/* Content */}

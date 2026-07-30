@@ -120,7 +120,7 @@ export default function QuestionPanel({
       {/* Badges row */}
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`inline-flex items-center justify-center rounded-full border px-3 py-0.5 text-base font-semibold ${difficultyStyles}`}
+          className={`inline-flex items-center justify-center border-2 px-3 py-0.5 text-sm font-bold uppercase tracking-widest ${difficultyStyles}`}
         >
           {difficulty}
         </span>
@@ -129,8 +129,8 @@ export default function QuestionPanel({
           <button
             type="button"
             onClick={scrollToHints}
-            className="inline-flex items-center justify-center rounded-full border border-violet-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-violet-200
-                       hover:bg-violet-400 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center border-2 border-violet-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-violet-200
+                       hover:bg-violet-400 hover:text-black hover:border-violet-400 transition-colors"
           >
             Hints
           </button>
@@ -140,8 +140,8 @@ export default function QuestionPanel({
           <button
             type="button"
             onClick={scrollToTopics}
-            className="inline-flex items-center justify-center rounded-full border border-orange-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-orange-200
-                       hover:bg-orange-400 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center border-2 border-orange-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-orange-200
+                       hover:bg-orange-400 hover:text-black hover:border-orange-400 transition-colors"
           >
             Topics
           </button>
@@ -151,8 +151,8 @@ export default function QuestionPanel({
           <button
             type="button"
             onClick={scrollToCompanies}
-            className="inline-flex items-center justify-center rounded-full border border-sky-300/40 bg-black/40 px-3 py-0.5 text-base font-medium text-sky-200
-                       hover:bg-sky-400 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center border-2 border-sky-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-sky-200
+                       hover:bg-sky-400 hover:text-black hover:border-sky-400 transition-colors"
           >
             Companies
           </button>
@@ -222,22 +222,22 @@ export default function QuestionPanel({
       {/* Hints dropdown */}
       {hints.length > 0 && (
         <div ref={hintsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-violet-300/40 bg-black/40">
-            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-violet-200">Hints</span>
-              <span className="text-violet-200/70 transition-transform group-open:rotate-180">
-                ▾
+          <details className="group border-2 border-violet-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-violet-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-violet-200">Hints</span>
+              <span className="text-violet-200/70 transition-transform group-open:rotate-90">
+                ▶
               </span>
             </summary>
 
-            <div className="px-4 pb-4 pt-1 space-y-2">
+            <div className="px-4 py-3 space-y-2">
               {hints.map((hint, i) =>
               {
                 const unlocked = i < hintsUnlocked;
                 return (
                   <div
                     key={`hint-${i}`}
-                    className="flex items-center gap-3 rounded-md border border-violet-300/30 bg-black/30 px-3 py-2 text-sm text-violet-100/80"
+                    className="flex items-center gap-3 border-2 border-violet-300/30 bg-black/30 px-3 py-2 text-sm text-violet-100/80"
                   >
                     {unlocked ? (
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
@@ -256,19 +256,19 @@ export default function QuestionPanel({
       {/* Topics dropdown */}
       {topics.length > 0 && (
         <div ref={topicsRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-orange-300/40 bg-black/40">
-            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-orange-200">Topics</span>
-              <span className="text-orange-200/70 transition-transform group-open:rotate-180">
-                ▾
+          <details className="group border-2 border-orange-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-orange-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-orange-200">Topics</span>
+              <span className="text-orange-200/70 transition-transform group-open:rotate-90">
+                ▶
               </span>
             </summary>
 
-            <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2">
+            <div className="px-4 py-3 flex flex-wrap gap-2">
               {topics.map((t) => (
                 <span
                   key={`dropdown-${t}`}
-                  className="inline-flex items-center justify-center rounded-full border border-orange-300/30 bg-black/30 px-3 py-1 text-sm font-medium text-orange-100"
+                  className="inline-flex items-center justify-center border-2 border-orange-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange-100"
                 >
                   {t}
                 </span>
@@ -281,19 +281,19 @@ export default function QuestionPanel({
       {/* Companies dropdown */}
       {companies.length > 0 && (
         <div ref={companiesRef} className="mt-8 scroll-mt-24">
-          <details className="group rounded-lg border border-sky-300/40 bg-black/40">
-            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between">
-              <span className="text-lg font-semibold text-sky-200">Companies</span>
-              <span className="text-sky-200/70 transition-transform group-open:rotate-180">
-                ▾
+          <details className="group border-2 border-sky-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-sky-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-sky-200">Companies</span>
+              <span className="text-sky-200/70 transition-transform group-open:rotate-90">
+                ▶
               </span>
             </summary>
 
-            <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2">
+            <div className="px-4 py-3 flex flex-wrap gap-2">
               {companies.map((c) => (
                 <span
                   key={`company-${c}`}
-                  className="inline-flex items-center justify-center rounded-full border border-sky-300/30 bg-black/30 px-3 py-1 text-sm font-medium text-sky-100"
+                  className="inline-flex items-center justify-center border-2 border-sky-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-sky-100"
                 >
                   {c}
                 </span>
