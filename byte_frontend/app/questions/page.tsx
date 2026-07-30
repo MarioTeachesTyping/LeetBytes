@@ -77,9 +77,6 @@ export default function Questions()
                       }`}
                     >
                       <div className="flex items-center justify-center border-r border-white/10 relative">
-                        <span className="absolute left-1.5 text-emerald-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                          ▸
-                        </span>
                         <span className="text-white/40 text-xs font-mono">
                           {String(index + 1).padStart(2, "0")}
                         </span>

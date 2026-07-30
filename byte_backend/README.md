@@ -1,4 +1,4 @@
-# Server
+# Backend
 
 Backend API for LeetBytes.
 

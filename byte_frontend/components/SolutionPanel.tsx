@@ -8,6 +8,9 @@ import React, { useEffect, useState } from "react";
 import { highlightPython } from "@/lib/highlight";
 import type { SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
+import PixelHoverButton from "./PixelHoverButton";
+
+const SOLUTION_BUTTON_FRAMES = ["/base/button-solution.png", "/base/button-solution-2.png", "/base/button-solution-3.png"];
 
 interface SolutionPanelProps 
 {
@@ -39,14 +42,14 @@ function SolutionBlock({ code }: { code: string })
   if (!html) 
   {
     return (
-      <div className="rounded-md bg-[#0d1117] p-4 text-sm text-white/40">
+      <div className="bg-[#0d1117] p-4 text-sm text-white/40">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="relative rounded-md overflow-hidden">
+    <div className="relative overflow-hidden">
       <div
         className="overflow-auto bg-[#0d1117] text-sm"
         dangerouslySetInnerHTML={{ __html: html }}
@@ -63,13 +66,15 @@ function SolutionBlock({ code }: { code: string })
         <Balatro isRotate={false} mouseInteraction={!revealed} />
 
         {!revealed && (
-          <button
-            onClick={() => setRevealed(true)}
-            className="absolute px-12 py-3 bg-black text-white font-semibold rounded-lg border border-white
-                       hover:bg-white hover:text-black transition-colors"
-          >
-            Solution
-          </button>
+          <div className="absolute">
+            <PixelHoverButton
+              frames={SOLUTION_BUTTON_FRAMES}
+              alt="Solution"
+              width={200}
+              height={75}
+              onClick={() => setRevealed(true)}
+            />
+          </div>
         )}
       </div>
     </div>

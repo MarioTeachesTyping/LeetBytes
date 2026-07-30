@@ -323,8 +323,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps)
   return (
     <div ref={containerRef} className="h-full flex flex-col gap-2 min-h-0">
       {/* Editor panel — swapped for the minigame while it's open */}
-      <section className="flex-1 min-h-0 flex flex-col rounded-lg border border-zinc-800 bg-zinc-950 p-3">
-        <div className="relative flex-1 min-h-0 rounded-md overflow-hidden">
+      <section className="flex-1 min-h-0 flex flex-col border border-zinc-800 bg-zinc-950 p-3">
+        <div className="relative flex-1 min-h-0 overflow-hidden">
           {gameOpen ? (
             <GameStage
               hintNumber={hintsUnlocked + 1}
@@ -353,7 +353,7 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps)
 
       {/* Test panel — tabbed (Test Cases / Test Results / Submissions), collapsible + resizable */}
       <div
-        className="shrink-0 flex flex-col min-h-0 rounded-lg border border-zinc-800 bg-zinc-950"
+        className="shrink-0 flex flex-col min-h-0 border border-zinc-800 bg-zinc-950"
         style={open ? { height: panelHeight } : undefined}
       >
         <div className="shrink-0 flex items-center justify-between px-2 py-1.5">
@@ -368,7 +368,7 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps)
                   setTab(key);
                   setOpen(true);
                 }}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                className={`px-3 py-1 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                   tab === key ? "bg-white text-black" : "text-white/60 hover:text-white"
                 }`}
               >

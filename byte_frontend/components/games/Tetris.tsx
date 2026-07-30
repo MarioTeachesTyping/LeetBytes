@@ -382,6 +382,9 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
           <span className="text-sm font-semibold text-white">{state.score.toLocaleString()}</span>
           <span className="text-[10px] text-white/50">/ {targetScore.toLocaleString()}</span>
         </PiecePanel>
+        <PiecePanel label="Controls">
+          <ControlsList />
+        </PiecePanel>
       </div>
 
       <div
@@ -439,9 +442,32 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
 function PiecePanel({ label, children }: { label: string; children: React.ReactNode })
 {
   return (
-    <div className="flex w-28 flex-col items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-3">
+    <div className="flex w-28 flex-col items-center gap-2 border border-zinc-700 bg-zinc-900 p-3">
       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/50">{label}</span>
       {children}
+    </div>
+  );
+}
+
+// Compact key -> action reference shown in the Controls panel.
+const CONTROLS: [string, string][] = [
+  ["← →", "Move"],
+  ["↑", "Rotate"],
+  ["↓", "Soft Drop"],
+  ["Space", "Hard Drop"],
+  ["C", "Hold"],
+];
+
+function ControlsList()
+{
+  return (
+    <div className="flex w-full flex-col gap-1">
+      {CONTROLS.map(([key, action]) => (
+        <div key={action} className="flex items-center justify-between gap-1 text-[10px]">
+          <span className="font-mono text-white/70">{key}</span>
+          <span className="text-white/50">{action}</span>
+        </div>
+      ))}
     </div>
   );
 }

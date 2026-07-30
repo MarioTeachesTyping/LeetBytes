@@ -96,7 +96,7 @@ export default function QuestionPanel({
   return (
     <div className="h-full flex flex-col gap-2 min-h-0">
       {/* Content panel */}
-      <aside className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-4">
+      <aside className="flex-1 min-h-0 overflow-y-auto border border-zinc-800 bg-zinc-950 px-4 py-4">
       {view === "spoiler" ? (
         <SolutionPanel solutions={spoilerSolutions} />
       ) : (

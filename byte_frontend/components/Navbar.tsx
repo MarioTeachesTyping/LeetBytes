@@ -8,9 +8,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { FileText, EyeOff, Play, Gavel, Gamepad2 } from "lucide-react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { PROBLEM_ROWS } from "@/lib/problem-list";
 import { useWorkspace } from "@/components/WorkspaceContext";
-import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 
 function getAdjacentProblems(currentSlug: string)
 {
@@ -39,38 +39,38 @@ export default function Navbar()
       <div className="flex items-center gap-2 pl-4">
         {previous ? (
           <Link href={`/questions/${previous}`}>
-            <button className="flex items-center justify-center w-8 h-8 text-white hover:text-white/70 transition-colors">
-              <MdArrowLeft className="w-6 h-6" />
+            <button className="flex items-center justify-center w-9 h-9 text-white transition-colors hover:text-gray-400">
+              <IoIosArrowBack className="w-6 h-6" />
             </button>
           </Link>
         ) : (
-          <div className="w-8 h-8 flex items-center justify-center text-white/30">
-            <MdArrowLeft className="w-6 h-6" />
+          <div className="w-9 h-9 flex items-center justify-center opacity-30">
+            <IoIosArrowBack className="w-6 h-6 text-white" />
           </div>
         )}
 
         <Link
           href="/questions"
-          className="flex items-center justify-center w-8 h-8"
+          className="flex items-center justify-center w-11 h-11"
         >
           <Image
-            src="/base/icon-logo-light.png" // or icon-dark.png
+            src="/base/icon-light.png"
             alt="LeetBytes Logo"
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             priority
           />
         </Link>
 
         {next ? (
           <Link href={`/questions/${next}`}>
-            <button className="flex items-center justify-center w-8 h-8 text-white hover:text-white/70 transition-colors">
-              <MdArrowRight className="w-6 h-6" />
+            <button className="flex items-center justify-center w-9 h-9 text-white transition-colors hover:text-gray-400">
+              <IoIosArrowForward className="w-6 h-6" />
             </button>
           </Link>
         ) : (
-          <div className="w-8 h-8 flex items-center justify-center text-white/30">
-            <MdArrowRight className="w-6 h-6" />
+          <div className="w-9 h-9 flex items-center justify-center opacity-30">
+            <IoIosArrowForward className="w-6 h-6 text-white" />
           </div>
         )}
       </div>

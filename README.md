@@ -1,4 +1,4 @@
-![banner](byte_frontend/public/base/full-title.png)
+![banner](byte_frontend/public/base/banner.png)
 
 <h1 align="center">LeetBytes</h1>
 
@@ -28,6 +28,7 @@
   - **Tetris** minigame that unlocks the next hint when you hit that round's target score
     - Hold and 6-piece Next queue, ghost piece landing preview, 7-bag piece randomizer
     - Blurred, sped-up gameplay-footage backdrop on the intro screen; animated glitch-text backdrop during play
+    - On-screen Controls panel and a pixel-hover Quit button to exit a round
 
 ### Planned
 

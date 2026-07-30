@@ -41,7 +41,7 @@ function Block({ label, value, tone = "default" }: { label: string; value: strin
     <div>
       <div className="mb-1 text-xs font-medium text-white/40">{label}</div>
       <pre
-        className={`whitespace-pre-wrap break-all rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs ${
+        className={`whitespace-pre-wrap break-all border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs ${
           tone === "error" ? "text-red-300/90" : "text-white/90"
         }`}
       >
@@ -60,7 +60,7 @@ function CaseTabs({ count, active, onSelect }: { count: number; active: number; 
         <button
           key={i}
           onClick={() => onSelect(i)}
-          className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+          className={`px-3 py-1 text-xs font-semibold transition-colors ${
             i === active
               ? "bg-white text-black"
               : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
@@ -93,7 +93,7 @@ export function TestCasesEditor({
   if (loading) 
   {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+      <div className="border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         Loading test cases…
       </div>
     );
@@ -102,7 +102,7 @@ export function TestCasesEditor({
   if (values.length === 0) 
   {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+      <div className="border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         No test cases for this problem yet.
       </div>
     );
@@ -125,7 +125,7 @@ export function TestCasesEditor({
               onChange={(event) => onChange(safeIndex, argIndex, event.target.value)}
               spellCheck={false}
               rows={1}
-              className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+              className="w-full resize-y border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
                          focus:border-white/30 focus:outline-none"
             />
           </div>
@@ -153,7 +153,7 @@ export function DesignTestCasesEditor({
   if (loading)
   {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+      <div className="border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         Loading test cases…
       </div>
     );
@@ -162,7 +162,7 @@ export function DesignTestCasesEditor({
   if (values.length === 0) 
   {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white/50">
+      <div className="border border-white/10 bg-white/5 px-4 py-3 text-white/50">
         No test cases for this problem yet.
       </div>
     );
@@ -182,7 +182,7 @@ export function DesignTestCasesEditor({
             onChange={(event) => onChange(safeIndex, "operations", event.target.value)}
             spellCheck={false}
             rows={1}
-            className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+            className="w-full resize-y border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
                        focus:border-white/30 focus:outline-none"
           />
         </div>
@@ -193,7 +193,7 @@ export function DesignTestCasesEditor({
             onChange={(event) => onChange(safeIndex, "args", event.target.value)}
             spellCheck={false}
             rows={1}
-            className="w-full resize-y rounded-md border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
+            className="w-full resize-y border border-white/10 bg-black/40 px-3 py-2 font-mono text-xs text-white/90
                        focus:border-white/30 focus:outline-none"
           />
         </div>
@@ -247,7 +247,7 @@ function ErrorDisplay({ stderr }: { stderr: string })
     <div>
       <div className="mb-1 text-xs font-semibold text-red-400">{title}</div>
       {body && (
-        <pre className="whitespace-pre-wrap break-all rounded-md border border-red-500/30 bg-red-500/5 px-3 py-2 font-mono text-xs text-red-300/90">
+        <pre className="whitespace-pre-wrap break-all border border-red-500/30 bg-red-500/5 px-3 py-2 font-mono text-xs text-red-300/90">
           {body}
         </pre>
       )}
@@ -287,7 +287,7 @@ function RunResults({ cases, message }: { cases: CaseResult[]; message?: string 
 function Stat({ label, value }: { label: string; value: string }) 
 {
   return (
-    <div className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2">
+    <div className="flex-1 border border-white/10 bg-white/5 px-4 py-2">
       <div className="text-xs text-white/40">{label}</div>
       <div className="text-lg font-semibold text-white">{value}</div>
     </div>
@@ -325,7 +325,7 @@ function JudgeResult({
 
   return (
     <div className="space-y-2">
-      <div className={`rounded-lg border px-4 py-3 ${style.palette}`}>
+      <div className={`border px-4 py-3 ${style.palette}`}>
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-lg font-semibold">
             <span className={`inline-block h-2.5 w-2.5 rounded-full ${style.dot}`} />
@@ -361,7 +361,7 @@ export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idle
   if (panel.kind === "running") 
   {
     return (
-      <div className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white/80">
+      <div className="border border-white/20 bg-white/5 px-4 py-3 text-white/80">
         {panel.action === "run" ? "Running examples…" : "Judging…"}
       </div>
     );
@@ -380,7 +380,7 @@ export default function ResultPanel({ panel, idleMessage }: { panel: Panel; idle
     }
 
     return (
-      <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
+      <div className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
         {panel.detail}
       </div>
     );

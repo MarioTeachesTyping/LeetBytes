@@ -1,4 +1,4 @@
-# Client
+# Frontend
 
 The LeetBytes frontend: a Next.js app for browsing problems, editing and running
 solutions, and revealing spoilers.
@@ -37,9 +37,11 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `SolutionPanel.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
   - `games/` — the hint-unlocking minigames
     - `GameStage.tsx` — drives a round through intro → countdown → playing → result, judging the
-      score reached against the target for the next hint
-    - `Tetris.tsx` — the current minigame: Hold slot, 6-piece Next queue, ghost piece, and a
-      7-bag piece randomizer instead of independent per-piece randomness
+      score reached against the target for the next hint; a pixel-hover Quit button in the corner
+      exits back to the editor at any phase
+    - `Tetris.tsx` — the current minigame: Hold slot, 6-piece Next queue, ghost piece, a 7-bag
+      piece randomizer instead of independent per-piece randomness, and an on-screen Controls
+      panel listing the keybinds
   - `react-bits/` — animated visual effects used across the landing page, the solutions list, and
     behind the minigame/spoiler overlays: `Particles`, `CircularText`, `Balatro`, `PillNav`,
     `Cubes`, `Iridescence`, `LetterGlitch`
@@ -65,7 +67,7 @@ The panel under the editor has three tabs:
 Drag the thin handle between the editor and the panel to resize the split; the
 chevron collapses the panel.
 
-## Hints and the minigame
+## Hints and the Minigame
 
 Each problem has a list of hints (`hints` in its `byte_problems/<slug>/public.ts` entry), unlocked one
 at a time. `WorkspaceContext` tracks how many are unlocked and the score target for

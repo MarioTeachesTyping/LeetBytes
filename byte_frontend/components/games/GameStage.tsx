@@ -5,12 +5,14 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
 import Tetris from "./Tetris";
 import LetterGlitch from "../react-bits/LetterGlitch";
 import PixelHoverButton from "../PixelHoverButton";
 
 const PLAY_BUTTON_FRAMES = ["/base/button-play.png", "/base/button-play-2.png", "/base/button-play-3.png"];
+const RETRY_BUTTON_FRAMES = ["/base/button-retry.png", "/base/button-retry-2.png", "/base/button-retry-3.png"];
+const BACK_BUTTON_FRAMES = ["/base/button-back.png", "/base/button-back-2.png", "/base/button-back-3.png"];
+const QUIT_BUTTON_FRAMES = ["/base/button-quit.png", "/base/button-quit-2.png", "/base/button-quit-3.png"];
 
 // How much faster than real time the intro's background video plays.
 const INTRO_VIDEO_PLAYBACK_RATE = 2.5;
@@ -113,18 +115,13 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto rounded-md bg-zinc-950 p-4 text-white">
-      <button
-        type="button"
-        onClick={onExit}
-        aria-label="Back to code"
-        className="absolute right-3 top-3 z-20 rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white"
-      >
-        <X className="h-4 w-4" />
-      </button>
+    <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto border-2 border-white bg-zinc-950 p-4 text-white">
+      <div className="absolute right-5 top-5 z-20">
+        <PixelHoverButton frames={QUIT_BUTTON_FRAMES} alt="Quit" width={48} height={18} onClick={onExit} />
+      </div>
 
       {phase === "intro" && (
-        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md">
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
           <video
             ref={(el) =>
             {
@@ -137,7 +134,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
             muted
             playsInline
           />
-          <div className="relative z-10 max-w-xs space-y-3 rounded-lg border border-white/10 bg-zinc-950/70 p-6 text-center backdrop-blur-sm">
+          <div className="relative z-10 max-w-xs space-y-3 border border-white/10 bg-zinc-950/70 p-6 text-center backdrop-blur-sm">
             <p className="text-4xl font-bold">Tetris</p>
             {allHintsUnlocked ? (
               <p className="text-sm text-white/60">
@@ -161,7 +158,7 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
       )}
 
       {phase === "playing" && (
-        <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-md">
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden">
           <div className="absolute inset-0">
             <LetterGlitch
               glitchSpeed={50}
@@ -181,7 +178,6 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
               onScoreChange={handleScoreChange}
               onTopOut={handleTopOut}
             />
-            <p className="text-xs text-white/40">← → move · ↑ rotate · ↓ soft drop · Space hard drop · C hold</p>
           </div>
         </div>
       )}
@@ -192,28 +188,16 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
             Time&apos;s Up! {won ? "You Win!" : "You Lose"}
           </p>
           {won && !roundAllHintsUnlocked && (
-            <p className="font-semibold text-violet-300">Hint {roundHintNumber} Unlocked!</p>
+            <p className="font-semibold text-white">Hint {roundHintNumber} Unlocked!</p>
           )}
           <p className="text-sm text-white/60">
             Final score: {score.toLocaleString()} / {roundTargetScore.toLocaleString()}
           </p>
           <div className="flex justify-center gap-2">
             {!won && (
-              <button
-                type="button"
-                onClick={startRound}
-                className="rounded-md border border-white/30 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-black"
-              >
-                Try Again
-              </button>
+              <PixelHoverButton frames={RETRY_BUTTON_FRAMES} alt="Try Again" width={140} height={52} onClick={startRound} />
             )}
-            <button
-              type="button"
-              onClick={onExit}
-              className="rounded-md bg-violet-500 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-violet-400"
-            >
-              Back to Code
-            </button>
+            <PixelHoverButton frames={BACK_BUTTON_FRAMES} alt="Back to Code" width={140} height={52} onClick={onExit} />
           </div>
         </div>
       )}
