@@ -1,0 +1,156 @@
+# Backend
+
+Backend API for LeetBytes.
+
+## Run locally
+
+```bash
+pnpm install   # once, at the repo root (installs the whole workspace)
+pnpm dev
+```
+
+The server listens on `http://localhost:4000` by default.
+
+## Scripts
+
+- `pnpm dev`: run the TypeScript server with watch mode
+- `pnpm start`: run the server once (via tsx, no build step)
+- `pnpm typecheck`: check TypeScript without emitting files
+
+## Routes
+
+### `GET /health`
+
+Returns `{ "ok": true }`.
+
+### `GET /problems/:slug/cases`
+
+Returns a problem's public example inputs for the Test Cases editor. Only the
+published examples are exposed — the hidden judged suite stays server-side. The
+response is one of two shapes depending on the problem's `kind`:
+
+```json
+{
+  "kind": "function",
+  "paramNames": ["nums", "target"],
+  "cases": [{ "args": [[2, 7, 11, 15], 9], "expected": [0, 1] }]
+}
+```
+
+Design problems (a class with a constructor + method calls, e.g. LRU Cache) have
+no single function's args to show, so they use LeetCode's own two-field notation
+instead:
+
+```json
+{
+  "kind": "design",
+  "cases": [{ "operations": ["LRUCache", "put", "get"], "args": [[2], [1, 1], [1]], "expected": [null, null, 1] }]
+}
+```
+
+404s with `{ "message": "No test cases for \"<slug>\" yet." }` when the slug has no
+`hidden.ts` entry at all.
+
+### `POST /submissions/run`
+
+The "Run" testbench. Executes a `class Solution` submission against the problem's
+public example cases and returns per-case output. It optionally accepts user-edited
+`cases` (from the Test Cases editor) to run custom inputs instead of the defaults;
+each case only needs an `args` array. This path does not gate on correctness — it
+returns `200` whenever the cases could be run.
+
+```json
+{
+  "problemSlug": "two-sum",
+  "language": "python",
+  "code": "class Solution:\n    def twoSum(self, nums, target):\n        ...",
+  "cases": [{ "args": [[2, 7, 11, 15], 9] }]
+}
+```
+
+The response shares the judge shape: a `results` array with each case's `input`,
+`actual`, `stdout`, and any error. Custom inputs have no known expected answer, so
+the client only shows Expected for unedited cases.
+
+### `POST /submissions/judge`
+
+The "Submit" path. Runs a `class Solution` submission against the problem's
+server-owned hidden test cases and grades it.
+
+```json
+{
+  "problemSlug": "two-sum",
+  "language": "python",
+  "code": "class Solution:\n    def twoSum(self, nums, target):\n        ..."
+}
+```
+
+Returns `200` when the verdict is `accepted`, otherwise `422`. The response reports
+an overall `status` (`accepted` / `wrong_answer` / `runtime_error` /
+`time_limit_exceeded` / `compile_error` / `error`), `passed`/`total`, a per-case
+`results` array (input, expected, actual, per-case runtime), the total `runtimeMs`
+(sum of per-case execution times), and `memoryKb` (peak memory).
+
+The server wraps the submitted code in a Python harness (see
+`src/services/judge/harness.ts`) that calls the method named in the problem
+definition (`functionName`) for each test case — or, for "design" problems (a
+class with a constructor + method calls, e.g. LRU Cache, Min Stack), instantiates
+the class once and calls each queued method in sequence, graded via LeetCode's own
+`operations`/`args`/`expected` notation instead of a single function. Test cases
+and the answer key come from the `@leetbytes/problems` workspace package (each
+problem's `hidden.ts`), which only the server imports — the client never sees the
+hidden suite. Request bodies are validated with the Zod schemas in
+`@leetbytes/shared`.
+
+The harness includes JSON adapters for `ListNode`/`TreeNode`/`ListNode[]`/
+`TreeNode[]`/`ListNodeCycle` arguments and return values (per the problem's
+`IOType`), so linked-list and tree problems are judged too. Each result is
+compared using the problem's `CompareMode` — `exact` (order matters), `unordered`
+(one list, order-independent), or `unordered_deep` (list of lists, neither inner
+nor outer order matters).
+
+Memory is measured inside the harness: peak RSS via `resource.getrusage` on Linux
+(e.g. self-hosted Piston), falling back to `tracemalloc` on Windows where `resource`
+is unavailable. The client shows runtime and memory on accepted or partial
+("Almost") verdicts.
+
+Judging reuses the same runner switch as `/submissions/run`, so it works against
+Piston or, for local development, `CODE_RUNNER=local-python`.
+
+## Runner options
+
+The default runner is Piston:
+
+```txt
+CODE_RUNNER=piston
+PISTON_API_URL=https://emkc.org/api/v2/piston
+```
+
+The public Piston API is whitelist-only as of February 15, 2026, so you will likely need to self-host Piston and point `PISTON_API_URL` at that instance.
+
+For local development with trusted code only, you can run directly against a local Python install:
+
+```txt
+CODE_RUNNER=local-python
+LOCAL_PYTHON_COMMAND=python
+```
+
+Note: memory is reported as full process RSS on Linux runners, but on Windows the
+local runner falls back to `tracemalloc` (Python allocations only), so the numbers
+run smaller there.
+
+Environment variables:
+
+- `PORT`: server port, defaults to `4000`
+- `CLIENT_ORIGIN`: allowed browser origin, defaults to `http://localhost:3000`
+- `CODE_RUNNER`: `piston` or `local-python`, defaults to `piston`
+- `PISTON_API_URL`: Piston base URL, defaults to `https://emkc.org/api/v2/piston`
+- `PISTON_PYTHON_VERSION`: optional fixed Python runtime version
+- `LOCAL_PYTHON_COMMAND`: Python executable for local dev runner, defaults to `python`
+
+## Limits
+
+These are fixed in `src/config.ts`, not configurable via env:
+
+- Request bodies are capped at 64 KiB (`413` if exceeded).
+- Each case gets a 3000ms run timeout and 3000ms compile timeout.

@@ -1,0 +1,316 @@
+// ============== //
+// Question Panel //
+// ============== //
+
+"use client";
+
+import React, { useRef } from "react";
+import { CheckCircle2, Lock } from "lucide-react";
+import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
+import SolutionPanel from "./SolutionPanel";
+import { useWorkspace } from "./WorkspaceContext";
+
+interface QuestionPanelProps 
+{
+  title: string;
+  link?: string;
+  difficulty?: SolutionEntry["difficulty"];
+  description: string[];
+  examples?: ProblemExample[];
+  constraints?: string[];
+  topics?: string[];
+  companies?: string[];
+  hints?: string[];
+  code: string;
+  solutions?: SpoilerSolution[];
+}
+
+// Renders text with backtick-wrapped segments as inline code.
+// Example: "use `nums[i]` here" → nums[i] is styled like code
+function renderInlineCode(text: string) 
+{
+  return text.split(/(`[^`]+`)/g).map((part, i) =>
+    part.startsWith("`") ? (
+      <code
+        key={i}
+        className="font-mono bg-zinc-900 px-1.5 py-0.5 rounded text-sm text-zinc-100"
+      >
+        {part.slice(1, -1)}
+      </code>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
+export default function QuestionPanel({
+  title,
+  link,
+  difficulty = "Easy",
+  description,
+  examples = [],
+  constraints = [],
+  topics = [],
+  companies = [],
+  hints = [],
+  code,
+  solutions,
+}: QuestionPanelProps)
+{
+  const topicsRef = useRef<HTMLDivElement | null>(null);
+  const companiesRef = useRef<HTMLDivElement | null>(null);
+  const hintsRef = useRef<HTMLDivElement | null>(null);
+  const { view, hintsUnlocked } = useWorkspace();
+
+  // Authored approaches when present; otherwise a single untitled block from `code`.
+  const spoilerSolutions: SpoilerSolution[] =
+    solutions && solutions.length > 0
+      ? solutions
+      : [{ title: "1. My Solution", description: "This is how I solved it.", code }];
+
+  const difficultyStyles =
+    difficulty === "Easy"
+      ? "border-emerald-400/40 text-emerald-300 bg-black/40"
+      : difficulty === "Medium"
+      ? "border-amber-400/40 text-amber-300 bg-black/40"
+      : "border-rose-400/40 text-rose-300 bg-black/40";
+
+  const scrollToTopics = () =>
+  {
+    if (!topicsRef.current) return;
+    topicsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToCompanies = () =>
+  {
+    if (!companiesRef.current) return;
+    companiesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToHints = () =>
+  {
+    if (!hintsRef.current) return;
+    hintsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div className="h-full flex flex-col gap-2 min-h-0">
+      {/* Content panel */}
+      <aside className="flex-1 min-h-0 overflow-y-auto border border-zinc-800 bg-zinc-950 px-4 py-4">
+      {view === "spoiler" ? (
+        <SolutionPanel solutions={spoilerSolutions} />
+      ) : (
+      <>
+
+
+      {/* Title */}
+      {link ? (
+        <a 
+          href={link} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-2xl font-semibold text-white mb-3 hover:text-gray-400 transition-colors cursor-pointer inline-block"
+        >
+          {title}
+        </a>
+      ) : (
+        <h1 className="text-2xl font-semibold text-white mb-3">{title}</h1>
+      )}
+
+      {/* Badges row */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          className={`inline-flex items-center justify-center border-2 px-3 py-0.5 text-sm font-bold uppercase tracking-widest ${difficultyStyles}`}
+        >
+          {difficulty}
+        </span>
+
+        {hints.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToHints}
+            className="inline-flex items-center justify-center border-2 border-violet-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-violet-200
+                       hover:bg-violet-400 hover:text-black hover:border-violet-400 transition-colors"
+          >
+            Hints
+          </button>
+        )}
+
+        {topics.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToTopics}
+            className="inline-flex items-center justify-center border-2 border-orange-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-orange-200
+                       hover:bg-orange-400 hover:text-black hover:border-orange-400 transition-colors"
+          >
+            Topics
+          </button>
+        )}
+
+        {companies.length > 0 && (
+          <button
+            type="button"
+            onClick={scrollToCompanies}
+            className="inline-flex items-center justify-center border-2 border-sky-300/40 bg-black/40 px-3 py-0.5 text-sm font-bold uppercase tracking-widest text-sky-200
+                       hover:bg-sky-400 hover:text-black hover:border-sky-400 transition-colors"
+          >
+            Companies
+          </button>
+        )}
+      </div>
+
+      {/* Description */}
+      <div className="mt-5 space-y-4 text-base text-zinc-200 leading-relaxed">
+        {description.map((line, i) => (
+          <p key={i}>{renderInlineCode(line)}</p>
+        ))}
+      </div>
+
+      {/* Examples */}
+      {examples.length > 0 && (
+        <div className="mt-8 space-y-7">
+          {examples.map((ex, i) => (
+            <div key={i} className="space-y-3 text-base text-zinc-200">
+              <p className="text-lg font-semibold text-white">
+                Example {i + 1}:
+              </p>
+
+              <div className="pl-5 space-y-2 border-l border-white/10">
+              {ex.image && (
+                  <div className="mt-3">
+                    <img
+                      src={ex.image}
+                      alt={`Example ${i + 1} illustration`}
+                      className="max-w-[85%] h-auto rounded-lg border border-white/20 bg-white p-2"
+                    />
+                  </div>
+                )}
+                <p>
+                  <span className="font-semibold text-white">Input:</span>{" "}
+                  {renderInlineCode(ex.input)}
+                </p>
+                <p>
+                  <span className="font-semibold text-white">Output:</span>{" "}
+                  {renderInlineCode(ex.output)}
+                </p>
+                {ex.explanation && (
+                  <p>
+                    <span className="font-semibold text-white">
+                      Explanation:
+                    </span>{" "}
+                    {renderInlineCode(ex.explanation)}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Constraints */}
+      {constraints.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold text-white mb-3">Constraints</h2>
+          <ul className="list-disc list-inside text-base text-zinc-200 space-y-2">
+            {constraints.map((c, i) => (
+              <li key={i}>{renderInlineCode(c)}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Hints dropdown */}
+      {hints.length > 0 && (
+        <div ref={hintsRef} className="mt-8 scroll-mt-24">
+          <details className="group border-2 border-violet-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-violet-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-violet-200">Hints</span>
+              <span className="text-violet-200/70 transition-transform group-open:rotate-90">
+                ▶
+              </span>
+            </summary>
+
+            <div className="px-4 py-3 space-y-2">
+              {hints.map((hint, i) =>
+              {
+                const unlocked = i < hintsUnlocked;
+                return (
+                  <div
+                    key={`hint-${i}`}
+                    className="flex items-center gap-3 border-2 border-violet-300/30 bg-black/30 px-3 py-2 text-sm text-violet-100/80"
+                  >
+                    {unlocked ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
+                    ) : (
+                      <Lock className="h-4 w-4 shrink-0 text-violet-200/70" />
+                    )}
+                    <span>{unlocked ? hint : "Complete a Minigame to unlock this hint!"}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </details>
+        </div>
+      )}
+
+      {/* Topics dropdown */}
+      {topics.length > 0 && (
+        <div ref={topicsRef} className="mt-8 scroll-mt-24">
+          <details className="group border-2 border-orange-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-orange-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-orange-200">Topics</span>
+              <span className="text-orange-200/70 transition-transform group-open:rotate-90">
+                ▶
+              </span>
+            </summary>
+
+            <div className="px-4 py-3 flex flex-wrap gap-2">
+              {topics.map((t) => (
+                <span
+                  key={`dropdown-${t}`}
+                  className="inline-flex items-center justify-center border-2 border-orange-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange-100"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </details>
+        </div>
+      )}
+
+      {/* Companies dropdown */}
+      {companies.length > 0 && (
+        <div ref={companiesRef} className="mt-8 scroll-mt-24">
+          <details className="group border-2 border-sky-300/40 bg-black/40">
+            <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-sky-300/40">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-sky-200">Companies</span>
+              <span className="text-sky-200/70 transition-transform group-open:rotate-90">
+                ▶
+              </span>
+            </summary>
+
+            <div className="px-4 py-3 flex flex-wrap gap-2">
+              {companies.map((c) => (
+                <span
+                  key={`company-${c}`}
+                  className="inline-flex items-center justify-center border-2 border-sky-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-sky-100"
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          </details>
+        </div>
+      )}
+
+      <div>
+        <p className="mt-10 text-xs text-white/40">
+          Copyright © 2026 LeetCode. All rights reserved.
+        </p>
+      </div>
+      </>
+      )}
+      </aside>
+    </div>
+  );
+}
