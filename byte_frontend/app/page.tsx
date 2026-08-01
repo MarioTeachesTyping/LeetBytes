@@ -4,9 +4,11 @@
 
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Balatro from "@/components/react-bits/Balatro";
 import PixelHoverButton from "@/components/PixelHoverButton";
+import OptionsModal from "@/components/OptionsModal";
 
 const PLAY_BUTTON_FRAMES = ["/base/button-play.png", "/base/button-play-2.png", "/base/button-play-3.png"];
 const OPTIONS_BUTTON_FRAMES = ["/base/button-options.png", "/base/button-options-2.png", "/base/button-options-3.png"];
@@ -14,6 +16,8 @@ const QUIT_BUTTON_FRAMES = ["/base/button-quit.png", "/base/button-quit-2.png", 
 
 export default function Landing()
 {
+  const [optionsOpen, setOptionsOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen bg-black flex flex-col items-center overflow-hidden">
       <div className="absolute inset-0">
@@ -42,9 +46,17 @@ export default function Landing()
 
       <div className="relative z-10 flex items-center gap-8 sm:gap-12 pb-16 sm:pb-24">
         <PixelHoverButton href="/questions" frames={PLAY_BUTTON_FRAMES} alt="Play" width={240} height={90} />
-        <PixelHoverButton frames={OPTIONS_BUTTON_FRAMES} alt="Options" width={240} height={90} />
+        <PixelHoverButton
+          frames={OPTIONS_BUTTON_FRAMES}
+          alt="Options"
+          width={240}
+          height={90}
+          onClick={() => setOptionsOpen(true)}
+        />
         <PixelHoverButton frames={QUIT_BUTTON_FRAMES} alt="Quit" width={240} height={90} />
       </div>
+
+      <OptionsModal open={optionsOpen} onClose={() => setOptionsOpen(false)} />
     </div>
   );
 }

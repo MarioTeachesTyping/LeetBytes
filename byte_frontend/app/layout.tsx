@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { PIXEL_FONT_OFF_CLASS, PIXEL_FONT_STORAGE_KEY } from "@/lib/pixelFont";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,7 +29,20 @@ export default function RootLayout({
 }>)
 {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Applies the saved "Pixel Font: Off" choice before first paint, so the
+            regular font doesn't flash to pixel font then swap back. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem(${JSON.stringify(
+              PIXEL_FONT_STORAGE_KEY
+            )})==='off')document.documentElement.classList.add(${JSON.stringify(
+              PIXEL_FONT_OFF_CLASS
+            )});}catch(e){}`,
+          }}
+        />
+      </head>
       <body
         className={`${minecraftFont.variable} ${geistMono.variable} antialiased`}
       >
