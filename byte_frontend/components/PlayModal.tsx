@@ -135,8 +135,13 @@ export default function PlayModal({ open, onClose }: PlayModalProps)
                 height={162}
               />
 
-              {/* Wired up once the progress feature exists. */}
-              <PixelHoverButton frames={PROGRESS_BUTTON_FRAMES} alt="Progress" width={210} height={162} />
+              <PixelHoverButton
+                href="/progress"
+                frames={PROGRESS_BUTTON_FRAMES}
+                alt="Progress"
+                width={210}
+                height={162}
+              />
             </div>
           </div>
 

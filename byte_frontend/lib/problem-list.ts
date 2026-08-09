@@ -39,6 +39,12 @@ const questionRows: ProblemListRow[] = Object.entries(PROBLEMS)
 
 export const PROBLEM_ROWS = [...questionRows, ...BACKLOG_ROWS];
 
+// Slug → row, for anything that stores a bare slug (e.g. the progress store)
+// and needs the title/difficulty back at render time.
+export const PROBLEMS_BY_SLUG = new Map(
+  questionRows.map((row) => [row.slug as string, row]),
+);
+
 export const PROBLEM_TOPICS = [
   "All",
   ...Array.from(new Set(PROBLEM_ROWS.flatMap((item) => item.topics))).sort(),

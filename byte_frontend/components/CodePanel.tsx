@@ -10,6 +10,7 @@ import CodeEditor from "./CodeEditor";
 import GameStage from "./games/GameStage";
 import ResultPanel, { DesignTestCasesEditor, TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./ResultPanel";
 import { HINT_SCORE_TARGETS, useWorkspace } from "./WorkspaceContext";
+import { recordSubmission } from "@/lib/progress";
 import type { ProblemCasesResponse } from "@leetbytes/shared";
 
 // All API calls go through the Next.js /api proxy (see next.config.ts), so the
@@ -313,6 +314,9 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps)
         memoryKb: data.memoryKb,
         message: data.message,
       });
+
+      // Feeds the /progress page's history table and contribution calendar.
+      recordSubmission({ slug, status: data.status, passed: data.passed, total: data.total });
     }
     catch
     {
