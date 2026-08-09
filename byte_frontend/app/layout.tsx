@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import LoadingBar from "@/components/LoadingBar";
 import { PIXEL_FONT_OFF_CLASS, PIXEL_FONT_STORAGE_KEY } from "@/lib/pixelFont";
 
 const geistMono = Geist_Mono({
@@ -47,6 +48,7 @@ export default function RootLayout({
         className={`${minecraftFont.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <LoadingBar />
       </body>
     </html>
   );

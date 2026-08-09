@@ -38,6 +38,34 @@ interface PlayModalProps
   onClose: () => void;
 }
 
+// A padlock drawn on a 13x13 pixel grid. crispEdges keeps the blocks hard at
+// any size, so it scales like the PNG art it sits on instead of going smooth.
+function PixelLock({ className, style }: { className?: string; style?: React.CSSProperties })
+{
+  return (
+    <svg
+      viewBox="0 0 13 13"
+      className={className}
+      style={style}
+      shapeRendering="crispEdges"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {/* Shackle */}
+      <rect x="3" y="0" width="7" height="1" />
+      <rect x="3" y="1" width="1" height="4" />
+      <rect x="9" y="1" width="1" height="4" />
+
+      {/* Body */}
+      <rect x="1" y="5" width="11" height="8" />
+
+      {/* Keyhole — punched back out in the card's own black */}
+      <rect x="5" y="7" width="3" height="3" fill="#000" />
+      <rect x="6" y="10" width="1" height="2" fill="#000" />
+    </svg>
+  );
+}
+
 // Slides modal-short.png up from off-screen to center on open, and back down
 // on close. Stays mounted through the close animation so it can play out.
 export default function PlayModal({ open, onClose }: PlayModalProps)
@@ -124,8 +152,17 @@ export default function PlayModal({ open, onClose }: PlayModalProps)
 
           <div className="flex flex-1 items-center justify-center">
             <div className="grid grid-cols-3 gap-x-10 sm:gap-x-12">
-              {/* Not usable yet. */}
-              <PixelHoverButton frames={STORY_BUTTON_FRAMES} alt="Story" width={210} height={162} />
+              {/* Not usable yet — dimmed, with a lock stamped over it. */}
+              <div className="relative">
+                <div className="opacity-45">
+                  <PixelHoverButton frames={STORY_BUTTON_FRAMES} alt="Story" width={210} height={162} />
+                </div>
+
+                <PixelLock
+                  className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 text-white"
+                  style={{ filter: "drop-shadow(0 0 6px rgba(0,0,0,0.9))" }}
+                />
+              </div>
 
               <PixelHoverButton
                 href="/questions"
