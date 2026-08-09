@@ -23,6 +23,8 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `app/page.tsx` — the landing page.
   - `app/questions/page.tsx` — the solutions list, topic-filterable.
   - `app/questions/[slug]/page.tsx` — an individual problem page.
+  - `app/progress/page.tsx` — practice history table, a solved/judged/difficulty summary panel,
+    and the contribution calendar, all read from the local-storage submission log.
 - `components/`
   - `Navbar.tsx` — prev/next problem navigation, Question/Spoiler toggle, Game button, Run/Judge
   - `WorkspaceContext.tsx` — shared toolbar state (Question/Spoiler view, Run/Judge status) plus
@@ -30,11 +32,23 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `QuestionPanel.tsx` — description, examples, constraints, topic/company tags, and the Hints
     panel (each hint stays locked until its minigame round is won)
   - `CodePanel.tsx` — the code editor, Run/Judge buttons, and the tabbed, resizable test panel;
-    swaps the editor out for the minigame overlay while it's open
+    swaps the editor out for the minigame overlay while it's open; records every judged
+    submission via `lib/progress.ts` for the Progress page
   - `ResultPanel.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
   - `CodeEditor.tsx` — the CodeMirror editor
   - `CodeBlock.tsx` — a small read-only, syntax-highlighted code block helper
   - `SolutionPanel.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
+  - `PlayModal.tsx` / `OptionsModal.tsx` — pixel-art modals off the landing page's Play/Options
+    buttons, sharing a slide-up-from-off-screen open/close animation. Play offers Story (locked —
+    dimmed with a pixel padlock stamped over it), Questions (`/questions`), and Progress
+    (`/progress`) in a row; Options holds the Pixel Font toggle.
+  - `PixelHoverButton.tsx` — reusable hover-frame-cycling button (base/-2/-3 PNG frames), used
+    for every pixel-art button across the landing page, modals, and Progress header
+  - `ContributionCalendar.tsx` — the GitHub/LeetCode-style submission grid on the Progress page,
+    grouped into month blocks with a hover readout for the day under the cursor
+  - `LoadingBar.tsx` — a centered, segmented pixel loading bar shown between route changes.
+    Detects navigation by intercepting internal `<a>` clicks (the App Router has no router
+    events) and clears once `usePathname()` reflects the new route.
   - `games/` — the hint-unlocking minigames
     - `GameStage.tsx` — drives a round through intro → countdown → playing → result, judging the
       score reached against the target for the next hint; a pixel-hover Quit button in the corner
@@ -46,7 +60,11 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
     behind the minigame/spoiler overlays: `Particles`, `CircularText`, `Balatro`, `PillNav`,
     `Cubes`, `Iridescence`, `LetterGlitch`
 - `lib/`
-  - `problem-list.ts` — builds the solutions-list rows/topics from `@leetbytes/problems/public`
+  - `problem-list.ts` — builds the solutions-list rows/topics from `@leetbytes/problems/public`;
+    also exports `PROBLEMS_BY_SLUG` for looking up a problem's title/difficulty from a bare slug
+  - `progress.ts` — the local-storage submission log (`leetbytes-progress`) that `CodePanel`
+    appends to on every judged submission, plus the calendar/streak math the Progress page and
+    `ContributionCalendar` read it through
   - `highlight.ts` — Shiki syntax highlighting
   - `utils.ts` — small shared helpers (e.g. the `cn` class-name utility)
 - problem content (description, examples, starter code, spoiler solutions) comes from the

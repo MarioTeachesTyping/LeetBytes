@@ -2,9 +2,9 @@
 
 <h1 align="center">LeetBytes</h1>
 
-<p align="center">Lil website to shove my LeetCode solutions. Also testing frontend libs for fun.</p>
+<p align="center">Lil app to shove my LeetCode solutions. Also testing frontend libs for fun.</p>
 
-<p align="center">The long-term idea is to turn this into a frontend-heavy coding playground where solutions are not just listed, but explored through visuals, notes, code running, and small games that unlock hints.</p>
+<p align="center">The long-term idea is to turn this into a pixel-styled coding playground where solutions are not just listed, but explored through visuals, code running, and small games that unlock hints.</p>
 
 ---
 
@@ -13,6 +13,11 @@
 ### Current
 
 - Landing page with animated visual effects
+- Pixel-art Play and Options modals off the landing page
+  - Play → Story (locked, coming later) / Questions / Progress, in a shared bordered-panel shell
+- Progress page — practice history, a solved/judged/difficulty summary, and a
+  GitHub-style contribution calendar, all built from a local-storage submission log
+- Game-style loading bar shown on page navigation, styled to match the pixel UI
 - Solutions list with topic filtering
 - 35 problems added, 34 of them with a judged hidden test suite
 - Individual problem pages with:
@@ -82,6 +87,10 @@ pnpm dev
 Hints and the minigame that unlocks them are currently client-only state (see
 `byte_frontend/components/WorkspaceContext.tsx` and `byte_frontend/components/games/`) — nothing
 about hint progress or minigame results is persisted or sent to the server yet.
+The Progress page works the same way: every judged submission is appended to a
+`localStorage` log (`byte_frontend/lib/progress.ts`) that the history table, summary,
+and contribution calendar all read from — there's no per-user server state yet, so
+progress doesn't follow you across browsers or devices.
 
 ### Planned
 
