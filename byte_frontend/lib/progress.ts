@@ -62,6 +62,64 @@ export function readProgress(): ProgressStore
   }
 }
 
+// ============================= //
+// useSyncExternalStore plumbing //
+// ============================= //
+
+// localStorage is an external system, so the Progress page reads it through
+// useSyncExternalStore instead of `useEffect` + `setState` — that avoids both
+// the extra render effects cause and (via getServerSnapshot) any SSR/client
+// hydration mismatch, since the server always "sees" an empty store.
+
+const EMPTY_SUBMISSIONS: SubmissionRecord[] = [];
+
+// getSnapshot must return a referentially stable value when nothing changed,
+// or useSyncExternalStore re-renders in a loop. Cache the parse against the
+// raw string so unrelated re-renders/subscriptions don't allocate a new array.
+let cachedRaw: string | null | undefined;
+let cachedSnapshot: SubmissionRecord[] = EMPTY_SUBMISSIONS;
+
+export function getProgressSnapshot(): SubmissionRecord[]
+{
+  if (typeof window === "undefined")
+  {
+    return EMPTY_SUBMISSIONS;
+  }
+
+  const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+  if (raw === cachedRaw)
+  {
+    return cachedSnapshot;
+  }
+
+  cachedRaw = raw;
+  cachedSnapshot = readProgress().submissions;
+  return cachedSnapshot;
+}
+
+export function getProgressServerSnapshot(): SubmissionRecord[]
+{
+  return EMPTY_SUBMISSIONS;
+}
+
+// Only fires for writes from *other* tabs/windows — the tab that calls
+// `localStorage.setItem` doesn't get its own "storage" event. Same-tab
+// updates (e.g. judging a problem, then navigating to /progress) still show
+// up correctly because getProgressSnapshot re-reads on every render anyway.
+export function subscribeToProgress(onChange: () => void): () => void
+{
+  function handleStorage(event: StorageEvent)
+  {
+    if (event.key === null || event.key === PROGRESS_STORAGE_KEY)
+    {
+      onChange();
+    }
+  }
+
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}
+
 export function recordSubmission(entry: Omit<SubmissionRecord, "at">)
 {
   if (typeof window === "undefined")

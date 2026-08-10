@@ -4,12 +4,18 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import Balatro from "@/components/react-bits/Balatro";
 import PixelHoverButton from "@/components/PixelHoverButton";
 import ContributionCalendar from "@/components/ContributionCalendar";
 import { PROBLEM_ROWS, PROBLEMS_BY_SLUG, type ProblemListRow } from "@/lib/problem-list";
-import { readProgress, solvedSlugs, type SubmissionRecord } from "@/lib/progress";
+import
+{
+  getProgressServerSnapshot,
+  getProgressSnapshot,
+  solvedSlugs,
+  subscribeToProgress,
+} from "@/lib/progress";
 import type { JudgeVerdict } from "@leetbytes/shared";
 
 const BACK_BUTTON_FRAMES = ["/base/button-back.png", "/base/button-back-2.png", "/base/button-back-3.png"];
@@ -87,14 +93,14 @@ function Panel({ title, children, className = "" }: {
 
 export default function Progress()
 {
-  // localStorage is client-only, so the first paint renders the empty state and
-  // the real numbers arrive on mount.
-  const [submissions, setSubmissions] = useState<SubmissionRecord[]>([]);
-
-  useEffect(() =>
-  {
-    setSubmissions(readProgress().submissions);
-  }, []);
+  // Reads localStorage as an external store — the server snapshot is always
+  // empty, so the first client render matches the SSR'd HTML with no
+  // hydration mismatch, and the real numbers land as soon as this runs client-side.
+  const submissions = useSyncExternalStore(
+    subscribeToProgress,
+    getProgressSnapshot,
+    getProgressServerSnapshot,
+  );
 
   const summary = useMemo(() =>
   {
