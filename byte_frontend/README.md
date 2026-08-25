@@ -42,6 +42,9 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
     buttons, sharing a slide-up-from-off-screen open/close animation. Play offers Story (locked —
     dimmed with a pixel padlock stamped over it), Questions (`/questions`), and Progress
     (`/progress`) in a row; Options holds the Pixel Font toggle.
+  - `FilterModal.tsx` — the questions list's Options button, on the wide `modal-long` frame: a
+    search bar over four tag groups (level, status, topic, company) whose chips cycle
+    off → "is" → "is not", LeetCode-style. Filtering is live, with a running match count.
   - `PixelHoverButton.tsx` — reusable hover-frame-cycling button (base/-2/-3 PNG frames), used
     for every pixel-art button across the landing page, modals, and Progress header
   - `ContributionCalendar.tsx` — the GitHub/LeetCode-style submission grid on the Progress page,
@@ -60,8 +63,11 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
     behind the minigame/spoiler overlays: `Particles`, `CircularText`, `Balatro`, `PillNav`,
     `Cubes`, `Iridescence`, `LetterGlitch`
 - `lib/`
-  - `problem-list.ts` — builds the solutions-list rows/topics from `@leetbytes/problems/public`;
-    also exports `PROBLEMS_BY_SLUG` for looking up a problem's title/difficulty from a bare slug
+  - `problem-list.ts` — builds the solutions-list rows plus the `PROBLEM_TOPICS` /
+    `PROBLEM_COMPANIES` tag lists from `@leetbytes/problems/public`; also exports
+    `PROBLEMS_BY_SLUG` for looking up a problem's title/difficulty from a bare slug
+  - `problem-filters.ts` — the three-state token model behind `FilterModal` and the pure
+    `filterProblems` function the questions page runs its rows through
   - `progress.ts` — the local-storage submission log (`leetbytes-progress`) that `CodePanel`
     appends to on every judged submission, plus the calendar/streak math the Progress page and
     `ContributionCalendar` read it through

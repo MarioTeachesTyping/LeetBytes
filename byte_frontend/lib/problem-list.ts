@@ -5,6 +5,7 @@ export type ProblemListRow =
   title: string;
   difficulty: SolutionEntry["difficulty"];
   topics: string[];
+  companies: string[];
   slug?: string;
 };
 
@@ -26,6 +27,7 @@ const questionRows: ProblemListRow[] = Object.entries(PROBLEMS)
     title: titleWithoutProblemNumber(entry.title),
     difficulty: entry.difficulty,
     topics: entry.topics ?? [],
+    companies: entry.companies ?? [],
     slug,
     order: problemNumber(entry.title),
   }))
@@ -34,6 +36,7 @@ const questionRows: ProblemListRow[] = Object.entries(PROBLEMS)
     title: row.title,
     difficulty: row.difficulty,
     topics: row.topics,
+    companies: row.companies,
     slug: row.slug,
   }));
 
@@ -45,7 +48,12 @@ export const PROBLEMS_BY_SLUG = new Map(
   questionRows.map((row) => [row.slug as string, row]),
 );
 
-export const PROBLEM_TOPICS = [
-  "All",
-  ...Array.from(new Set(PROBLEM_ROWS.flatMap((item) => item.topics))).sort(),
-];
+// Every tag that actually appears on a problem, so the filter modal never
+// offers an option that can't match anything.
+export const PROBLEM_TOPICS = Array.from(
+  new Set(PROBLEM_ROWS.flatMap((item) => item.topics)),
+).sort();
+
+export const PROBLEM_COMPANIES = Array.from(
+  new Set(PROBLEM_ROWS.flatMap((item) => item.companies)),
+).sort();
