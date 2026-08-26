@@ -17,7 +17,7 @@ byte_problems/
         hidden.ts        The judged test suite and answer key
 ```
 
-## Adding a problem
+## Adding a Problem
 
 1. Add the slug to `PROBLEM_SLUGS` in `types.ts`.
 2. Create `byte_problems/<slug>/public.ts` exporting a `SolutionEntry`.
@@ -27,7 +27,7 @@ byte_problems/
    it in `hidden.ts` (this registry is `Partial`, so a problem can ship without
    tests; the judge answers "No judged test cases yet" until then).
 
-## "Design" problems
+## "Design" Problems
 
 Most problems grade a single function. A "design" problem (a class with a
 constructor plus method calls, e.g. LRU Cache, Min Stack) has no single
@@ -49,7 +49,33 @@ The client's Test Cases tab detects `kind: "design"` from
 `GET /problems/:slug/cases` and swaps in a two-field `operations`/`args`
 editor automatically — no client changes needed per design problem.
 
-## The one rule
+## Company Tags
+
+Company tags shown in the client (frequency numbers included) mostly come from
+`company-tags.generated.ts` — a generated file, not hand-authored. It's built by
+`scripts/sync-companies.ts`, which fetches one CSV per company listed in
+`tracked-companies.ts` from a community-maintained aggregator
+([liquidslr/leetcode-company-wise-problems](https://github.com/liquidslr/leetcode-company-wise-problems))
+and matches rows to our own `PROBLEM_SLUGS` by the LeetCode slug in each row's
+`Link` column — our slugs already are LeetCode's, so this is an exact match,
+not fuzzy title-matching.
+
+To refresh it:
+
+```bash
+pnpm --filter @leetbytes/problems run sync:companies
+```
+
+Then review the diff and commit if it looks right — nothing here runs on a
+schedule or commits on its own. To track a new company, add its exact source-repo
+folder name to `tracked-companies.ts` first, then rerun the sync.
+
+A problem's hand-authored `companies` field in its `public.ts` still works —
+the client unions it with the generated data (`companyTagsForSlug` in
+`byte_frontend/lib/problem-list.ts`), so a company you typed in by hand that
+isn't in the tracked list still shows up, just without a frequency number.
+
+## The One rule
 
 A `public.ts` file (and anything the client imports) must NEVER import from a
 `hidden.ts` file. The client only imports `@leetbytes/problems/public`; the

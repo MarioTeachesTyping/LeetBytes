@@ -65,7 +65,10 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
 - `lib/`
   - `problem-list.ts` — builds the solutions-list rows plus the `PROBLEM_TOPICS` /
     `PROBLEM_COMPANIES` tag lists from `@leetbytes/problems/public`; also exports
-    `PROBLEMS_BY_SLUG` for looking up a problem's title/difficulty from a bare slug
+    `PROBLEMS_BY_SLUG` for looking up a problem's title/difficulty from a bare slug,
+    and `companyTagsForSlug` which merges a problem's hand-authored `companies`
+    with the generated, frequency-ranked data from `@leetbytes/problems/company-tags`
+    (see `byte_problems/README.md`)
   - `problem-filters.ts` — the three-state token model behind `FilterModal` and the pure
     `filterProblems` function the questions page runs its rows through
   - `progress.ts` — the local-storage submission log (`leetbytes-progress`) that `CodePanel`

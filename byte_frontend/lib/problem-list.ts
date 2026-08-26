@@ -1,4 +1,6 @@
 import { PROBLEMS, type SolutionEntry } from "@leetbytes/problems/public";
+import { COMPANY_TAGS, type CompanyTag } from "@leetbytes/problems/company-tags";
+import type { ProblemSlug } from "@leetbytes/problems/types";
 
 export type ProblemListRow =
 {
@@ -8,6 +10,31 @@ export type ProblemListRow =
   companies: string[];
   slug?: string;
 };
+
+export type RankedCompanyTag = {
+  name: string;
+  // LeetCode's own "how often this company asks this problem" score, or null
+  // for a hand-authored company that the scraped data doesn't cover — those
+  // sort after every ranked one instead of claiming a fake number.
+  frequency: number | null;
+};
+
+// Merges the generated (scraped, frequency-ranked) company tags for a slug
+// with whatever's hand-authored on the problem itself, deduped by name.
+// Ranked entries come first, highest frequency first; hand-authored-only
+// entries follow with no number.
+export function companyTagsForSlug(slug: string | undefined, handAuthored: string[] = []): RankedCompanyTag[]
+{
+  const ranked: CompanyTag[] = slug ? (COMPANY_TAGS[slug as ProblemSlug] ?? []) : [];
+  const rankedNames = new Set(ranked.map((tag) => tag.company));
+
+  const unranked = handAuthored.filter((name) => !rankedNames.has(name));
+
+  return [
+    ...ranked.map((tag) => ({ name: tag.company, frequency: tag.frequency })),
+    ...unranked.map((name) => ({ name, frequency: null })),
+  ];
+}
 
 // For problems that will be added in the future.
 const BACKLOG_ROWS: ProblemListRow[] = [
@@ -27,7 +54,7 @@ const questionRows: ProblemListRow[] = Object.entries(PROBLEMS)
     title: titleWithoutProblemNumber(entry.title),
     difficulty: entry.difficulty,
     topics: entry.topics ?? [],
-    companies: entry.companies ?? [],
+    companies: companyTagsForSlug(slug, entry.companies).map((tag) => tag.name),
     slug,
     order: problemNumber(entry.title),
   }))

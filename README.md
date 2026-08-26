@@ -22,7 +22,9 @@
 - 35 problems added, 34 of them with a judged hidden test suite
 - Individual problem pages with:
   - Question details, examples, and constraints
-  - Topics and company tags
+  - Topics and company tags, with a frequency number on tracked companies —
+    kept fresh by a manual sync script pulling from a public aggregator
+    (`byte_problems/scripts/sync-companies.ts`), not scraping LeetCode itself
   - In-browser Python code editor (CodeMirror)
   - **Run** against editable example cases, and **Judge** against a hidden test suite
   - Tabbed test panel (Test Cases / Test Results / Submissions), resizable by dragging the divider
@@ -40,7 +42,6 @@
 - More LeetCode solutions added to the problem database
 - Additional minigames behind a roulette that picks one at random per hint
 - Optional AI-generated contextual hints using a local model
-- Monthly company-question metadata updates from public sources
 
 ## Goals
 
@@ -52,8 +53,8 @@
 - [x] Add hint unlocks
 - [x] Add first minigame
 - [x] Add my solutions
+- [x] Add company question tracking
 - [ ] Add more minigames + a roulette to pick one at random
-- [ ] Add company question tracking
 
 ## Architecture
 
@@ -99,7 +100,6 @@ The server will grow to own more of the risky or stateful parts of the app:
 - Creating hint sessions
 - Checking whether a minigame challenge was completed
 - Generating or caching AI hints
-- Updating company/problem metadata on a schedule
 
 ## Tech Stack
 

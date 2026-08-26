@@ -18,15 +18,23 @@
       "types": "./hidden.ts",
       "import": "./hidden.ts",
       "default": "./hidden.ts"
+    },
+    "./company-tags": {
+      "types": "./company-tags.generated.ts",
+      "import": "./company-tags.generated.ts",
+      "default": "./company-tags.generated.ts"
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync:companies": "tsx scripts/sync-companies.ts"
   },
   "dependencies": {
     "@leetbytes/shared": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^20.19.0",
+    "tsx": "^4.20.0",
     "typescript": "^5.8.0"
   }
 }

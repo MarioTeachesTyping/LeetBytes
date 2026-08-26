@@ -7,10 +7,11 @@
 import React, { useRef } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
+import type { RankedCompanyTag } from "@/lib/problem-list";
 import SolutionPanel from "./SolutionPanel";
 import { useWorkspace } from "./WorkspaceContext";
 
-interface QuestionPanelProps 
+interface QuestionPanelProps
 {
   title: string;
   link?: string;
@@ -19,7 +20,7 @@ interface QuestionPanelProps
   examples?: ProblemExample[];
   constraints?: string[];
   topics?: string[];
-  companies?: string[];
+  companies?: RankedCompanyTag[];
   hints?: string[];
   code: string;
   solutions?: SpoilerSolution[];
@@ -292,10 +293,15 @@ export default function QuestionPanel({
             <div className="px-4 py-3 flex flex-wrap gap-2">
               {companies.map((c) => (
                 <span
-                  key={`company-${c}`}
-                  className="inline-flex items-center justify-center border-2 border-sky-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-sky-100"
+                  key={`company-${c.name}`}
+                  className="inline-flex items-center gap-2 border-2 border-sky-300/30 bg-black/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-sky-100"
                 >
-                  {c}
+                  {c.name}
+                  {c.frequency !== null && (
+                    <span className="text-sky-300/60 font-mono normal-case tracking-normal">
+                      {Math.round(c.frequency)}
+                    </span>
+                  )}
                 </span>
               ))}
             </div>

@@ -9,7 +9,7 @@ import QuestionPanel from "@/components/QuestionPanel";
 import CodePanel from "@/components/CodePanel";
 import { WorkspaceProvider } from "@/components/WorkspaceContext";
 import { getPublicProblem } from "@leetbytes/problems/public";
-import { titleWithoutProblemNumber } from "@/lib/problem-list";
+import { companyTagsForSlug, titleWithoutProblemNumber } from "@/lib/problem-list";
 
 type PageProps =
 {
@@ -47,7 +47,7 @@ export default async function Page({ params }: PageProps)
               examples={entry.examples}
               constraints={entry.constraints}
               topics={entry.topics}
-              companies={entry.companies}
+              companies={companyTagsForSlug(slug, entry.companies)}
               hints={entry.hints}
               code={entry.code}
               solutions={entry.solutions}
