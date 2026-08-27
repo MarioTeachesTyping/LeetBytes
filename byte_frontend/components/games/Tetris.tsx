@@ -275,18 +275,18 @@ interface TetrisProps
   secondsLeft: number;
   targetScore: number;
   onScoreChange: (score: number) => void;
-  onTopOut: () => void;
+  onGameOver: () => void;
 }
 
 // A falling-blocks board that runs its own gravity/input loop while `running`
 // is true. Score changes are reported upward so the parent can judge a win
 // against its own countdown instead of this component tracking time itself.
 // secondsLeft/targetScore are display-only, owned by the parent's round clock.
-export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onTopOut }: TetrisProps)
+export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onGameOver }: TetrisProps)
 {
   const [state, setState] = useState<GameState>(initialState);
   const onScoreChangeRef = useRef(onScoreChange);
-  const onTopOutRef = useRef(onTopOut);
+  const onGameOverRef = useRef(onGameOver);
 
   useEffect(() =>
   {
@@ -295,8 +295,8 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
 
   useEffect(() =>
   {
-    onTopOutRef.current = onTopOut;
-  }, [onTopOut]);
+    onGameOverRef.current = onGameOver;
+  }, [onGameOver]);
 
   useEffect(() =>
   {
@@ -305,7 +305,7 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
 
   useEffect(() =>
   {
-    if (state.toppedOut) onTopOutRef.current();
+    if (state.toppedOut) onGameOverRef.current();
   }, [state.toppedOut]);
 
   // Gravity loop — only active while the round is running, and stops nudging

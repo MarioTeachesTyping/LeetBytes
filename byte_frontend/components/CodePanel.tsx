@@ -9,7 +9,7 @@ import { ChevronDown } from "lucide-react";
 import CodeEditor from "./CodeEditor";
 import GameStage from "./games/GameStage";
 import ResultPanel, { DesignTestCasesEditor, TestCasesEditor, type CaseResult, type GradeResponse, type Panel } from "./ResultPanel";
-import { HINT_SCORE_TARGETS, useWorkspace } from "./WorkspaceContext";
+import { TOTAL_HINT_LEVELS, useWorkspace } from "./WorkspaceContext";
 import { recordSubmission } from "@/lib/progress";
 import type { ProblemCasesResponse } from "@leetbytes/shared";
 
@@ -331,9 +331,8 @@ export default function CodePanel({ slug, starterCode }: CodePanelProps)
         <div className="relative flex-1 min-h-0 overflow-hidden">
           {gameOpen ? (
             <GameStage
-              hintNumber={hintsUnlocked + 1}
-              targetScore={HINT_SCORE_TARGETS[Math.min(hintsUnlocked, HINT_SCORE_TARGETS.length - 1)]}
-              allHintsUnlocked={hintsUnlocked >= HINT_SCORE_TARGETS.length}
+              hintsUnlocked={hintsUnlocked}
+              allHintsUnlocked={hintsUnlocked >= TOTAL_HINT_LEVELS}
               onWin={unlockNextHint}
               onExit={closeGame}
             />

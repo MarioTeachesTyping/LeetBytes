@@ -32,15 +32,18 @@
   - Runtime and memory reported on judged runs
   - Spoiler view with one or more titled solution approaches behind a reveal overlay
   - Hints panel, gated behind a score threshold per hint
-  - **Tetris** minigame that unlocks the next hint when you hit that round's target score
-    - Hold and 6-piece Next queue, ghost piece landing preview, 7-bag piece randomizer
-    - Blurred, sped-up gameplay-footage backdrop on the intro screen; animated glitch-text backdrop during play
-    - On-screen Controls panel and a pixel-hover Quit button to exit a round
+  - Hint minigame roulette — flickers through the registered minigames, lands on one at
+    random, then holds the reveal so the round's objective is readable before it starts
+    - **Tetris** — hit the round's target score before time (or the board topping out)
+      - Hold and 6-piece Next queue, ghost piece landing preview, 7-bag piece randomizer
+    - **Snake** — eat the round's target number of apples before time (or a wall/self hit)
+    - Animated glitch-text backdrop during play; on-screen Controls panel and a
+      pixel-hover Quit button to exit a round
 
 ### Planned
 
 - More LeetCode solutions added to the problem database
-- Additional minigames behind a roulette that picks one at random per hint
+- More minigames added to the roulette
 - Optional AI-generated contextual hints using a local model
 
 ## Goals
@@ -54,7 +57,8 @@
 - [x] Add first minigame
 - [x] Add my solutions
 - [x] Add company question tracking
-- [ ] Add more minigames + a roulette to pick one at random
+- [x] Add a minigame roulette (Tetris, Snake)
+- [ ] Add more minigames to the roulette
 
 ## Architecture
 

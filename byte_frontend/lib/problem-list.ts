@@ -81,6 +81,26 @@ export const PROBLEM_TOPICS = Array.from(
   new Set(PROBLEM_ROWS.flatMap((item) => item.topics)),
 ).sort();
 
-export const PROBLEM_COMPANIES = Array.from(
-  new Set(PROBLEM_ROWS.flatMap((item) => item.companies)),
-).sort();
+// How many of our problems each company shows up on — "notable" here means
+// frequently-tagged across our own set, not a global fame ranking.
+const companyAppearances = new Map<string, number>();
+for (const row of PROBLEM_ROWS)
+{
+  for (const company of row.companies)
+  {
+    companyAppearances.set(company, (companyAppearances.get(company) ?? 0) + 1);
+  }
+}
+
+// Capped so the filter chip list stays a short, scannable "notable companies"
+// set instead of ballooning back out to every company that's ever matched a
+// single problem once (which is most of tracked-companies.ts).
+const MAX_FILTERABLE_COMPANIES = 20;
+
+export const PROBLEM_COMPANIES = Array.from(companyAppearances.entries())
+  // Pick the most-tagged companies first...
+  .sort(([a, countA], [b, countB]) => countB - countA || a.localeCompare(b))
+  .slice(0, MAX_FILTERABLE_COMPANIES)
+  .map(([company]) => company)
+  // ...then display that selection alphabetically.
+  .sort();

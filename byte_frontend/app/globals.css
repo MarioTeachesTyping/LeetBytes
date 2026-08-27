@@ -176,3 +176,15 @@
 .pixel-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 0;
 }
+
+/* Snake's food — cycles a saturated red through the full hue wheel so it
+   reads as "rainbow" while staying a single flat pixel-art square. */
+@keyframes rainbow-hue {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
+}
+
+.snake-apple {
+  background-color: #ff0000;
+  animation: rainbow-hue 2s linear infinite;
+}

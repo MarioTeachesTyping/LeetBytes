@@ -15,9 +15,9 @@ type Running = "run" | "judge" | null;
 
 type Actions = { onRun: () => void; onJudge: () => void };
 
-// Score a player must reach (within the minigame's time limit) to unlock the
-// next hint. Index 0 is the target for hint 1, index 1 for hint 2, etc.
-export const HINT_SCORE_TARGETS = [5000, 10000, 15000];
+// How many hints a problem has. Each minigame owns its own per-hint-level
+// target (games/minigames.ts) — this is just the shared hint ladder length.
+export const TOTAL_HINT_LEVELS = 3;
 
 interface WorkspaceContextValue 
 {
@@ -63,7 +63,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode })
   const closeGame = useCallback(() => setGameOpen(false), []);
   const unlockNextHint = useCallback(() =>
   {
-    setHintsUnlocked((prev) => Math.min(prev + 1, HINT_SCORE_TARGETS.length));
+    setHintsUnlocked((prev) => Math.min(prev + 1, TOTAL_HINT_LEVELS));
   }, []);
 
   // Handlers are kept in a ref so CodePanel can re-register its latest closures

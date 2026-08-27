@@ -97,22 +97,38 @@ chevron collapses the panel.
 ## Hints and the Minigame
 
 Each problem has a list of hints (`hints` in its `byte_problems/<slug>/public.ts` entry), unlocked one
-at a time. `WorkspaceContext` tracks how many are unlocked and the score target for
-the next one (`HINT_SCORE_TARGETS`); hints past that count stay hidden in the Hints
-panel until earned.
+at a time. `WorkspaceContext` tracks how many are unlocked; `TOTAL_HINT_LEVELS` is the
+shared hint-ladder length (currently 3) used to know when every hint is earned. The
+actual score/count target for a given hint level is owned per-game instead — see
+`games/minigames.ts` below.
 
 Clicking the Navbar's Game button swaps the code editor for `GameStage`, which walks
-a round through four phases:
+a round through five phases:
 
-1. **Intro** — shows the target score for the next hint over a blurred, sped-up
-   background video.
-2. **Countdown** — 3-2-1 before the clock starts.
-3. **Playing** — a 60-second round of the current minigame (Tetris) over an animated
-   glitch-text background.
-4. **Result** — win by reaching the target score before time (or the board topping
-   out) to unlock the next hint; otherwise try again.
+1. **Menu** — "Hint Minigame" title, a one-line description, and a Play button.
+2. **Roulette** — a Mario-Kart-item-box-style picker: a box flickers between the
+   registered minigames (`games/minigames.ts`) for ~3.4s, lands on one (chosen the
+   instant the spin starts — the animation is just theater), then holds on it for a
+   couple seconds so the objective is actually readable before the round starts.
+3. **Countdown** — 3-2-1 before the clock starts.
+4. **Playing** — a 60-second round of whichever minigame the roulette picked, over an
+   animated glitch-text background.
+5. **Result** — win by reaching that game's own target for the current hint level
+   before time runs out (or the game ending early — the board topping out, a wall/self
+   hit) to unlock the next hint; otherwise Retry re-spins the roulette rather than
+   replaying the same game.
 
 `GameStage` freezes the hint number/target/all-unlocked flags at the moment a round
 starts, so a win unlocking hint *N* always reports hint *N* — even though the
 underlying `hintsUnlocked` count (and the props derived from it) can advance out from
 under the component the instant `onWin()` fires.
+
+### Adding a minigame
+
+Every minigame implements the same `MinigameProps` contract (`running`, `secondsLeft`,
+`targetScore`, `onScoreChange`, `onGameOver`) so `GameStage` can mount whichever one
+the roulette lands on interchangeably — `targetScore`/`onScoreChange` are a generic
+progress channel, not literally "points": Tetris reports line-clear points, Snake
+reports apples eaten. Register a new one in `games/minigames.ts`'s `MINIGAMES` array
+with its own `unitName` (used to phrase the objective, e.g. "10 apples") and `targets`
+array (one entry per hint level, index 0 = hint 1's target).

@@ -5,38 +5,54 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Tetris from "./Tetris";
 import LetterGlitch from "../react-bits/LetterGlitch";
 import PixelHoverButton from "../PixelHoverButton";
+import { MINIGAMES, targetForLevel } from "./minigames";
 
 const PLAY_BUTTON_FRAMES = ["/base/button-play.png", "/base/button-play-2.png", "/base/button-play-3.png"];
 const RETRY_BUTTON_FRAMES = ["/base/button-retry.png", "/base/button-retry-2.png", "/base/button-retry-3.png"];
 const BACK_BUTTON_FRAMES = ["/base/button-back.png", "/base/button-back-2.png", "/base/button-back-3.png"];
 const QUIT_BUTTON_FRAMES = ["/base/button-quit.png", "/base/button-quit-2.png", "/base/button-quit-3.png"];
 
-// How much faster than real time the intro's background video plays.
-const INTRO_VIDEO_PLAYBACK_RATE = 2.5;
-
 const GAME_DURATION_SECONDS = 60;
 
-type Phase = "intro" | "countdown" | "playing" | "result";
+// How fast the roulette flips between minigames, and how long it spins
+// before landing — a Mario Kart item box, not a real slot machine, so this
+// is just whatever cadence reads as "spinning" rather than anything precise.
+const ROULETTE_FLICKER_MS = 90;
+const ROULETTE_SPIN_MS = 3400;
+// How long the roulette holds on its pick before the round actually starts —
+// long enough to actually read the objective, not just a beat.
+const ROULETTE_REVEAL_HOLD_MS = 2500;
+
+type Phase = "menu" | "roulette" | "countdown" | "playing" | "result";
 
 interface GameStageProps
 {
-  // 1-based — which hint number a win unlocks, for display only.
-  hintNumber: number;
-  targetScore: number;
+  // 0-based count of hints already unlocked — also the index into each
+  // minigame's own targets array for the hint a win unlocks next.
+  hintsUnlocked: number;
   allHintsUnlocked: boolean;
   onWin: () => void;
   onExit: () => void;
 }
 
-// Drives the minigame overlay through intro -> countdown -> playing -> result.
-// Mounted fresh each time the Navbar's Game button opens it (CodePanel.tsx
-// unmounts it on exit), so every field here resets for free between rounds.
-export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, onWin, onExit }: GameStageProps)
+// Drives the minigame overlay through menu -> roulette -> countdown ->
+// playing -> result. Mounted fresh each time the Navbar's Game button opens
+// it (CodePanel.tsx unmounts it on exit), so every field here resets for
+// free between rounds.
+export default function GameStage({ hintsUnlocked, allHintsUnlocked, onWin, onExit }: GameStageProps)
 {
-  const [phase, setPhase] = useState<Phase>("intro");
+  // 1-based, for display only.
+  const hintNumber = hintsUnlocked + 1;
+
+  const [phase, setPhase] = useState<Phase>("menu");
+  const [displayedGameIndex, setDisplayedGameIndex] = useState(0);
+  const [pickedGameIndex, setPickedGameIndex] = useState(0);
+  // Driven by the spin timer, not by displayedGameIndex === pickedGameIndex —
+  // with only 2 games, a random flicker tick lands on the eventual pick by
+  // pure chance about half the time, which isn't the same as the spin ending.
+  const [rouletteLanded, setRouletteLanded] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [secondsLeft, setSecondsLeft] = useState(GAME_DURATION_SECONDS);
   const [score, setScore] = useState(0);
@@ -46,11 +62,43 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
 
   // The hint number/target for the round in progress, frozen at round start.
   // onWin() bumps the parent's hintsUnlocked immediately, which would otherwise
-  // shift the hintNumber/targetScore props out from under the result screen
-  // before it renders (e.g. winning hint 1 would display "Hint 2 Unlocked").
+  // shift hintNumber (and which game's target table applies) out from under
+  // the result screen before it renders (e.g. winning hint 1 would display
+  // "Hint 2 Unlocked"). The initial targetScore is never actually shown — it's
+  // overwritten by spinRoulette() before the first round starts.
   const [roundHintNumber, setRoundHintNumber] = useState(hintNumber);
-  const [roundTargetScore, setRoundTargetScore] = useState(targetScore);
+  const [roundTargetScore, setRoundTargetScore] = useState(() => targetForLevel(MINIGAMES[0], hintsUnlocked));
   const [roundAllHintsUnlocked, setRoundAllHintsUnlocked] = useState(allHintsUnlocked);
+
+  // The roulette itself — flickers through random picks for ROULETTE_SPIN_MS,
+  // then locks onto the predetermined pickedGameIndex and holds it briefly
+  // before the round starts.
+  useEffect(() =>
+  {
+    if (phase !== "roulette") return;
+    setRouletteLanded(false);
+
+    const flicker = setInterval(() =>
+    {
+      setDisplayedGameIndex(Math.floor(Math.random() * MINIGAMES.length));
+    }, ROULETTE_FLICKER_MS);
+
+    let revealTimeout: ReturnType<typeof setTimeout>;
+    const spinTimeout = setTimeout(() =>
+    {
+      clearInterval(flicker);
+      setDisplayedGameIndex(pickedGameIndex);
+      setRouletteLanded(true);
+      revealTimeout = setTimeout(() => setPhase("countdown"), ROULETTE_REVEAL_HOLD_MS);
+    }, ROULETTE_SPIN_MS);
+
+    return () =>
+    {
+      clearInterval(flicker);
+      clearTimeout(spinTimeout);
+      clearTimeout(revealTimeout);
+    };
+  }, [phase, pickedGameIndex]);
 
   // 3-2-1 countdown before a round starts.
   useEffect(() =>
@@ -87,9 +135,9 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     if (finalWon && !roundAllHintsUnlocked) onWin();
   }
 
-  // The board filling up to the top also ends the round early, using
-  // whatever score was reached before running out of room.
-  function handleTopOut()
+  // The board filling up (Tetris) or a wall/self hit (Snake) also ends the
+  // round early, using whatever score was reached before then.
+  function handleGameOver()
   {
     finishRound();
   }
@@ -100,8 +148,14 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     setScore(next);
   }
 
-  function startRound()
+  // Kicks off a fresh round: picks the roulette's outcome up front (the spin
+  // animation is just theater — the result is decided the moment it starts),
+  // locks in this round's hint/target using that pick's own target table, and
+  // resets the play clock.
+  function spinRoulette()
   {
+    const nextPickedIndex = Math.floor(Math.random() * MINIGAMES.length);
+
     scoreRef.current = 0;
     setScore(0);
     setWon(false);
@@ -109,10 +163,14 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
     setCountdown(3);
     setAttempt((a) => a + 1);
     setRoundHintNumber(hintNumber);
-    setRoundTargetScore(targetScore);
+    setRoundTargetScore(targetForLevel(MINIGAMES[nextPickedIndex], hintsUnlocked));
     setRoundAllHintsUnlocked(allHintsUnlocked);
-    setPhase("countdown");
+    setPickedGameIndex(nextPickedIndex);
+    setPhase("roulette");
   }
+
+  const displayedGame = MINIGAMES[displayedGameIndex];
+  const pickedGame = MINIGAMES[pickedGameIndex];
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto border-2 border-white bg-zinc-950 p-4 text-white">
@@ -120,36 +178,37 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
         <PixelHoverButton frames={QUIT_BUTTON_FRAMES} alt="Quit" width={48} height={18} onClick={onExit} />
       </div>
 
-      {phase === "intro" && (
-        <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
-          <video
-            ref={(el) =>
-            {
-              if (el) el.playbackRate = INTRO_VIDEO_PLAYBACK_RATE;
-            }}
-            className="absolute inset-0 h-full w-full scale-110 object-cover blur-md"
-            src="/videos/tetris-gameplay.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
-          <div className="relative z-10 max-w-xs space-y-3 border border-white/10 bg-zinc-950/70 p-6 text-center backdrop-blur-sm">
-            <p className="text-4xl font-bold">Tetris</p>
-            {allHintsUnlocked ? (
-              <p className="text-sm text-white/60">
-                All hints for this problem are unlocked already! Feel free to play anyway.
-              </p>
-            ) : (
-              <p className="text-sm text-white/70">
-                Score {targetScore.toLocaleString()} points in {GAME_DURATION_SECONDS} seconds to unlock Hint{" "}
-                {hintNumber}.
-              </p>
-            )}
-            <div className="flex justify-center">
-              <PixelHoverButton frames={PLAY_BUTTON_FRAMES} alt="Start" width={160} height={60} onClick={startRound} />
-            </div>
+      {phase === "menu" && (
+        <div className="max-w-xs space-y-3 border border-white/10 bg-zinc-950/70 p-6 text-center">
+          <p className="text-4xl font-bold">Hint Minigame</p>
+          <p className="text-sm text-white/70">
+            {allHintsUnlocked
+              ? "All hints for this problem are unlocked already! Feel free to play anyway."
+              : "Complete a minigame to unlock a hint!"}
+          </p>
+          <div className="flex justify-center">
+            <PixelHoverButton frames={PLAY_BUTTON_FRAMES} alt="Start" width={160} height={60} onClick={spinRoulette} />
           </div>
+        </div>
+      )}
+
+      {phase === "roulette" && (
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-2xl font-bold uppercase tracking-widest text-white">Level {roundHintNumber}</p>
+          <div
+            className={`flex h-40 w-40 items-center justify-center border-2 bg-black text-center text-lg font-bold uppercase tracking-widest transition-colors ${
+              rouletteLanded ? "border-emerald-400 text-emerald-300" : "border-white/40"
+            }`}
+          >
+            {displayedGame.title}
+          </div>
+          {rouletteLanded && (
+            <p className="text-lg text-white/80">
+              {roundAllHintsUnlocked
+                ? `Get ${roundTargetScore.toLocaleString()} ${pickedGame.unitName} in ${GAME_DURATION_SECONDS}s`
+                : `Get ${roundTargetScore.toLocaleString()} ${pickedGame.unitName} in ${GAME_DURATION_SECONDS}s to unlock Hint ${roundHintNumber}`}
+            </p>
+          )}
         </div>
       )}
 
@@ -170,13 +229,13 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
             />
           </div>
           <div className="relative z-10 flex flex-col items-center gap-3">
-            <Tetris
+            <pickedGame.Component
               key={attempt}
               running={phase === "playing"}
               secondsLeft={secondsLeft}
               targetScore={roundTargetScore}
               onScoreChange={handleScoreChange}
-              onTopOut={handleTopOut}
+              onGameOver={handleGameOver}
             />
           </div>
         </div>
@@ -184,18 +243,19 @@ export default function GameStage({ hintNumber, targetScore, allHintsUnlocked, o
 
       {phase === "result" && (
         <div className="space-y-3 text-center">
+          <p className="text-xs uppercase tracking-widest text-white/40">{pickedGame.title}</p>
           <p className={`text-2xl font-bold ${won ? "text-emerald-300" : "text-red-300"}`}>
             Time&apos;s Up! {won ? "You Win!" : "You Lose"}
           </p>
           {won && !roundAllHintsUnlocked && (
             <p className="font-semibold text-white">Hint {roundHintNumber} Unlocked!</p>
           )}
-          <p className="text-sm text-white/60">
-            Final score: {score.toLocaleString()} / {roundTargetScore.toLocaleString()}
+          <p className="text-sm text-white/60 capitalize">
+            Final {pickedGame.unitName}: {score.toLocaleString()} / {roundTargetScore.toLocaleString()}
           </p>
           <div className="flex justify-center gap-2">
             {!won && (
-              <PixelHoverButton frames={RETRY_BUTTON_FRAMES} alt="Try Again" width={140} height={52} onClick={startRound} />
+              <PixelHoverButton frames={RETRY_BUTTON_FRAMES} alt="Try Again" width={140} height={52} onClick={spinRoulette} />
             )}
             <PixelHoverButton frames={BACK_BUTTON_FRAMES} alt="Back to Code" width={140} height={52} onClick={onExit} />
           </div>
