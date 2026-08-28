@@ -6,6 +6,7 @@
 
 import React, { useRef } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
+import { IoIosArrowForward } from "react-icons/io";
 import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
 import type { RankedCompanyTag } from "@/lib/problem-list";
 import SolutionPanel from "./SolutionPanel";
@@ -227,7 +228,7 @@ export default function QuestionPanel({
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-violet-300/40">
               <span className="text-sm font-bold uppercase tracking-[0.2em] text-violet-200">Hints</span>
               <span className="text-violet-200/70 transition-transform group-open:rotate-90">
-                ▶
+                <IoIosArrowForward className="h-4 w-4" />
               </span>
             </summary>
 
@@ -261,7 +262,7 @@ export default function QuestionPanel({
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-orange-300/40">
               <span className="text-sm font-bold uppercase tracking-[0.2em] text-orange-200">Topics</span>
               <span className="text-orange-200/70 transition-transform group-open:rotate-90">
-                ▶
+                <IoIosArrowForward className="h-4 w-4" />
               </span>
             </summary>
 
@@ -286,7 +287,7 @@ export default function QuestionPanel({
             <summary className="cursor-pointer select-none list-none px-4 py-3 flex items-center justify-between border-b-2 border-transparent group-open:border-sky-300/40">
               <span className="text-sm font-bold uppercase tracking-[0.2em] text-sky-200">Companies</span>
               <span className="text-sky-200/70 transition-transform group-open:rotate-90">
-                ▶
+                <IoIosArrowForward className="h-4 w-4" />
               </span>
             </summary>
 

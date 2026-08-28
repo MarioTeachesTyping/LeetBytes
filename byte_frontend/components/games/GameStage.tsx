@@ -179,17 +179,34 @@ export default function GameStage({ hintsUnlocked, allHintsUnlocked, onWin, onEx
       </div>
 
       {phase === "menu" && (
-        <div className="max-w-xs space-y-3 border border-white/10 bg-zinc-950/70 p-6 text-center">
-          <p className="text-4xl font-bold">Hint Minigame</p>
-          <p className="text-sm text-white/70">
-            {allHintsUnlocked
-              ? "All hints for this problem are unlocked already! Feel free to play anyway."
-              : "Complete a minigame to unlock a hint!"}
-          </p>
-          <div className="flex justify-center">
-            <PixelHoverButton frames={PLAY_BUTTON_FRAMES} alt="Start" width={160} height={60} onClick={spinRoulette} />
+        <>
+          <div className="absolute inset-0 overflow-hidden">
+            <video
+              className="h-full w-full object-cover opacity-40"
+              src="/videos/tetris-gameplay.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              ref={(el) =>
+              {
+                if (el) el.playbackRate = 2;
+              }}
+            />
+            <div className="absolute inset-0 bg-black/50" />
           </div>
-        </div>
+          <div className="relative z-10 max-w-xs space-y-3 border border-white/10 bg-zinc-950/70 p-6 text-center">
+            <p className="text-4xl font-bold">Hint Minigame</p>
+            <p className="text-sm text-white/70">
+              {allHintsUnlocked
+                ? "All hints for this problem are unlocked already! Feel free to play anyway."
+                : "Complete a minigame to unlock a hint!"}
+            </p>
+            <div className="flex justify-center">
+              <PixelHoverButton frames={PLAY_BUTTON_FRAMES} alt="Start" width={160} height={60} onClick={spinRoulette} />
+            </div>
+          </div>
+        </>
       )}
 
       {phase === "roulette" && (
