@@ -33,6 +33,7 @@ export const PROBLEM_SLUGS = [
   "symmetric-tree",
   "maximum-depth-of-binary-tree",
   "best-time-to-buy-and-sell-stock",
+  "valid-palindrome",
   "linked-list-cycle",
   "lru-cache",
   "min-stack",

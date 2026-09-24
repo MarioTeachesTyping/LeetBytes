@@ -27,6 +27,7 @@ import { sameTreeHidden } from "./same-tree/hidden.ts";
 import { symmetricTreeHidden } from "./symmetric-tree/hidden.ts";
 import { maximumDepthOfBinaryTreeHidden } from "./maximum-depth-of-binary-tree/hidden.ts";
 import { bestTimeToBuyAndSellStockHidden } from "./best-time-to-buy-and-sell-stock/hidden.ts";
+import { validPalindromeHidden } from "./valid-palindrome/hidden.ts";
 import { linkedListCycleHidden } from "./linked-list-cycle/hidden.ts";
 import { lruCacheHidden } from "./lru-cache/hidden.ts";
 import { minStackHidden } from "./min-stack/hidden.ts";
@@ -65,6 +66,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "symmetric-tree": symmetricTreeHidden,
   "maximum-depth-of-binary-tree": maximumDepthOfBinaryTreeHidden,
   "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStockHidden,
+  "valid-palindrome": validPalindromeHidden,
   "linked-list-cycle": linkedListCycleHidden,
   "lru-cache": lruCacheHidden,
   "min-stack": minStackHidden,

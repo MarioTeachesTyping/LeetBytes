@@ -25,6 +25,7 @@ import { sameTree } from "./same-tree/public.ts";
 import { symmetricTree } from "./symmetric-tree/public.ts";
 import { maximumDepthOfBinaryTree } from "./maximum-depth-of-binary-tree/public.ts";
 import { bestTimeToBuyAndSellStock } from "./best-time-to-buy-and-sell-stock/public.ts";
+import { validPalindrome } from "./valid-palindrome/public.ts";
 import { linkedListCycle } from "./linked-list-cycle/public.ts";
 import { lruCache } from "./lru-cache/public.ts";
 import { minStack } from "./min-stack/public.ts";
@@ -63,6 +64,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "symmetric-tree": symmetricTree,
   "maximum-depth-of-binary-tree": maximumDepthOfBinaryTree,
   "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStock,
+  "valid-palindrome": validPalindrome,
   "linked-list-cycle": linkedListCycle,
   "lru-cache": lruCache,
   "min-stack": minStack,

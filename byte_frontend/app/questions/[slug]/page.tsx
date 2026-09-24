@@ -40,7 +40,7 @@ export default async function Page({ params }: PageProps)
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0 gap-2 py-1 px-1">
           <div className="min-h-0">
             <QuestionPanel
-              title={entry.title}
+              title={titleWithoutProblemNumber(entry.title)}
               link={entry.link}
               difficulty={entry.difficulty}
               description={entry.description}
