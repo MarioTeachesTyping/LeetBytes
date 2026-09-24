@@ -79,24 +79,62 @@ export default function NavTimers()
     setTimerSecondsLeft(minutes * 60);
   }
 
+  // Only one of the two can be live at once — starting either one stops and
+  // resets the other, rather than letting them both quietly tick in the
+  // background.
+  function toggleStopwatch()
+  {
+    if (!stopwatchRunning && timerRunning)
+    {
+      setTimerRunning(false);
+      setTimerSecondsLeft(timerDuration);
+    }
+    setStopwatchRunning((r) => !r);
+  }
+
+  function toggleTimer()
+  {
+    if (timerSecondsLeft === 0) return;
+    if (!timerRunning && stopwatchRunning)
+    {
+      setStopwatchRunning(false);
+      setStopwatchSeconds(0);
+    }
+    setTimerRunning((r) => !r);
+  }
+
   // The button itself reflects whichever mode needs attention, regardless of
   // which one is currently shown in the popover.
   const anyRunning = stopwatchRunning || timerRunning;
+
+  // Once either has been started, its time takes over the button face in
+  // place of the icon — reset returns it to idle and hands the icon back.
+  const stopwatchActive = stopwatchRunning || stopwatchSeconds > 0;
+  const timerActive = timerRunning || timerSecondsLeft !== timerDuration;
+  const displayTime = stopwatchActive
+    ? formatTime(stopwatchSeconds)
+    : timerActive
+    ? formatTime(timerSecondsLeft)
+    : null;
 
   return (
     <div ref={containerRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`flex items-center justify-center w-9 h-9 border-2 transition-colors ${
+        className={`flex h-9 w-16 items-center justify-center border-2 transition-colors hover:bg-white hover:text-black ${
           timerDone
             ? "border-red-400 text-red-300"
             : anyRunning
-            ? "border-emerald-400 text-emerald-300"
-            : "border-white/30 text-white hover:bg-white hover:text-black"
+            ? "border-white text-white"
+            : "border-white/30 text-white"
         }`}
       >
-        <Timer className="w-5 h-5" />
+        {displayTime ? (
+          <span className="font-mono text-xs font-bold tabular-nums">{displayTime}</span>
+        ) : (
+          <Timer className="w-5 h-5" />
+        )}
       </button>
 
       {open && (
@@ -134,7 +172,7 @@ export default function NavTimers()
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => setStopwatchRunning((r) => !r)}
+                  onClick={toggleStopwatch}
                   className="flex-1 border-2 border-white/30 py-1 text-[10px] font-bold uppercase tracking-wide text-white transition-colors hover:bg-white hover:text-black"
                 >
                   {stopwatchRunning ? "Pause" : "Start"}
@@ -182,11 +220,7 @@ export default function NavTimers()
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() =>
-                  {
-                    if (timerSecondsLeft === 0) return;
-                    setTimerRunning((r) => !r);
-                  }}
+                  onClick={toggleTimer}
                   disabled={timerSecondsLeft === 0}
                   className="flex-1 border-2 border-white/30 py-1 text-[10px] font-bold uppercase tracking-wide text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-white"
                 >
