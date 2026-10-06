@@ -51,6 +51,9 @@ export const PROBLEM_SLUGS = [
   "minimum-remove-to-make-valid-parentheses",
   "sequential-digits",
   "check-if-all-1s-are-at-least-length-k-places-away",
+  // Not from LeetCode — these carry their source's own slug and an un-numbered
+  // title, so they sort after every numbered problem.
+  "pinterest-travel-distance-on-scooters",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];
@@ -88,6 +91,9 @@ export type SolutionEntry =
 {
   title: string;
   link?: string;
+  // Where the problem originates, credited in the question panel's footer.
+  // Omitted means LeetCode.
+  source?: string;
   difficulty: "Easy" | "Medium" | "Hard";
   description: string[];
   examples?: ProblemExample[];

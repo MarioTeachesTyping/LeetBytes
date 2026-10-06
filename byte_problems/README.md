@@ -27,6 +27,18 @@ byte_problems/
    it in `hidden.ts` (this registry is `Partial`, so a problem can ship without
    tests; the judge answers "No judged test cases yet" until then).
 
+## Problems From Other Sources
+
+Not every problem has to come from LeetCode (e.g. `pinterest-travel-distance-on-scooters`
+is from [FastPrep](https://www.fastprep.io)). For those:
+
+- Use the source's own slug, and put its URL in `link`.
+- Leave the number off `title` — the questions list orders by the leading `N.` in a
+  LeetCode title, so un-numbered problems sort after every numbered one.
+- Set `source` (e.g. `"FastPrep"`) so the question panel's footer credits the right
+  owner instead of defaulting to LeetCode.
+- Hand-author `companies`, since the generated company tags only cover LeetCode slugs.
+
 ## "Design" Problems
 
 Most problems grade a single function. A "design" problem (a class with a

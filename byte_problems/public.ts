@@ -43,6 +43,7 @@ import { binaryTreeVerticalOrderTraversal } from "./binary-tree-vertical-order-t
 import { minimumRemoveToMakeValidParentheses } from "./minimum-remove-to-make-valid-parentheses/public.ts";
 import { sequentialDigits } from "./sequential-digits/public.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAway } from "./check-if-all-1s-are-at-least-length-k-places-away/public.ts";
+import { pinterestTravelDistanceOnScooters } from "./pinterest-travel-distance-on-scooters/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -82,6 +83,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParentheses,
   "sequential-digits": sequentialDigits,
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAway,
+  "pinterest-travel-distance-on-scooters": pinterestTravelDistanceOnScooters,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.

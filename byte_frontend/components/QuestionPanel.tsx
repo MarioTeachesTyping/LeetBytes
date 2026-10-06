@@ -16,6 +16,7 @@ interface QuestionPanelProps
 {
   title: string;
   link?: string;
+  source?: string;
   difficulty?: SolutionEntry["difficulty"];
   description: string[];
   examples?: ProblemExample[];
@@ -48,6 +49,7 @@ function renderInlineCode(text: string)
 export default function QuestionPanel({
   title,
   link,
+  source = "LeetCode",
   difficulty = "Easy",
   description,
   examples = [],
@@ -312,7 +314,7 @@ export default function QuestionPanel({
 
       <div>
         <p className="mt-10 text-xs text-white/40">
-          Copyright © 2026 LeetCode. All rights reserved.
+          Copyright © 2026 {source}. All rights reserved.
         </p>
       </div>
       </>

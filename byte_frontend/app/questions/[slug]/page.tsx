@@ -42,6 +42,7 @@ export default async function Page({ params }: PageProps)
             <QuestionPanel
               title={titleWithoutProblemNumber(entry.title)}
               link={entry.link}
+              source={entry.source}
               difficulty={entry.difficulty}
               description={entry.description}
               examples={entry.examples}
