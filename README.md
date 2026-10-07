@@ -19,7 +19,7 @@
   GitHub-style contribution calendar, all built from a local-storage submission log
 - Game-style loading bar shown on page navigation, styled to match the pixel UI
 - Solutions list with topic filtering
-- 37 problems added, all with a judged hidden test suite — mostly LeetCode, plus
+- 38 problems added, all with a judged hidden test suite — mostly LeetCode, plus
   the occasional company-sourced one
 - Individual problem pages with:
   - Question details, examples, and constraints
