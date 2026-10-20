@@ -7,7 +7,7 @@
 //
 // Source: https://github.com/liquidslr/leetcode-company-wise-problems
 // Tracked companies: tracked-companies.ts
-// Generated: 2026-08-25T23:54:01.180Z
+// Generated: 2026-10-20T03:40:59.459Z
 
 import type { ProblemSlug } from "./types.ts";
 
@@ -410,6 +410,20 @@ export const COMPANY_TAGS: Partial<Record<ProblemSlug, CompanyTag[]>> = {
     {
       "company": "Amazon",
       "frequency": 48.9
+    }
+  ],
+  "valid-palindrome": [
+    {
+      "company": "Meta",
+      "frequency": 53.8
+    },
+    {
+      "company": "Amazon",
+      "frequency": 39.1
+    },
+    {
+      "company": "Google",
+      "frequency": 29
     }
   ],
   "valid-parentheses": [
