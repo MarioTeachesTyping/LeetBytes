@@ -71,4 +71,21 @@ export const meetingRooms: SolutionEntry =
                 return False
 
         return True`,
+
+  explanation: {
+    intuition: [
+      "You can attend every meeting only if none of them overlap. Once the meetings are sorted by start time, any overlap has to be between two neighbors, so each meeting only needs to be compared with the one right after it.",
+      "If a meeting ends after the next one starts (`intervals[i][1] > intervals[i + 1][0]`), they clash. Meetings that just touch, like one ending at 10 and the next starting at 10, are fine.",
+    ],
+    algorithm: [
+      "Sort `intervals` by start time.",
+      "For each meeting except the last, compare its end with the next meeting's start.",
+      "If it ends later than the next one starts, return `False`.",
+      "If no neighbors overlap, return `True`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n log n)", reason: "Sorting dominates. The check afterward is a single O(n) pass." },
+      space: { bigO: "O(n)", reason: "Python's sort can use up to O(n) extra space. The check itself uses constant space." },
+    },
+  },
 };

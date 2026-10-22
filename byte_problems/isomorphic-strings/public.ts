@@ -85,4 +85,22 @@ export const isomorphicStrings: SolutionEntry =
                 return False
 
         return True`,
+
+  explanation: {
+    intuition: [
+      "The strings are isomorphic if each character in `s` can be swapped for exactly one character in `t`, and no two characters in `s` turn into the same character in `t`. In other words, the mapping has to be one-to-one in both directions.",
+      "That's why there are two dicts: `dict_st` maps characters of `s` to `t`, and `dict_ts` maps them back. Walking both strings together with `zip`, a pair of brand new characters gets recorded in both directions. Any pair where either character is already mapped has to agree with what's been recorded, or the strings aren't isomorphic.",
+    ],
+    algorithm: [
+      "Create two empty dicts, `dict_st` and `dict_ts`.",
+      "Walk through `s` and `t` together with `zip`, one pair of characters at a time.",
+      "If neither character has been mapped yet, map `char1` to `char2` in `dict_st` and `char2` to `char1` in `dict_ts`.",
+      "Otherwise, if `dict_st.get(char1) != char2` or `dict_ts.get(char2) != char1`, return `False`.",
+      "If every pair agrees, return `True`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "One pass over both strings, with O(1) dict operations." },
+      space: { bigO: "O(k)", reason: "Where k is the number of distinct characters. That's at most 128 for ASCII, so it's effectively constant." },
+    },
+  },
 };

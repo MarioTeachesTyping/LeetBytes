@@ -20,7 +20,9 @@ byte_problems/
 ## Adding a Problem
 
 1. Add the slug to `PROBLEM_SLUGS` in `types.ts`.
-2. Create `byte_problems/<slug>/public.ts` exporting a `SolutionEntry`.
+2. Create `byte_problems/<slug>/public.ts` exporting a `SolutionEntry`. Give it an
+   `explanation` (Intuition paragraphs, optional Algorithm steps, and Time/Space
+   complexity) describing `code` — the Solution view shows it under "1. My Solution".
 3. Register it in `public.ts` — the `Record<ProblemSlug, SolutionEntry>` type
    fails to compile until every slug has an entry.
 4. When the judged suite is ready, add `byte_problems/<slug>/hidden.ts` and register

@@ -73,4 +73,21 @@ export const checkIfAll1SAreAtLeastLengthKPlacesAway: SolutionEntry =
                 count += 1
 
         return True`,
+
+  explanation: {
+    intuition: [
+      "Every pair of neighboring 1s needs at least `k` zeros between them. So walk through the array counting zeros since the last 1. When the next 1 shows up, check that the count is at least `k`, then reset it to `0` for the next gap.",
+      "`count` starts at `k` instead of `0` so the first 1 always passes. There's no earlier 1 for it to be too close to.",
+    ],
+    algorithm: [
+      "Set `count = k`.",
+      "For each number, if it's a 1, return `False` when `count < k`. Otherwise reset `count` to `0`.",
+      "If it's a 0, add `1` to `count`.",
+      "If the loop finishes, return `True`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "One pass through the array." },
+      space: { bigO: "O(1)", reason: "Only the counter is stored." },
+    },
+  },
 };

@@ -77,4 +77,21 @@ export const kthLargestElementInAnArray: SolutionEntry =
 
         # by this point, the heap only has k elements and the 1st one is our answer
         return heap[0]`,
+
+  explanation: {
+    intuition: [
+      "Keep a min-heap that holds the k largest numbers seen so far. Python's `heapq` is a min-heap, so the smallest of those k numbers is always at `heap[0]`.",
+      "Each number gets pushed in. If the heap grows past k, the smallest one is popped, since it can't be among the k largest anymore. After every number has gone through, the heap holds exactly the k largest, and the smallest of those, `heap[0]`, is the kth largest overall.",
+    ],
+    algorithm: [
+      "Start with an empty `heap`.",
+      "For each number, push it onto the heap with `heapq.heappush`.",
+      "If the heap now has more than `k` items, pop the smallest with `heapq.heappop`.",
+      "Return `heap[0]`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n log k)", reason: "Each of the n numbers is pushed (and maybe popped) on a heap that never grows past k + 1 items, so each operation is O(log k)." },
+      space: { bigO: "O(k)", reason: "The heap holds at most k + 1 numbers." },
+    },
+  },
 };

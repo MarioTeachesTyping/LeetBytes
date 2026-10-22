@@ -93,8 +93,21 @@ export const generateParentheses: SolutionEntry =
 
         return res`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
-    memory: { label: "Memory", value: "18.01 MB", beats: "66.30%" },
+  explanation: {
+    intuition: [
+      "The question asks for all combinations, which points to backtracking: build each string one character at a time, explore every choice, and undo it afterward to try the next one.",
+      "The trick is to only ever make choices that keep the string valid. A `(` can be added while fewer than `n` have been opened (`left_count < n`), and a `)` can only be added if it closes something that's open (`right_count < left_count`). Because of those two rules, every string that reaches length `2 * n` is already valid, so nothing has to be generated and then thrown away.",
+    ],
+    algorithm: [
+      "Start backtracking from an empty `cur_res` with both counts at `0`.",
+      "If `cur_res` has length `2 * n`, join it into a string, add it to `res`, and return.",
+      "If `left_count < n`, append `(`, recurse with `left_count + 1`, then pop it off.",
+      "If `right_count < left_count`, append `)`, recurse with `right_count + 1`, then pop it off.",
+      "Return `res` once the first call finishes.",
+    ],
+    complexity: {
+      time: { bigO: "O(4ⁿ / √n)", reason: "The number of valid strings is the nth Catalan number, which grows roughly like 4ⁿ / (n√n), and building each finished string takes O(n)." },
+      space: { bigO: "O(n)", reason: "The recursion goes at most `2 * n` calls deep, and `cur_res` holds at most `2 * n` characters (not counting the output)." },
+    },
   },
 };

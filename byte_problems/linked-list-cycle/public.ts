@@ -100,4 +100,21 @@ class Solution:
                 return True
 
         return False`,
+
+  explanation: {
+    intuition: [
+      "This uses the slow and fast pointer trick, also called Floyd's cycle detection. `slow` moves one node at a time and `fast` moves two.",
+      "If there's no cycle, `fast` reaches the end of the list and the loop stops. If there is a cycle, both pointers end up going around it forever, and since `fast` gains one node on `slow` every step, it's guaranteed to land on `slow` eventually. The two meeting is the proof of a cycle.",
+    ],
+    algorithm: [
+      "Start `slow` and `fast` at `head`.",
+      "While `fast` and `fast.next` exist (so a two-step move is safe), move `slow` one step and `fast` two steps.",
+      "If they ever point to the same node, return `True`.",
+      "If `fast` runs off the end, return `False`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Without a cycle, `fast` reaches the end in about n / 2 steps. With one, `fast` catches up to `slow` within one lap of the loop after `slow` enters it." },
+      space: { bigO: "O(1)", reason: "Only two pointers, no matter how long the list is." },
+    },
+  },
 };

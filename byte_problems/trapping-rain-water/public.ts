@@ -82,8 +82,21 @@ export const trappingRainWater: SolutionEntry =
             
         return res`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "11 ms", beats: "45.81%" },
-    memory: { label: "Memory", value: "19.33 MB", beats: "100.00%" },
+  explanation: {
+    intuition: [
+      "The water above any bar is decided by the shorter of the two tallest walls around it: the smaller of (tallest bar to its left, tallest bar to its right), minus its own height.",
+      "Two pointers start at both ends, each tracking the tallest bar seen on its side (`left_max` and `right_max`). The key insight is that whichever side currently has the shorter bar is the side whose water we can already settle. If `height[left] < height[right]`, there's a bar on the right at least that tall, so the water at `left` is limited only by `left_max`. The right side can't be the bottleneck. So we count that water, move `left` inward, and do the mirror image when the right side is shorter.",
+    ],
+    algorithm: [
+      "Put `left` at the start and `right` at the end, with `left_max`, `right_max`, and `res` at `0`.",
+      "While `left < right`, compare `height[left]` and `height[right]`.",
+      "If the left bar is shorter, update `left_max`, add `left_max - height[left]` to `res`, and move `left` right.",
+      "Otherwise, update `right_max`, add `right_max - height[right]` to `res`, and move `right` left.",
+      "Return `res`. A bar that's the tallest so far adds `0`, since no water sits above it.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "The two pointers move toward each other, visiting each bar once." },
+      space: { bigO: "O(1)", reason: "Only a handful of variables, no matter how many bars there are." },
+    },
   },
 };

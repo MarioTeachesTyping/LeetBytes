@@ -94,4 +94,23 @@ export const pinterestTravelDistanceOnScooters: SolutionEntry =
         position = finish
 
     return travel_count`,
+
+  explanation: {
+    intuition: [
+      "This follows the problem's algorithm step by step. Walking is free, since only the distance ridden counts, so we track two things: where we are (`position`) and how far we've ridden (`travel_count`).",
+      "Sorting `scooters` first means the nearest scooter to our right is simply the first one in the list at or past our position. We jump to it, ride it as far as it goes (up to 10 more, without passing `finish`), and add the distance ridden. If no scooter is left to our right, we walk the rest of the way to `finish`.",
+      "That last case uses Python's `for ... else`: the `else` only runs when the loop finishes without hitting `break`, which here means no scooter was found.",
+    ],
+    algorithm: [
+      "Sort `scooters` and set `position` and `travel_count` to `0`.",
+      "While `position < finish`, scan for the first scooter at or past `position`.",
+      "If one is found, move to it, ride to `min(scooter + 10, finish)`, and add the distance ridden to `travel_count`.",
+      "If none is found, set `position` to `finish`.",
+      "Return `travel_count`.",
+    ],
+    complexity: {
+      time: { bigO: "O(s²)", reason: "Where s is the number of scooters. Sorting takes O(s log s), but each ride rescans the list from the start (O(s)), and there can be up to s rides. Remembering where the last scan stopped would make the riding part O(s)." },
+      space: { bigO: "O(s)", reason: "Python's sort can use up to O(s) extra space. Besides that, only a couple of variables are used." },
+    },
+  },
 };

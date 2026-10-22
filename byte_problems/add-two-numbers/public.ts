@@ -109,9 +109,24 @@ class Solution:
             l2 = l2.next if l2 else None
         
         return l3.next`,
-        
-  stats: {
-    runtime: { label: "Runtime", value: "3 ms", beats: "72.91%" },
-    memory: { label: "Memory", value: "17.98 MB", beats: "28.17%" },
+
+  explanation: {
+    intuition: [
+      "The digits are stored in reverse order, which actually makes this easier: the head of each list is the ones digit, so walking both lists from the front is exactly how you'd add two numbers by hand, right to left.",
+      "At each step we add the two digits plus any `carry` from the step before. The ones digit of that sum (`val % 10`) becomes the next node of the answer, and the tens digit (`val // 10`) carries into the next step. A list that has already run out just counts as `0`, so the two lists can be different lengths.",
+      "A dummy node (`l3`) sits in front of the answer so the first real node needs no special case, and the loop keeps going while `carry` is non-zero so a final carry (like 5 + 5 = 10) still gets its own node.",
+    ],
+    algorithm: [
+      "Create a dummy node `l3`, a `curr` pointer to it, and set `carry = 0`.",
+      "Loop while `l1`, `l2`, or `carry` still has something left.",
+      "Read each list's digit (`0` if that list is finished) and compute `val = v1 + v2 + carry`.",
+      "Split it: `carry = val // 10` and `val = val % 10`.",
+      "Attach a new node holding `val`, then advance `curr`, `l1`, and `l2`.",
+      "Return `l3.next`, skipping the dummy node.",
+    ],
+    complexity: {
+      time: { bigO: "O(max(m, n))", reason: "Where m and n are the two list lengths: the loop runs once per digit of the longer list, plus at most one extra step for a final carry." },
+      space: { bigO: "O(max(m, n))", reason: "That's the size of the answer list being built. Besides it, only a few variables are used." },
+    },
   },
 };

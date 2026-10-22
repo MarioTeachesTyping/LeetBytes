@@ -90,4 +90,21 @@ class Solution:
 
         # return if left and right are true
         return left and right`,
+
+  explanation: {
+    intuition: [
+      "Two trees are the same when their roots match, their left subtrees are the same, and their right subtrees are the same. That definition is already recursive, so the code follows it directly.",
+      "The base cases handle the edges: two empty trees are the same, an empty tree never matches a non-empty one, and two nodes with different values can't match.",
+    ],
+    algorithm: [
+      "If `p` and `q` are both empty, return `True`.",
+      "If only one of them is empty, return `False`.",
+      "If `p.val != q.val`, return `False`.",
+      "Otherwise, compare the left subtrees and the right subtrees recursively, and return `True` only if both match.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each pair of nodes is compared once, where n is the number of nodes." },
+      space: { bigO: "O(h)", reason: "The recursion goes as deep as the tree's height h, which is O(log n) for a balanced tree and O(n) for one that's a single long chain." },
+    },
+  },
 };

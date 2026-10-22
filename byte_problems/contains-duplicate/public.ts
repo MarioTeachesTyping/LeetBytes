@@ -75,4 +75,20 @@ export const containsDuplicate: SolutionEntry =
             values.add(nums[i])
 
         return False`,
+
+  explanation: {
+    intuition: [
+      "A set remembers every number seen so far and can check whether something is already in it in O(1). Walk through `nums`: if the current number is already in the set, that's a duplicate. Otherwise add it and keep going.",
+    ],
+    algorithm: [
+      "Start with an empty set, `values`.",
+      "For each number, return `True` if it's already in `values`.",
+      "Otherwise add it to `values`.",
+      "If the loop finishes, every number was unique, so return `False`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each number gets one O(1) lookup and at most one insert." },
+      space: { bigO: "O(n)", reason: "With no duplicates, every number ends up in the set." },
+    },
+  },
 };

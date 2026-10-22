@@ -37,7 +37,9 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `ResultPanel.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
   - `CodeEditor.tsx` — the CodeMirror editor
   - `CodeBlock.tsx` — a small read-only, syntax-highlighted code block helper
-  - `SolutionPanel.tsx` — titled solution approaches hidden behind a Balatro reveal overlay
+  - `SolutionPanel.tsx` — numbered solution approaches, each with a LeetCode-style write-up
+    (Intuition / Algorithm / Complexity Analysis) above its code, which stays hidden behind a
+    Balatro reveal overlay
   - `PlayModal.tsx` / `OptionsModal.tsx` — pixel-art modals off the landing page's Play/Options
     buttons, sharing a slide-up-from-off-screen open/close animation. Play offers Story (locked —
     dimmed with a pixel padlock stamped over it), Questions (`/questions`), and Progress

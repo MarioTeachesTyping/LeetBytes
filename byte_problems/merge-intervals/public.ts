@@ -87,8 +87,20 @@ export const mergeIntervals: SolutionEntry =
 
         return merged`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "11 ms", beats: "28.81%" },
-    memory: { label: "Memory", value: "22.46 MB", beats: "41.88%" },
+  explanation: {
+    intuition: [
+      "Once the intervals are sorted by their start, any intervals that overlap end up right next to each other. That means each interval only needs to be compared with the last one in the merged list.",
+      "If the current interval starts after the last merged one ends (`merged[-1][1] < interval[0]`), there's a gap, so it begins a new merged interval. Otherwise they overlap, and the last merged interval's end is stretched to the `max` of the two ends. `max` matters because the current interval might sit entirely inside the previous one.",
+    ],
+    algorithm: [
+      "Sort `intervals` by start time.",
+      "For each interval, if `merged` is empty or the interval starts after `merged[-1]` ends, append it.",
+      "Otherwise, set `merged[-1][1]` to the larger of the two end times.",
+      "Return `merged`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n log n)", reason: "Sorting dominates. The merging pass afterward is O(n)." },
+      space: { bigO: "O(n)", reason: "The merged list can hold every interval, and Python's sort can use up to O(n) extra space too." },
+    },
   },
 };

@@ -95,4 +95,4 @@ export function getPublicProblem(slug: string): SolutionEntry | undefined
 }
 
 export { PROBLEM_SLUGS } from "./types.ts";
-export type { ProblemSlug, SolutionEntry, ProblemExample, ProblemStat, SpoilerSolution } from "./types.ts";
+export type { ProblemSlug, SolutionEntry, ProblemExample, SpoilerSolution, SolutionExplanation, ComplexityNote } from "./types.ts";

@@ -86,8 +86,20 @@ export const palindromeNumber: SolutionEntry =
 
         return True`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
-    memory: { label: "Memory", value: "17.69 MB", beats: "65.41%" },
+  explanation: {
+    intuition: [
+      "Turning the number into a string makes it easy to compare digits from both ends. Two pointers start at the first and last character and walk toward each other. If any pair doesn't match, it isn't a palindrome.",
+      "Negative numbers fail on their own: the `-` at the front can never match a digit at the end.",
+    ],
+    algorithm: [
+      "Convert `x` to a string, `nums`.",
+      "Put `l` at the start and `r` at the end.",
+      "While `r > l`, return `False` if `nums[l] != nums[r]`, otherwise move both pointers inward.",
+      "If the pointers meet without a mismatch, return `True`.",
+    ],
+    complexity: {
+      time: { bigO: "O(d)", reason: "Where d is the number of digits (about log₁₀ x): each digit is compared at most once." },
+      space: { bigO: "O(d)", reason: "The string copy of the number has one character per digit." },
+    },
   },
 };

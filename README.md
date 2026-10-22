@@ -2,7 +2,7 @@
 
 <h1 align="center">LeetBytes</h1>
 
-<p align="center">Lil app to shove my LeetCode solutions. Also testing frontend libs for fun.</p>
+<p align="center">Lil app to shove my LeetCode solutions.</p>
 
 <p align="center">The long-term idea is to turn this into a pixel-styled coding playground where solutions are not just listed, but explored through visuals, code running, and small games that unlock hints.</p>
 
@@ -10,150 +10,141 @@
 
 ## Features
 
-### Current
+**Practice**
 
-- Landing page with animated visual effects
-- Pixel-art Play and Options modals off the landing page
-  - Play → Story (locked, coming later) / Questions / Progress, in a shared bordered-panel shell
-- Progress page — practice history, a solved/judged/difficulty summary, and a
-  GitHub-style contribution calendar, all built from a local-storage submission log
-- Game-style loading bar shown on page navigation, styled to match the pixel UI
-- Solutions list with topic filtering
-- 38 problems added, all with a judged hidden test suite — mostly LeetCode, plus
-  the occasional company-sourced one
-- Individual problem pages with:
-  - Question details, examples, and constraints
-  - Topics and company tags, with a frequency number on tracked companies —
-    kept fresh by a manual sync script pulling from a public aggregator
-    (`byte_problems/scripts/sync-companies.ts`), not scraping LeetCode itself
-  - In-browser Python code editor (CodeMirror)
-  - **Run** against editable example cases, and **Judge** against a hidden test suite
-  - Tabbed test panel (Test Cases / Test Results / Submissions), resizable by dragging the divider
-  - Editable per-parameter inputs, so you can try your own cases
-  - Runtime and memory reported on judged runs
-  - Spoiler view with one or more titled solution approaches behind a reveal overlay
-  - Hints panel, gated behind a score threshold per hint
-  - Hint minigame roulette — flickers through the registered minigames, lands on one at
-    random, then holds the reveal so the round's objective is readable before it starts
-    - **Tetris** — hit the round's target score before time (or the board topping out)
-      - Hold and 6-piece Next queue, ghost piece landing preview, 7-bag piece randomizer
-    - **Snake** — eat the round's target number of apples before time (or a wall/self hit)
-    - Animated glitch-text backdrop during play; on-screen Controls panel and a
-      pixel-hover Quit button to exit a round
+- 38 problems, mostly LeetCode plus a few company-sourced ones, each graded against a hidden test suite.
+- In-browser Python editor with **Run** (your own editable example cases) and **Judge** (the hidden suite), showing per-case results plus runtime and memory.
+- Handles linked lists, trees, and "design" problems (a class plus method calls, like LRU Cache and Min Stack).
 
-### Planned
+**Learn**
 
-- More LeetCode solutions added to the problem database
-- More minigames added to the roulette
-- Optional AI-generated contextual hints using a local model
+- A write-up of my solution on every problem: intuition, algorithm steps, and complexity analysis, with the code itself kept behind a reveal overlay so it can't be spoiled by accident.
+- Three hints per problem, each locked until you win a minigame round.
+- Topic and company tags, with LeetCode's frequency score on tracked companies.
 
-## Goals
+**Play**
 
-- [x] Make landing page
-- [x] Make solutions list page
-- [x] Make the solutions page with question and answer
-- [x] Add an in-browser code editor
-- [x] Add a server-backed code runner / judge
-- [x] Add hint unlocks
-- [x] Add first minigame
-- [x] Add my solutions
-- [x] Add company question tracking
-- [x] Add a minigame roulette (Tetris, Snake)
-- [ ] Add more minigames to the roulette
+- The hint minigame roulette: a Mario Kart item box flickers between games, lands on one, and starts a 60-second round. Win to unlock the next hint; lose and retry re-spins.
+  - **Tetris**: hold slot, 6-piece next queue, ghost piece, 7-bag randomizer.
+  - **Snake**: eat the target number of apples before time runs out.
+  - Targets get harder with each hint level.
+
+**Track**
+
+- Questions list with search and tri-state filters (level, status, topic, company), where each chip cycles off → is → is not.
+- Progress page with practice history, a solved/difficulty summary, and a GitHub-style contribution calendar.
+- A stopwatch and countdown timer in the problem page's navbar.
+
+Everything is wrapped in a pixel-art UI: animated landing page, bordered-panel modals, and a game-style loading bar between pages.
+
+## Getting Started
+
+You'll need Node 20+, [pnpm](https://pnpm.io), and Python 3 (for the local code runner).
+
+```bash
+pnpm install   # once, installs the whole workspace
+pnpm dev       # client on :3000, server on :4000
+```
+
+Run and Judge need a code runner. The public Piston API went whitelist-only on
+February 15, 2026, so for local development use the local Python runner instead:
+
+```bash
+pnpm dev:local   # same as pnpm dev, with CODE_RUNNER=local-python
+```
+
+The local runner executes code straight through your own Python install, so it's only
+for trusted code on your own machine. For anything public-facing, self-host
+[Piston](https://github.com/engineer-man/piston) and point `PISTON_API_URL` at it.
+All runner options live in [byte_backend/README.md](byte_backend/README.md).
+
+`pnpm typecheck` checks every package at once.
 
 ## Architecture
 
 ```txt
-leetbytes/               pnpm workspace (install once at the root: pnpm install)
-    byte_frontend/       Next.js frontend: problem pages, editor, results panel, effects, minigames
-    byte_backend/        Node HTTP API: runs/judges code, serves public test cases
-    byte_shared/         @leetbytes/shared — request/response types + Zod schemas used by both sides
-    byte_problems/       @leetbytes/problems — one folder per problem, the single source of truth
+leetbytes/               pnpm workspace
+    byte_frontend/       Next.js app: pages, editor, test panel, solution view, minigames
+    byte_backend/        Node HTTP API: judges code and serves public test cases
+    byte_shared/         @leetbytes/shared: request/response types and Zod schemas used by both sides
+    byte_problems/       @leetbytes/problems: one folder per problem, the single source of truth
 ```
 
-The client is a Next.js app. Each problem lives in `byte_problems/<slug>/` split into
-two files: `public.ts` (description, examples, starter code, hints — everything
-the browser may see, imported by the client) and `hidden.ts` (the judged test
-suite and answer key, imported only by the server). A `ProblemSlug` union in
-`byte_problems/types.ts` keys both registries, so the two sides can't drift apart. A
-`public.ts` file must never import from a `hidden.ts` file.
+```txt
+                  browser
+                     │
+        Next.js app  │  /api/* rewrite (one origin in dev, no CORS)
+                     ▼
+                 Node API ───► Python harness ───► code runner
+                     │                            (local Python or Piston)
+                     ▼
+              @leetbytes/problems
+```
 
-Running and judging code is delegated to the server, which wraps submissions in
-a Python harness and executes them through a pluggable runner (Piston or a local
-Python install). The browser reaches the server through the Next.js `/api/*`
-rewrite, so everything stays on one origin during development.
+### Public vs. Hidden
 
-To run both apps at once from the repo root:
+Each problem lives in `byte_problems/<slug>/` as two files. `public.ts` holds everything
+the browser may see: the description, examples, starter code, hints, and my solution
+with its write-up. `hidden.ts` holds the judged test suite and answer key, and only the
+server ever imports it. A `ProblemSlug` union in `byte_problems/types.ts` keys both
+registries, so the two sides can't drift apart, and a `public.ts` file must never
+import from a `hidden.ts` file.
+
+### How a Judge Run Works
+
+1. The browser sends the code and the problem's slug to the server.
+2. The server looks up that problem's hidden suite and wraps the code in a Python
+   harness. The harness turns the JSON test inputs into real Python objects (linked
+   lists, trees), calls the solution (or drives the class, for design problems), and
+   turns the return value back into JSON.
+3. A pluggable runner executes the harness, either through a local Python install or
+   a Piston server.
+4. Each result is compared against the expected answer using the problem's compare
+   mode (exact, order-independent, or order-independent for lists of lists), and
+   runtime and memory are measured along the way.
+5. The server returns a verdict (accepted, wrong answer, runtime error, time limit
+   exceeded, and so on) with a per-case breakdown.
+
+### Client-Side State
+
+Hint progress, minigame results, and the Progress page's submission history all live in
+the browser (`localStorage`). There are no accounts and nothing is stored on the server,
+so progress doesn't follow you across browsers or devices.
+
+### Company Tags
+
+Company tags and their frequency numbers come from a generated file
+(`byte_problems/company-tags.generated.ts`), built by a manual sync script that reads a
+public community-maintained dataset. It doesn't scrape LeetCode. To refresh it:
 
 ```bash
-pnpm install
-pnpm dev
+pnpm --filter @leetbytes/problems run sync:companies
 ```
 
-Hints and the minigame that unlocks them are currently client-only state (see
-`byte_frontend/components/WorkspaceContext.tsx` and `byte_frontend/components/games/`) — nothing
-about hint progress or minigame results is persisted or sent to the server yet.
-The Progress page works the same way: every judged submission is appended to a
-`localStorage` log (`byte_frontend/lib/progress.ts`) that the history table, summary,
-and contribution calendar all read from — there's no per-user server state yet, so
-progress doesn't follow you across browsers or devices.
+Then review the diff and commit. Nothing runs on a schedule.
 
-### Planned
+## Adding a Problem
 
-The server will grow to own more of the risky or stateful parts of the app:
+1. Add the slug to `PROBLEM_SLUGS` in `byte_problems/types.ts`.
+2. Create `byte_problems/<slug>/public.ts` with the description, examples, hints,
+   starter code, my solution, and its write-up.
+3. Create `byte_problems/<slug>/hidden.ts` with the judged tests.
+4. Register both in `byte_problems/public.ts` and `byte_problems/hidden.ts`. The
+   typechecker complains until every slug has a public entry.
 
-- Creating hint sessions
-- Checking whether a minigame challenge was completed
-- Generating or caching AI hints
+Problems from other sources (like company assessments) work too. See
+[byte_problems/README.md](byte_problems/README.md) for the details.
 
-## Tech Stack
+## Docs
 
-### Current
+Each package has its own README with the details:
 
-```txt
-Frontend
---------
-Next.js
-React
-TypeScript
-Tailwind CSS
-React Icons
-shadcn
-Shiki
-CodeMirror
-React Bits
-- GSAP
-- three
-- motion
-- ogl
-
-Backend
--------
-Node.js (built-in http)
-TypeScript (tsx)
-Zod
-Piston or local Python for code execution
-```
-
-### Planned / Possible
-
-```txt
-Persistence
------------
-Prisma
-SQLite for local development
-Postgres for deployment
-
-AI Hints
---------
-Ollama
-Local LLM
-
-Jobs / Data Updates
--------------------
-GitHub Actions or cron
-Public GitHub repos / public datasets for company question metadata
-```
+| Package | What's inside |
+| --- | --- |
+| [byte_frontend](byte_frontend/README.md) | Components, pages, and how the minigame roulette works |
+| [byte_backend](byte_backend/README.md) | API routes, the judge, and runner options |
+| [byte_problems](byte_problems/README.md) | Problem layout, design problems, and company tags |
+| [byte_shared](byte_shared/README.md) | The shared request/response types and schemas |
 
 ---
 

@@ -75,4 +75,21 @@ export const majorityElement: SolutionEntry =
             balance += 1 if majority == num else -1
 
         return majority`,
+
+  explanation: {
+    intuition: [
+      "This uses the Boyer-Moore voting algorithm. Picture every majority element canceling out one different element. The majority element appears more than half the time, so it can never be fully canceled. Whatever is still standing at the end has to be it.",
+      "`majority` is the current candidate and `balance` is how far ahead it is. A matching number adds one vote and a different number takes one away. Whenever `balance` drops to `0`, the votes so far have all canceled out, so the next number becomes the new candidate.",
+    ],
+    algorithm: [
+      "Start with `majority = 0` and `balance = 0`.",
+      "For each number, if `balance` is `0`, make that number the new `majority`.",
+      "Add `1` to `balance` if the number equals `majority`, otherwise subtract `1`.",
+      "Return `majority`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "One pass through the array." },
+      space: { bigO: "O(1)", reason: "Just the candidate and its count." },
+    },
+  },
 };

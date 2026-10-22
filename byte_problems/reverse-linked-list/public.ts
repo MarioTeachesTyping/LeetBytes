@@ -97,4 +97,23 @@ class Solution:
         head.next = None
 
         return reverse`,
+
+  explanation: {
+    intuition: [
+      "This solution reverses the list with recursion. The recursive call reverses everything after `head` first and hands back the new head (the old last node). All that's left is to fix the link between `head` and the node right after it.",
+      "After the call, `head.next` still points at that next node, which is now the tail of the reversed part. `head.next.next = head` makes it point back at `head`, and `head.next = None` cuts the old forward link so `head` becomes the new tail and no cycle is left behind. For `1 → 2 → 3`, the call reverses `2 → 3` into `3 → 2`, and then `2` is pointed back at `1`.",
+      "The base case is an empty list or a single node, which is already reversed.",
+    ],
+    algorithm: [
+      "If `head` is empty or has no next node, return `head`.",
+      "Recursively reverse the rest of the list starting at `head.next`, and keep the new head it returns.",
+      "Set `head.next.next = head` to point the next node back at `head`.",
+      "Set `head.next = None` to cut the old link.",
+      "Return the new head.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each node is visited once." },
+      space: { bigO: "O(n)", reason: "The recursion goes one call deep per node. An iterative version that flips the pointers in a loop would use O(1)." },
+    },
+  },
 };

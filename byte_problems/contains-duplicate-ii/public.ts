@@ -77,4 +77,22 @@ export const containsDuplicateIi: SolutionEntry =
             last_seen[num] = i
 
         return False`,
+
+  explanation: {
+    intuition: [
+      "We need two equal numbers whose indices are at most `k` apart. For any number, the earlier copy most likely to be close enough is the most recent one, so that's the only one worth remembering.",
+      "`last_seen` maps each number to the last index it appeared at. For each number, if it's been seen before and `i - last_seen[num] <= k`, we're done. Either way its index gets updated to `i`, since this is now the most recent copy.",
+    ],
+    algorithm: [
+      "Create an empty dict, `last_seen`.",
+      "Walk through `nums` with `enumerate` to get each index `i` and value `num`.",
+      "If `num` is in `last_seen` and `i - last_seen[num] <= k`, return `True`.",
+      "Set `last_seen[num] = i`.",
+      "If the loop finishes, return `False`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "One pass with O(1) dict operations." },
+      space: { bigO: "O(n)", reason: "The dict can hold every distinct number in the array." },
+    },
+  },
 };

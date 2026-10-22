@@ -109,4 +109,22 @@ export const minimumRemoveToMakeValidParentheses: SolutionEntry =
 
         # make final answer back into a string
         return "".join(new_string)`,
+
+  explanation: {
+    intuition: [
+      "A parenthesis only has to go if it has no partner. A stack of indices finds those: every `(` pushes its index, and every `)` pops the most recent unmatched `(`. A `)` that shows up when the stack is empty has nothing to close, so its index is marked for removal.",
+      "Any `(` still on the stack at the end was never closed, so those get marked too. Removing exactly the unmatched ones is the minimum possible, because every matched pair stays. Letters are skipped and always kept.",
+    ],
+    algorithm: [
+      "Create an empty `stack` and an empty set, `indexes_to_remove`.",
+      "Walk through `s`, skipping letters. Push the index of each `(`.",
+      "For each `)`, pop the stack if it has an unmatched `(`. Otherwise add the `)`'s index to `indexes_to_remove`.",
+      "Add every index still left on the stack to `indexes_to_remove`.",
+      "Build the answer from every character whose index isn't marked, and join it into a string.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Two passes over the string, with O(1) set operations." },
+      space: { bigO: "O(n)", reason: "The stack, the set, and the new string can each grow with the input." },
+    },
+  },
 };

@@ -81,4 +81,22 @@ export const sequentialDigits: SolutionEntry =
                     nums.append(num)
 
         return nums`,
+
+  explanation: {
+    intuition: [
+      "Every number with sequential digits is a slice of `123456789`, like `234` or `6789`. So instead of checking every number between `low` and `high`, we can generate the few candidates that exist by sliding a window over that string.",
+      "Only window lengths between the number of digits in `low` and in `high` could land in the range, so those are the only lengths tried. For each length, the window slides from the start of the string until its last digit is `9`. Each slice is turned into a number and kept if it's between `low` and `high`. Shorter lengths come first, and each length goes from small to large, so the result comes out already sorted.",
+    ],
+    algorithm: [
+      "Set `sample = \"123456789\"`.",
+      "Loop over every `length` from the digit count of `low` to the digit count of `high`.",
+      "For each length, slide a `start` index from `0` to `9 - length` and take `int(sample[start : start + length])`.",
+      "If that number is between `low` and `high`, append it to `nums`.",
+      "Return `nums`.",
+    ],
+    complexity: {
+      time: { bigO: "O(1)", reason: "There are only 45 sequential-digit numbers in total (9 with one digit, 8 with two, and so on), so the work never grows with the size of the range." },
+      space: { bigO: "O(1)", reason: "The output holds at most those 45 numbers." },
+    },
+  },
 };

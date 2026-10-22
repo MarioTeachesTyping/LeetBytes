@@ -51,6 +51,7 @@ export default async function Page({ params }: PageProps)
               companies={companyTagsForSlug(slug, entry.companies)}
               hints={entry.hints}
               code={entry.code}
+              explanation={entry.explanation}
               solutions={entry.solutions}
             />
           </div>

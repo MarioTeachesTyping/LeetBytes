@@ -85,4 +85,19 @@ class Solution:
         account for the root
         '''
         return max(left, right) + 1`,
+
+  explanation: {
+    intuition: [
+      "A tree's depth is one (for its root) plus the depth of its deeper subtree, and an empty tree has depth 0. That's the whole solution: recurse into both sides, take the `max`, and add 1.",
+    ],
+    algorithm: [
+      "If `root` is empty, return `0`.",
+      "Recursively find the depth of the left and right subtrees.",
+      "Return `max(left, right) + 1`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Every node is visited once." },
+      space: { bigO: "O(h)", reason: "The recursion goes as deep as the tree's height h, up to O(n) for a tree that's one long chain." },
+    },
+  },
 };

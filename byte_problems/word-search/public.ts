@@ -111,4 +111,23 @@ export const wordSearch: SolutionEntry =
                     return True
 
         return False`,
+
+  explanation: {
+    intuition: [
+      "The word could start at any cell and wind in any direction, so this tries every path with backtracking. `backtrack(r, c, char)` asks whether the rest of the word, starting from `word[char]`, can be spelled from cell `(r, c)`.",
+      "A cell fails right away if it's off the board, holds the wrong letter, or is already part of the current path (tracked in the `path` set, since a cell can't be reused). Otherwise it's added to `path`, the four neighbors are tried for the next letter, and then it's removed from `path` again. That removal is the backtracking step: it frees the cell up for other paths to use.",
+      "Once `char == len(word)`, every letter has been matched, so the word exists.",
+    ],
+    algorithm: [
+      "For every cell on the board, call `backtrack(r, c, 0)` and return `True` if any call succeeds.",
+      "In `backtrack`, return `True` if `char == len(word)`.",
+      "Return `False` if `(r, c)` is out of bounds, doesn't match `word[char]`, or is already in `path`.",
+      "Add `(r, c)` to `path`, try all four neighbors with `char + 1`, then remove `(r, c)` and return whether any neighbor worked.",
+      "If no starting cell works, return `False`.",
+    ],
+    complexity: {
+      time: { bigO: "O(m · n · 3^L)", reason: "Where the board is m × n and L is the word length. A search can start from every cell, and after the first letter each step branches at most 3 ways, since the cell it came from is already in `path`." },
+      space: { bigO: "O(L)", reason: "The recursion and the `path` set hold at most L cells at a time." },
+    },
+  },
 };

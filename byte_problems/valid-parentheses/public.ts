@@ -100,8 +100,20 @@ export const validParentheses: SolutionEntry =
         # we return true if stack is empty, and false if not
         return True if not stack else False`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
-    memory: { label: "Memory", value: "18.06 MB", beats: "62.77%" },
+  explanation: {
+    intuition: [
+      "Every closing bracket has to match the most recent opening bracket that hasn't been closed yet. \"Most recent\" is exactly what a stack gives you: the last thing pushed is the first thing popped.",
+      "Opening brackets go onto the stack. When a closing bracket shows up, the top of the stack must be its matching opener, which `close_to_open` looks up. If it is, pop it, since that pair is done. If it isn't, or the stack is empty, the string is invalid. At the end the stack must be empty, otherwise some opener never got closed.",
+    ],
+    algorithm: [
+      "Create an empty `stack` and the `close_to_open` dict that maps each closer to its opener.",
+      "For each character `c`, if it's a closer, check that the stack isn't empty and its top equals `close_to_open[c]`. If so, pop it. If not, return `False`.",
+      "If `c` is an opener, push it onto the stack.",
+      "After the loop, return `True` only if the stack is empty.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each character is pushed or popped at most once." },
+      space: { bigO: "O(n)", reason: "A string of only opening brackets, like `((((`, puts everything on the stack." },
+    },
   },
 };

@@ -101,8 +101,21 @@ class Solution:
         # doing this makes it point it to the 1st node in our new sorted merged list
         return merged.next`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
-    memory: { label: "Memory", value: "17.74 MB", beats: "67.49%" },
+  explanation: {
+    intuition: [
+      "Both lists are already sorted, so the smallest node left is always at the front of one of them. Keep taking the smaller of the two front nodes and attaching it to the end of a growing merged list.",
+      "A dummy node (`merged`) sits at the start so the first node needs no special case, and `tail` always points at the last node added. When one list runs out, whatever is left of the other is already sorted, so it's attached in one step.",
+      "No new nodes are created. The existing nodes are just relinked.",
+    ],
+    algorithm: [
+      "Create a dummy node `merged` and set `tail` to it.",
+      "While both lists have nodes, attach whichever front node has the smaller value (`list1` on ties) to `tail.next`, advance that list, then advance `tail`.",
+      "Attach the leftover list, if any, to `tail.next`.",
+      "Return `merged.next`, skipping the dummy.",
+    ],
+    complexity: {
+      time: { bigO: "O(m + n)", reason: "Each node from both lists is visited once, where m and n are the two list lengths." },
+      space: { bigO: "O(1)", reason: "Only the dummy node and a pointer are added. The result reuses the original nodes." },
+    },
   },
 };

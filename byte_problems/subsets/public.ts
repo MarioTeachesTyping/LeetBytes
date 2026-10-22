@@ -89,4 +89,21 @@ export const subsets: SolutionEntry =
             self.backtrack(i + 1, subset, nums)
             # remove path once we explored it fully
             subset.pop()`,
+
+  explanation: {
+    intuition: [
+      "Every subset can be built by picking elements in increasing index order. Backtracking does this from a `start` index: it records the current subset, then tries adding each element from `start` onward, recursing to keep building, and removing it again afterward to try the next option.",
+      "Every partial subset along the way is a valid answer, including the empty one, which is why it's recorded at the top of every call. Recursing with `i + 1` means an element is never reused and the same subset never shows up in a different order (like `[1, 2]` and `[2, 1]`). The subset is saved as a copy, `subset[:]`, because the original list keeps changing as the search goes on.",
+    ],
+    algorithm: [
+      "Call `backtrack(0, [], nums)`.",
+      "In each call, append a copy of `subset` to `self.output`.",
+      "For each index `i` from `start` to the end, append `nums[i]`, recurse with `i + 1`, then pop `nums[i]` off.",
+      "Return `self.output` once the first call finishes.",
+    ],
+    complexity: {
+      time: { bigO: "O(n · 2ⁿ)", reason: "There are 2ⁿ subsets, and copying each one into the output takes up to O(n)." },
+      space: { bigO: "O(n)", reason: "The recursion and the current `subset` go at most n deep (not counting the output)." },
+    },
+  },
 };

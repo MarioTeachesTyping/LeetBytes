@@ -112,4 +112,23 @@ class Solution:
 
         # return list of lists in order of min to max
         return [columnTable[col] for col in range(min_column, max_column + 1)]`,
+
+  explanation: {
+    intuition: [
+      "Give every node a column number: the root is column `0`, a left child is one column to the left of its parent (`column - 1`), and a right child is one column to the right (`column + 1`). The answer is each column's values, from the leftmost column to the rightmost.",
+      "Within a column, nodes have to be listed top to bottom, and nodes in the same row left to right. Breadth-first search (BFS) visits the tree level by level, left to right, which gives exactly that order. A depth-first search could reach a deeper node before a higher one in the same column.",
+      "`columnTable` groups the values by column, while `min_column` and `max_column` track the range. Since the columns are consecutive numbers, the output can be built by counting from `min_column` to `max_column`, with no sorting needed.",
+    ],
+    algorithm: [
+      "If the tree is empty, return `[]`.",
+      "Start a queue with `(root, 0)`.",
+      "Pop the next `(node, column)`. If the node exists, add its value to `columnTable[column]`, update `min_column` and `max_column`, and queue its children at `column - 1` and `column + 1`.",
+      "Repeat until the queue is empty.",
+      "Return the lists in `columnTable` from `min_column` to `max_column`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Every node is queued and processed once." },
+      space: { bigO: "O(n)", reason: "The queue and `columnTable` together hold up to n nodes." },
+    },
+  },
 };

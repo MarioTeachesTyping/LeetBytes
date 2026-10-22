@@ -80,8 +80,20 @@ export const maximumSubarray: SolutionEntry =
 
         return max_subarray`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "37 ms", beats: "68.42%" },
-    memory: { label: "Memory", value: "31.55 MB", beats: "39.09%" },
+  explanation: {
+    intuition: [
+      "At every number there's one decision: is it better to extend the best subarray ending just before it, or to start a brand new subarray right here? If the running sum has gone negative, it can only drag things down, so starting fresh wins.",
+      "`curr_subarray = max(num, curr_subarray + num)` makes exactly that choice, and `max_subarray` remembers the best sum seen anywhere. This is known as Kadane's algorithm. Starting both at `nums[0]` means an array of all negative numbers still works: the answer is just its largest number.",
+    ],
+    algorithm: [
+      "Set `curr_subarray` and `max_subarray` to `nums[0]`.",
+      "For every number after the first, set `curr_subarray` to the bigger of `num` alone or `curr_subarray + num`.",
+      "Update `max_subarray` if `curr_subarray` beats it.",
+      "Return `max_subarray`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "One pass through the array." },
+      space: { bigO: "O(n)", reason: "Only two running totals are kept, but `nums[1:]` makes a copy of the list. Looping over `range(1, len(nums))` instead would bring this down to O(1)." },
+    },
   },
 };

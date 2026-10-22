@@ -82,8 +82,20 @@ export const groupAnagrams: SolutionEntry =
         # return only the words
         return list(res.values())`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "19 ms", beats: "22.40%" },
-    memory: { label: "Memory", value: "22.76 MB", beats: "37.06%" },
+  explanation: {
+    intuition: [
+      "Two words are anagrams exactly when they use the same letters the same number of times. So if each word is described by its letter counts, all of its anagrams get the same description.",
+      "Each word is counted into a list of 26 slots, one per letter (`count[ord(char) - ord(\"a\")]` turns `a` into slot 0, `b` into slot 1, and so on). That count becomes the key in a `defaultdict(list)`, so every anagram lands in the same group. The list is turned into a tuple first, because lists can't be dict keys in Python.",
+    ],
+    algorithm: [
+      "Create `res = defaultdict(list)`.",
+      "For each word, build a 26-slot `count` of how many times each letter appears.",
+      "Append the word to `res[tuple(count)]`.",
+      "Return `list(res.values())`, the groups themselves.",
+    ],
+    complexity: {
+      time: { bigO: "O(n · k)", reason: "Where n is the number of words and k is the longest word's length: each word's letters are counted once, and building its 26-slot key is constant work." },
+      space: { bigO: "O(n · k)", reason: "Every word ends up stored in a group, plus one 26-slot key per group." },
+    },
   },
 };

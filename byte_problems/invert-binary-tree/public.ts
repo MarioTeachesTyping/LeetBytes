@@ -91,4 +91,21 @@ class Solution:
         root.right = left
 
         return root`,
+
+  explanation: {
+    intuition: [
+      "Inverting a tree means mirroring it, so every node's left and right children trade places. Recursion handles this naturally: invert the left subtree, invert the right subtree, then swap them.",
+      "The only base case is an empty tree, which is already inverted.",
+    ],
+    algorithm: [
+      "If `root` is empty, return `None`.",
+      "Recursively invert `root.left` and `root.right`.",
+      "Swap them: set `root.left` to the inverted right subtree and `root.right` to the inverted left subtree.",
+      "Return `root`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Every node is visited once." },
+      space: { bigO: "O(h)", reason: "The recursion goes as deep as the tree's height h, up to O(n) for a tree that's one long chain." },
+    },
+  },
 };

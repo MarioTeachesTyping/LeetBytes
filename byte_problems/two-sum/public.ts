@@ -100,8 +100,20 @@ export const twoSum: SolutionEntry =
         # return empty list if we dont find shit
         return []`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "0 ms", beats: "100.00%" },
-    memory: { label: "Memory", value: "19.05 MB", beats: "19.44%" },
+  explanation: {
+    intuition: [
+      "For any number in the array, there's exactly one other value that would complete the pair: its complement, `target - nums[i]`. The brute force way (left commented out at the top) checks every pair with two loops, which is O(n²).",
+      "Instead, remember every number we've already passed in a dict that maps value → index. Then asking \"have I seen this number's complement yet?\" is a single O(1) lookup, so one pass through the array is enough. We check for the complement before storing the current number, so a number can never pair with itself.",
+    ],
+    algorithm: [
+      "Create an empty dict to map each number we've seen to its index.",
+      "Walk through `nums`. For each index `i`, compute `complement = target - nums[i]`.",
+      "If `complement` is already in the dict, we've found the pair, so return `[dict[complement], i]`.",
+      "Otherwise, store `nums[i]` with its index `i` and move on.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "We pass through the array once, and each dict lookup and insert takes O(1) on average." },
+      space: { bigO: "O(n)", reason: "In the worst case the dict stores almost every number before the pair is found." },
+    },
   },
 };

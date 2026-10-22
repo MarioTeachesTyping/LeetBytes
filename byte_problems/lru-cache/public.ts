@@ -106,4 +106,22 @@ class LRUCache:
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)`,
+
+  explanation: {
+    intuition: [
+      "Both operations need to be O(1), and the cache always has to know which key was used least recently. Python's `collections.OrderedDict` does both: it's a dict that remembers the order keys were added, and it can move a key to the end or remove the first key in O(1).",
+      "That order is used to track recency: the front of the dict is the least recently used key and the end is the most recently used. Any time a key is read or written, it moves to the end, so when the cache goes over capacity, the key to evict is always the one at the front.",
+      "Under the hood, an `OrderedDict` is a hash map combined with a doubly linked list, which is the same structure you'd build by hand for this problem.",
+    ],
+    algorithm: [
+      "`__init__`: store `capacity` and create an empty `OrderedDict`.",
+      "`get`: if the key isn't there, return `-1`. Otherwise move it to the end, since it was just used, and return its value.",
+      "`put`: if the key exists, move it to the end. Then set its value, which adds new keys at the end automatically.",
+      "If there are now more keys than `capacity`, `popitem(False)` removes the first key, which is the least recently used one.",
+    ],
+    complexity: {
+      time: { bigO: "O(1)", reason: "Each `get` and `put` does a constant number of `OrderedDict` operations, all O(1)." },
+      space: { bigO: "O(capacity)", reason: "The cache never holds more than `capacity` keys." },
+    },
+  },
 };

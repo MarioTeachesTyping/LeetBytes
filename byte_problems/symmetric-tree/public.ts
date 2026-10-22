@@ -100,4 +100,20 @@ class Solution:
                     dfs(left_side.right, right_side.left))
 
         return dfs(root.left, root.right)`,
+
+  explanation: {
+    intuition: [
+      "A tree is symmetric when its left side is a mirror image of its right side. Unlike Same Tree, mirroring flips the pairing: the outer children have to match each other (`left_side.left` with `right_side.right`), and so do the inner ones (`left_side.right` with `right_side.left`).",
+      "The `dfs` helper takes one node from each side. Both empty means they mirror, and only one empty means they don't. Otherwise their values must be equal, and both the outer pair and the inner pair must mirror too.",
+    ],
+    algorithm: [
+      "Call `dfs(root.left, root.right)`.",
+      "In `dfs`, return `True` if both nodes are empty and `False` if only one is.",
+      "Otherwise, return whether the values are equal and both `dfs(left_side.left, right_side.right)` and `dfs(left_side.right, right_side.left)` are true.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Every node is visited once." },
+      space: { bigO: "O(h)", reason: "The recursion goes as deep as the tree's height h, up to O(n) for a lopsided tree." },
+    },
+  },
 };

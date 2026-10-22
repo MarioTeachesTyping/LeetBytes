@@ -7,8 +7,9 @@
 import React, { useRef } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
 import { IoIosArrowForward } from "react-icons/io";
-import type { ProblemExample, SolutionEntry, SpoilerSolution } from "@leetbytes/problems/types";
+import type { ProblemExample, SolutionEntry, SolutionExplanation, SpoilerSolution } from "@leetbytes/problems/types";
 import type { RankedCompanyTag } from "@/lib/problem-list";
+import { renderInlineCode } from "@/lib/inline-code";
 import SolutionPanel from "./SolutionPanel";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -25,25 +26,8 @@ interface QuestionPanelProps
   companies?: RankedCompanyTag[];
   hints?: string[];
   code: string;
+  explanation?: SolutionExplanation;
   solutions?: SpoilerSolution[];
-}
-
-// Renders text with backtick-wrapped segments as inline code.
-// Example: "use `nums[i]` here" → nums[i] is styled like code
-function renderInlineCode(text: string) 
-{
-  return text.split(/(`[^`]+`)/g).map((part, i) =>
-    part.startsWith("`") ? (
-      <code
-        key={i}
-        className="font-mono bg-zinc-900 px-1.5 py-0.5 rounded text-sm text-zinc-100"
-      >
-        {part.slice(1, -1)}
-      </code>
-    ) : (
-      <span key={i}>{part}</span>
-    )
-  );
 }
 
 export default function QuestionPanel({
@@ -58,6 +42,7 @@ export default function QuestionPanel({
   companies = [],
   hints = [],
   code,
+  explanation,
   solutions,
 }: QuestionPanelProps)
 {
@@ -66,11 +51,12 @@ export default function QuestionPanel({
   const hintsRef = useRef<HTMLDivElement | null>(null);
   const { view, hintsUnlocked } = useWorkspace();
 
-  // Authored approaches when present; otherwise a single untitled block from `code`.
+  // Authored approaches when present; otherwise a single "My Solution" block
+  // built from `code` and its write-up.
   const spoilerSolutions: SpoilerSolution[] =
     solutions && solutions.length > 0
       ? solutions
-      : [{ title: "1. My Solution", description: "This is how I solved it.", code }];
+      : [{ title: "My Solution", code, explanation }];
 
   const difficultyStyles =
     difficulty === "Easy"

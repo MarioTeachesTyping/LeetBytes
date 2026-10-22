@@ -71,4 +71,20 @@ export const validAnagram: SolutionEntry =
             return True
 
         return False`,
+
+  explanation: {
+    intuition: [
+      "Two strings are anagrams when they contain exactly the same letters, just in a different order. Sorting both strings puts their letters in the same order, so anagrams become identical once sorted.",
+      "Strings of different lengths can never be anagrams, so that's checked first to skip the sorting entirely.",
+    ],
+    algorithm: [
+      "If `s` and `t` have different lengths, return `False`.",
+      "Sort both strings into `ss` and `st`.",
+      "Return `True` if they're equal, otherwise `False`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n log n)", reason: "Sorting both strings dominates. Counting each string's letters instead of sorting would bring this down to O(n)." },
+      space: { bigO: "O(n)", reason: "`sorted` builds a new list of characters for each string." },
+    },
+  },
 };

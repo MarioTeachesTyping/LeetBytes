@@ -78,4 +78,22 @@ export const validPalindrome: SolutionEntry =
             r -= 1
 
         return True`,
+
+  explanation: {
+    intuition: [
+      "Instead of building a cleaned-up copy of the string, two pointers compare it in place from both ends. Only letters and digits count, so each pointer skips past anything that isn't alphanumeric (`isalnum()`) before comparing.",
+      "Characters are compared lowercased, so `A` and `a` match. The first mismatch means it isn't a palindrome. If the pointers meet without one, it is.",
+    ],
+    algorithm: [
+      "Put `l` at the start and `r` at the end of `s`.",
+      "While `l < r`, move `l` right past non-alphanumeric characters and `r` left past them too.",
+      "If `s[l].lower() != s[r].lower()`, return `False`.",
+      "Otherwise move both pointers inward and continue.",
+      "Return `True` once the pointers meet.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each character is visited at most once by one of the pointers." },
+      space: { bigO: "O(1)", reason: "Only the two pointers are stored. No cleaned copy of the string is made." },
+    },
+  },
 };

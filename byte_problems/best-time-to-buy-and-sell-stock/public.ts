@@ -82,4 +82,22 @@ export const bestTimeToBuyAndSellStock: SolutionEntry =
             sell += 1
 
         return max_profit`,
+
+  explanation: {
+    intuition: [
+      "To make money you buy low and sell later at a higher price. Two pointers model this: `buy` marks the cheapest day seen so far, and `sell` scans forward through every later day.",
+      "If today's price is higher than the buy price, selling today is a possible profit, so the best one is kept in `max_profit`. If today's price is lower or equal, today is a better day to buy than the old one, because any future sale would earn more from here. So `buy` jumps forward to `sell`.",
+    ],
+    algorithm: [
+      "Start with `buy = 0`, `sell = 1`, and `max_profit = 0`.",
+      "While `sell` is inside the array, compare `prices[buy]` and `prices[sell]`.",
+      "If selling is profitable, update `max_profit` with `prices[sell] - prices[buy]`.",
+      "Otherwise, move `buy` to `sell`.",
+      "Move `sell` forward by one and repeat, then return `max_profit`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "`sell` passes through the prices once." },
+      space: { bigO: "O(1)", reason: "Only a few variables are used." },
+    },
+  },
 };

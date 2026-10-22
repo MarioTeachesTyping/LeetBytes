@@ -90,8 +90,20 @@ export const longestPalindromicSubstring: SolutionEntry =
 
         return ""`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "2896 ms", beats: "18.76%" },
-    memory: { label: "Memory", value: "17.76 MB", beats: "68.52%" },
+  explanation: {
+    intuition: [
+      "This is a brute force solution with one smart twist: it checks substring lengths from longest to shortest. That means the very first palindrome it finds is guaranteed to be the longest one, so it can return right away instead of checking every substring.",
+      "The helper `palindrome(i, j)` checks whether `s[i:j]` is a palindrome using two pointers that start at both ends and walk toward the middle, stopping at the first mismatch.",
+    ],
+    algorithm: [
+      "Try every substring length, starting at `len(s)` and counting down to `1`.",
+      "For each length, slide a `start` index over every position where a substring of that length fits.",
+      "Check `s[start : start + length]` with the `palindrome` helper.",
+      "Return the first substring that passes, since nothing longer is left to check.",
+    ],
+    complexity: {
+      time: { bigO: "O(n³)", reason: "There are O(n²) substrings and checking one takes up to O(n). Returning early often helps, but a string with no long palindromes still forces almost every check, which is why this solution is slow. Expanding outward from each possible center brings it down to O(n²)." },
+      space: { bigO: "O(1)", reason: "The helper only uses two pointers, so no extra space grows with the input (not counting the returned substring)." },
+    },
   },
 };

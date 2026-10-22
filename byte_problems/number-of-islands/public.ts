@@ -93,4 +93,22 @@ export const numberOfIslands: SolutionEntry =
         self.dfs(grid, r + 1, c)
         self.dfs(grid, r, c - 1)
         self.dfs(grid, r, c + 1)`,
+
+  explanation: {
+    intuition: [
+      "Scan the grid cell by cell. The first time we hit a piece of land (`1`), we've found a new island, so we count it. Then we have to make sure the rest of that island never gets counted again.",
+      "To do that, `dfs` sinks the whole island: it turns the land cell into water (`0`) and spreads up, down, left, and right to every connected land cell. When the scan reaches those cells later, they're already water and get skipped. Diagonal neighbors don't count as connected, so they're never explored.",
+    ],
+    algorithm: [
+      "Loop over every cell in the grid.",
+      "When a cell is `1`, call `dfs` on it and add `1` to `num_islands`.",
+      "In `dfs`, stop if the cell is out of bounds or isn't land.",
+      "Otherwise set it to `0`, then call `dfs` on its four neighbors.",
+      "Return `num_islands`.",
+    ],
+    complexity: {
+      time: { bigO: "O(m · n)", reason: "For an m × n grid, every cell is scanned once and sunk at most once." },
+      space: { bigO: "O(m · n)", reason: "If the whole grid is land, the recursion can go as deep as the number of cells. The grid itself is changed in place to mark visited land, so no separate visited set is needed." },
+    },
+  },
 };

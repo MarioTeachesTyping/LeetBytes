@@ -115,4 +115,21 @@ class MinStack:
 # obj.pop()
 # param_3 = obj.top()
 # param_4 = obj.getMin()`,
+
+  explanation: {
+    intuition: [
+      "The hard part is making `getMin` O(1). The trick is to store each value together with the minimum of the whole stack at the moment it was pushed, as a tuple `(value, min_value)`.",
+      "While an item is on the stack, nothing below it can change, so the minimum it recorded stays correct. The current minimum is then always just the top item's `min_value`. Popping removes a value and its minimum together, so the previous minimum comes back automatically.",
+    ],
+    algorithm: [
+      "`push`: if the stack is empty, push `(val, val)`. Otherwise push `(val, min(val, self.stack[-1][1]))`, pairing the value with the new minimum.",
+      "`pop`: pop the top tuple.",
+      "`top`: return the top tuple's value, `self.stack[-1][0]`.",
+      "`getMin`: return the top tuple's minimum, `self.stack[-1][1]`.",
+    ],
+    complexity: {
+      time: { bigO: "O(1)", reason: "Every operation only touches the top of the stack." },
+      space: { bigO: "O(n)", reason: "Each of the n values is stored alongside its running minimum." },
+    },
+  },
 };

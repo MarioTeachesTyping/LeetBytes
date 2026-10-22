@@ -71,13 +71,6 @@ export type ProblemExample =
   image?: string;
 };
 
-export type ProblemStat =
-{
-  label: "Runtime" | "Memory";
-  value: string;
-  beats?: string;
-};
-
 // One spoiler entry: a titled, optionally-described approach whose code is
 // hidden behind the spoiler overlay. A problem may list several (e.g. brute
 // force vs. optimal) and each reveals independently.
@@ -86,6 +79,29 @@ export type SpoilerSolution =
   title: string;
   description?: string;
   code: string;
+  explanation?: SolutionExplanation;
+};
+
+// A LeetCode-editorial-style write-up of one approach, shown above its code in
+// the Solution view. Every string supports `backtick` inline code.
+export type SolutionExplanation =
+{
+  // The core idea, one or more paragraphs.
+  intuition: string[];
+  // Numbered steps — skip when the approach reads better as prose alone.
+  algorithm?: string[];
+  complexity:
+  {
+    time: ComplexityNote;
+    space: ComplexityNote;
+  };
+};
+
+export type ComplexityNote =
+{
+  // e.g. "O(n log n)"
+  bigO: string;
+  reason: string;
 };
 
 export type SolutionEntry =
@@ -107,13 +123,11 @@ export type SolutionEntry =
   hints?: string[];
   starterCode: string;
   code: string;
+  // Write-up of `code`, shown under "1. My Solution" in the Solution view.
+  explanation?: SolutionExplanation;
   // Spoiler approaches shown in the Spoiler view. When omitted, the Spoiler view
   // falls back to a single untitled block built from `code`.
   solutions?: SpoilerSolution[];
-  stats?: {
-    runtime?: ProblemStat;
-    memory?: ProblemStat;
-  };
 };
 
 // ============== //

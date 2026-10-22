@@ -85,4 +85,21 @@ export const findOccurrencesOfAnElementInAnArray: SolutionEntry =
                 queries[j] = -1
 
         return queries`,
+
+  explanation: {
+    intuition: [
+      "Rescanning `nums` for every query would be slow with up to 10⁵ queries. Instead, one pass through `nums` records where each occurrence of `x` is: `occurrence_to_index` maps the occurrence number (1st, 2nd, 3rd, …) to its index.",
+      "After that, every query is a single dict lookup. If that occurrence was recorded, the answer is its index. Otherwise there aren't that many occurrences, and the answer is `-1`. If `x` never appears at all, every answer is `-1`, so that case returns early.",
+    ],
+    algorithm: [
+      "Walk through `nums`. Each time `nums[i] == x`, store `i` under the current `occurrence_count` and add 1 to the count.",
+      "If nothing was stored, return `-1` for every query.",
+      "For each query, replace it with its recorded index, or `-1` if that occurrence doesn't exist.",
+      "Return `queries`, which now holds the answers.",
+    ],
+    complexity: {
+      time: { bigO: "O(n + q)", reason: "Where n is the length of `nums` and q is the number of queries: one pass over each, with O(1) dict lookups." },
+      space: { bigO: "O(n)", reason: "The dict can hold an entry for every index in `nums`. The answers reuse the `queries` list instead of making a new one." },
+    },
+  },
 };

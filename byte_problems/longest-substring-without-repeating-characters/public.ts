@@ -84,8 +84,21 @@ export const longestSubstringWithoutRepeatingCharacters: SolutionEntry =
         
         return res`,
 
-  stats: {
-    runtime: { label: "Runtime", value: "18 ms", beats: "57.85%" },
-    memory: { label: "Memory", value: "17.94 MB", beats: "27.39%" },
+  explanation: {
+    intuition: [
+      "Think of a window sliding over the string, from `l` to `r`, that never contains a repeated character. A set (`char_set`) holds the characters currently in the window, so checking for a repeat is O(1).",
+      "Each step moves `r` one character to the right. If `s[r]` is already in the window, we shrink it from the left, removing characters until that duplicate is gone. The window is valid again after that, so its length `r - l + 1` is a candidate for the answer.",
+    ],
+    algorithm: [
+      "Start with an empty `char_set`, `l = 0`, and `res = 0`.",
+      "Move `r` across the string one index at a time.",
+      "While `s[r]` is already in `char_set`, remove `s[l]` from the set and move `l` right.",
+      "Add `s[r]` to the set and update `res` with `r - l + 1` if it's bigger.",
+      "Return `res`.",
+    ],
+    complexity: {
+      time: { bigO: "O(n)", reason: "Each character is added to the set once (by `r`) and removed at most once (by `l`), so both pointers move at most n times in total." },
+      space: { bigO: "O(min(n, k))", reason: "The set only holds the current window, which is limited by both the string length n and the number of distinct characters k." },
+    },
   },
 };

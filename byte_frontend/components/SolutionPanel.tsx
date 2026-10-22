@@ -7,7 +7,8 @@
 import React, { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { highlightPython } from "@/lib/highlight";
-import type { SpoilerSolution } from "@leetbytes/problems/types";
+import { renderInlineCode } from "@/lib/inline-code";
+import type { ComplexityNote, SolutionExplanation, SpoilerSolution } from "@leetbytes/problems/types";
 import Balatro from "./react-bits/Balatro";
 import PixelHoverButton from "./PixelHoverButton";
 
@@ -114,25 +115,85 @@ function SolutionBlock({ code }: { code: string })
   );
 }
 
-// Spoiler view: each approach gets a title + description section above its own
+function SectionHeading({ children }: { children: React.ReactNode })
+{
+  return <h3 className="text-lg font-semibold text-white">{children}</h3>;
+}
+
+function ComplexityItem({ label, note }: { label: string; note: ComplexityNote })
+{
+  return (
+    <li className="space-y-1">
+      <p>
+        {label}: <span className="font-mono text-white">{note.bigO}</span>.
+      </p>
+      <p className="text-zinc-400">{renderInlineCode(note.reason)}</p>
+    </li>
+  );
+}
+
+// LeetCode-editorial-style write-up: Intuition, optional Algorithm steps, and
+// Complexity Analysis.
+function Explanation({ explanation }: { explanation: SolutionExplanation })
+{
+  const { intuition, algorithm, complexity } = explanation;
+
+  return (
+    <div className="space-y-5 text-base leading-relaxed text-zinc-300">
+      <section className="space-y-2">
+        <SectionHeading>Intuition</SectionHeading>
+        {intuition.map((paragraph, i) => (
+          <p key={i}>{renderInlineCode(paragraph)}</p>
+        ))}
+      </section>
+
+      {algorithm && algorithm.length > 0 && (
+        <section className="space-y-2">
+          <SectionHeading>Algorithm</SectionHeading>
+          <ol className="list-decimal space-y-1.5 pl-6 marker:text-zinc-500">
+            {algorithm.map((step, i) => (
+              <li key={i}>{renderInlineCode(step)}</li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <section className="space-y-2">
+        <SectionHeading>Complexity Analysis</SectionHeading>
+        <ul className="list-disc space-y-3 pl-6 marker:text-zinc-500">
+          <ComplexityItem label="Time complexity" note={complexity.time} />
+          <ComplexityItem label="Space complexity" note={complexity.space} />
+        </ul>
+      </section>
+    </div>
+  );
+}
+
+// Spoiler view: each approach is numbered and gets its write-up above its own
 // revealable code block, so multiple ways of solving the problem can be listed.
 export default function SolutionPanel({ solutions }: SolutionPanelProps)
 {
   return (
     <div className="space-y-8">
       {solutions.map((solution, i) => (
-        <div key={i} className="space-y-3">
-          {/* Title + description section */}
+        <div key={i} className="space-y-5">
           <div className="space-y-1">
-            <h2 className="text-2xl font-semibold text-white">{solution.title}</h2>
+            <h2 className="text-2xl font-semibold text-white">
+              {i + 1}. {solution.title}
+            </h2>
             {solution.description && (
               <p className="text-base leading-relaxed text-zinc-300">
-                {solution.description}
+                {renderInlineCode(solution.description)}
               </p>
             )}
           </div>
 
-          <SolutionBlock code={solution.code} />
+          {solution.explanation && <Explanation explanation={solution.explanation} />}
+
+          <div className="space-y-2">
+            {solution.explanation && <SectionHeading>Implementation</SectionHeading>}
+            <SolutionBlock code={solution.code} />
+          </div>
         </div>
       ))}
     </div>
