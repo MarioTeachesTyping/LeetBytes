@@ -2,7 +2,7 @@
 
 Backend API for LeetBytes.
 
-## Run locally
+## Run Locally
 
 ```bash
 pnpm install   # once, at the repo root (installs the whole workspace)
@@ -117,7 +117,7 @@ is unavailable. The client shows runtime and memory on accepted or partial
 Judging reuses the same runner switch as `/submissions/run`, so it works against
 Piston or, for local development, `CODE_RUNNER=local-python`.
 
-## Runner options
+## Runner Options
 
 The default runner is Piston:
 

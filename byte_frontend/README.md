@@ -3,7 +3,7 @@
 The LeetBytes frontend: a Next.js app for browsing problems, editing and running
 solutions, and revealing spoilers.
 
-## Getting started
+## Getting Started
 
 ```bash
 pnpm install   # once, at the repo root (installs the whole workspace)
@@ -82,7 +82,7 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   `@leetbytes/problems` workspace package (`../byte_problems/<slug>/public.ts`)
 - `public/videos/`, `public/game-images/` — minigame background footage and tetromino sprites
 
-## Test panel
+## Test Panel
 
 The panel under the editor has three tabs:
 
@@ -125,7 +125,7 @@ starts, so a win unlocking hint *N* always reports hint *N* — even though the
 underlying `hintsUnlocked` count (and the props derived from it) can advance out from
 under the component the instant `onWin()` fires.
 
-### Adding a minigame
+### Adding a Minigame
 
 Every minigame implements the same `MinigameProps` contract (`running`, `secondsLeft`,
 `targetScore`, `onScoreChange`, `onGameOver`) so `GameStage` can mount whichever one

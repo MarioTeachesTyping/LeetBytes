@@ -47,6 +47,7 @@ import { sequentialDigitsHidden } from "./sequential-digits/hidden.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAwayHidden } from "./check-if-all-1s-are-at-least-length-k-places-away/hidden.ts";
 import { findOccurrencesOfAnElementInAnArrayHidden } from "./find-occurrences-of-an-element-in-an-array/hidden.ts";
 import { pinterestTravelDistanceOnScootersHidden } from "./pinterest-travel-distance-on-scooters/hidden.ts";
+import { netflixLongestConsecutiveIdenticalCharacterRunHidden } from "./netflix-longest-consecutive-identical-character-run/hidden.ts";
 
 export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
 {
@@ -88,6 +89,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAwayHidden,
   "find-occurrences-of-an-element-in-an-array": findOccurrencesOfAnElementInAnArrayHidden,
   "pinterest-travel-distance-on-scooters": pinterestTravelDistanceOnScootersHidden,
+  "netflix-longest-consecutive-identical-character-run": netflixLongestConsecutiveIdenticalCharacterRunHidden,
 };
 
 // Slug-indexed lookup for request payloads and other untyped strings.

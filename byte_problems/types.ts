@@ -55,6 +55,7 @@ export const PROBLEM_SLUGS = [
   // Not from LeetCode — these carry their source's own slug and an un-numbered
   // title, so they sort after every numbered problem.
   "pinterest-travel-distance-on-scooters",
+  "netflix-longest-consecutive-identical-character-run",
 ] as const;
 
 export type ProblemSlug = (typeof PROBLEM_SLUGS)[number];

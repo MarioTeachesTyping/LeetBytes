@@ -45,6 +45,7 @@ import { sequentialDigits } from "./sequential-digits/public.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAway } from "./check-if-all-1s-are-at-least-length-k-places-away/public.ts";
 import { findOccurrencesOfAnElementInAnArray } from "./find-occurrences-of-an-element-in-an-array/public.ts";
 import { pinterestTravelDistanceOnScooters } from "./pinterest-travel-distance-on-scooters/public.ts";
+import { netflixLongestConsecutiveIdenticalCharacterRun } from "./netflix-longest-consecutive-identical-character-run/public.ts";
 
 export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
 {
@@ -86,6 +87,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAway,
   "find-occurrences-of-an-element-in-an-array": findOccurrencesOfAnElementInAnArray,
   "pinterest-travel-distance-on-scooters": pinterestTravelDistanceOnScooters,
+  "netflix-longest-consecutive-identical-character-run": netflixLongestConsecutiveIdenticalCharacterRun,
 };
 
 // Slug-indexed lookup for route params and other untyped strings.
