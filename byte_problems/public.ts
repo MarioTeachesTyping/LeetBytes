@@ -12,6 +12,7 @@ import { addTwoNumbers } from "./add-two-numbers/public.ts";
 import { longestSubstringWithoutRepeatingCharacters } from "./longest-substring-without-repeating-characters/public.ts";
 import { longestPalindromicSubstring } from "./longest-palindromic-substring/public.ts";
 import { palindromeNumber } from "./palindrome-number/public.ts";
+import { romanToInteger } from "./roman-to-integer/public.ts";
 import { threeSum } from "./3sum/public.ts";
 import { maximumSubarray } from "./maximum-subarray/public.ts";
 import { mergeIntervals } from "./merge-intervals/public.ts";
@@ -55,6 +56,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "longest-substring-without-repeating-characters": longestSubstringWithoutRepeatingCharacters,
   "longest-palindromic-substring": longestPalindromicSubstring,
   "palindrome-number": palindromeNumber,
+  "roman-to-integer": romanToInteger,
   "3sum": threeSum,
   "valid-parentheses": validParentheses,
   "merge-two-sorted-lists": mergeTwoSortedLists,
