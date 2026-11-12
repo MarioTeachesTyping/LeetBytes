@@ -1,8 +1,6 @@
-<h1 align="center">LeetBytes</h1>
+<h1 align="center"> LeetBytes </h1>
 
-<h3 align="center">Lil app to shove my LeetCode solutions.</h3>
-
-<h3 align="center">The long-term idea is to turn this into a pixel-styled coding playground where solutions are not just listed, but explored through visuals, code running, and small games that unlock hints.</h3>
+<h3 align="center"> Play minigames to unlock hints for LeetCode questions. </h3>
 
 ![banner](byte_frontend/public/base/banner.png)
 

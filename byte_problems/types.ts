@@ -20,6 +20,7 @@ export const PROBLEM_SLUGS = [
   "longest-substring-without-repeating-characters",
   "longest-palindromic-substring",
   "palindrome-number",
+  "3sum",
   "valid-parentheses",
   "merge-two-sorted-lists",
   "generate-parentheses",

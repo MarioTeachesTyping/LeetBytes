@@ -14,6 +14,7 @@ import { addTwoNumbersHidden } from "./add-two-numbers/hidden.ts";
 import { longestSubstringWithoutRepeatingCharactersHidden } from "./longest-substring-without-repeating-characters/hidden.ts";
 import { longestPalindromicSubstringHidden } from "./longest-palindromic-substring/hidden.ts";
 import { palindromeNumberHidden } from "./palindrome-number/hidden.ts";
+import { threeSumHidden } from "./3sum/hidden.ts";
 import { validParenthesesHidden } from "./valid-parentheses/hidden.ts";
 import { mergeTwoSortedListsHidden } from "./merge-two-sorted-lists/hidden.ts";
 import { generateParenthesesHidden } from "./generate-parentheses/hidden.ts";
@@ -56,6 +57,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "longest-substring-without-repeating-characters": longestSubstringWithoutRepeatingCharactersHidden,
   "longest-palindromic-substring": longestPalindromicSubstringHidden,
   "palindrome-number": palindromeNumberHidden,
+  "3sum": threeSumHidden,
   "valid-parentheses": validParenthesesHidden,
   "merge-two-sorted-lists": mergeTwoSortedListsHidden,
   "generate-parentheses": generateParenthesesHidden,
