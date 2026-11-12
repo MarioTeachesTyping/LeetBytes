@@ -45,6 +45,7 @@ import { binaryTreeVerticalOrderTraversal } from "./binary-tree-vertical-order-t
 import { minimumRemoveToMakeValidParentheses } from "./minimum-remove-to-make-valid-parentheses/public.ts";
 import { sequentialDigits } from "./sequential-digits/public.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAway } from "./check-if-all-1s-are-at-least-length-k-places-away/public.ts";
+import { concatenationOfArray } from "./concatenation-of-array/public.ts";
 import { findOccurrencesOfAnElementInAnArray } from "./find-occurrences-of-an-element-in-an-array/public.ts";
 import { pinterestTravelDistanceOnScooters } from "./pinterest-travel-distance-on-scooters/public.ts";
 import { netflixLongestConsecutiveIdenticalCharacterRun } from "./netflix-longest-consecutive-identical-character-run/public.ts";
@@ -89,6 +90,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParentheses,
   "sequential-digits": sequentialDigits,
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAway,
+  "concatenation-of-array": concatenationOfArray,
   "find-occurrences-of-an-element-in-an-array": findOccurrencesOfAnElementInAnArray,
   "pinterest-travel-distance-on-scooters": pinterestTravelDistanceOnScooters,
   "netflix-longest-consecutive-identical-character-run": netflixLongestConsecutiveIdenticalCharacterRun,

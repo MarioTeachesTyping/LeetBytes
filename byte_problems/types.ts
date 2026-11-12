@@ -53,6 +53,7 @@ export const PROBLEM_SLUGS = [
   "minimum-remove-to-make-valid-parentheses",
   "sequential-digits",
   "check-if-all-1s-are-at-least-length-k-places-away",
+  "concatenation-of-array",
   "find-occurrences-of-an-element-in-an-array",
   // Not from LeetCode — these carry their source's own slug and an un-numbered
   // title, so they sort after every numbered problem.
