@@ -12,6 +12,7 @@ import type { HiddenProblem, ProblemSlug } from "./types.ts";
 import { twoSumHidden } from "./two-sum/hidden.ts";
 import { addTwoNumbersHidden } from "./add-two-numbers/hidden.ts";
 import { longestSubstringWithoutRepeatingCharactersHidden } from "./longest-substring-without-repeating-characters/hidden.ts";
+import { medianOfTwoSortedArraysHidden } from "./median-of-two-sorted-arrays/hidden.ts";
 import { longestPalindromicSubstringHidden } from "./longest-palindromic-substring/hidden.ts";
 import { palindromeNumberHidden } from "./palindrome-number/hidden.ts";
 import { romanToIntegerHidden } from "./roman-to-integer/hidden.ts";
@@ -57,6 +58,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "two-sum": twoSumHidden,
   "add-two-numbers": addTwoNumbersHidden,
   "longest-substring-without-repeating-characters": longestSubstringWithoutRepeatingCharactersHidden,
+  "median-of-two-sorted-arrays": medianOfTwoSortedArraysHidden,
   "longest-palindromic-substring": longestPalindromicSubstringHidden,
   "palindrome-number": palindromeNumberHidden,
   "roman-to-integer": romanToIntegerHidden,

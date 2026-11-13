@@ -18,6 +18,7 @@ export const PROBLEM_SLUGS = [
   "two-sum",
   "add-two-numbers",
   "longest-substring-without-repeating-characters",
+  "median-of-two-sorted-arrays",
   "longest-palindromic-substring",
   "palindrome-number",
   "roman-to-integer",

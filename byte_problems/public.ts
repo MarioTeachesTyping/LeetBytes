@@ -10,6 +10,7 @@ import type { ProblemSlug, SolutionEntry } from "./types.ts";
 import { twoSum } from "./two-sum/public.ts";
 import { addTwoNumbers } from "./add-two-numbers/public.ts";
 import { longestSubstringWithoutRepeatingCharacters } from "./longest-substring-without-repeating-characters/public.ts";
+import { medianOfTwoSortedArrays } from "./median-of-two-sorted-arrays/public.ts";
 import { longestPalindromicSubstring } from "./longest-palindromic-substring/public.ts";
 import { palindromeNumber } from "./palindrome-number/public.ts";
 import { romanToInteger } from "./roman-to-integer/public.ts";
@@ -55,6 +56,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "two-sum": twoSum,
   "add-two-numbers": addTwoNumbers,
   "longest-substring-without-repeating-characters": longestSubstringWithoutRepeatingCharacters,
+  "median-of-two-sorted-arrays": medianOfTwoSortedArrays,
   "longest-palindromic-substring": longestPalindromicSubstring,
   "palindrome-number": palindromeNumber,
   "roman-to-integer": romanToInteger,
