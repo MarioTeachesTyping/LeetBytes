@@ -37,6 +37,7 @@ export const PROBLEM_SLUGS = [
   "maximum-depth-of-binary-tree",
   "best-time-to-buy-and-sell-stock",
   "valid-palindrome",
+  "longest-consecutive-sequence",
   "linked-list-cycle",
   "lru-cache",
   "min-stack",
