@@ -262,7 +262,7 @@ export default function GameStage({ hintsUnlocked, allHintsUnlocked, onWin, onEx
         <div className="space-y-3 text-center">
           <p className="text-xs uppercase tracking-widest text-white/40">{pickedGame.title}</p>
           <p className={`text-2xl font-bold ${won ? "text-emerald-300" : "text-red-300"}`}>
-            Time&apos;s Up! {won ? "You Win!" : "You Lose"}
+            {secondsLeft === 0 && "Time's Up! "}{won ? "You Win!" : "You Lose"}
           </p>
           {won && !roundAllHintsUnlocked && (
             <p className="font-semibold text-white">Hint {roundHintNumber} Unlocked!</p>
