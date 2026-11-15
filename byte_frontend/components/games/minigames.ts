@@ -10,6 +10,7 @@ import type { ComponentType } from "react";
 import Tetris from "./Tetris";
 import Snake from "./Snake";
 import Pong from "./Pong";
+import Breakout from "./Breakout";
 
 export interface MinigameProps
 {
@@ -48,4 +49,5 @@ export const MINIGAMES: MinigameDefinition[] = [
   { id: "tetris", title: "Tetris", Component: Tetris, unitName: "points", targets: [5000, 10000, 15000] },
   { id: "snake", title: "Snake", Component: Snake, unitName: "apples", targets: [10, 15, 20] },
   { id: "pong", title: "Pong", Component: Pong, unitName: "points", targets: [2, 4, 6] },
+  { id: "breakout", title: "Breakout", Component: Breakout, unitName: "bricks", targets: [10, 20, 30] },
 ];
