@@ -22,7 +22,8 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
 - `app/` — Next.js routes.
   - `app/page.tsx` — the landing page.
   - `app/questions/page.tsx` — the solutions list, topic-filterable.
-  - `app/questions/[slug]/page.tsx` — an individual problem page.
+  - `app/questions/[slug]/page.tsx` — an individual problem page: the question and code panels
+    side by side in a `ResizableSplit`.
   - `app/progress/page.tsx` — practice history table, a solved/judged/difficulty summary panel,
     and the contribution calendar, all read from the local-storage submission log.
 - `components/`
@@ -35,6 +36,10 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
     swaps the editor out for the minigame overlay while it's open; records every judged
     submission via `lib/progress.ts` for the Progress page
   - `ResultPanel.tsx` — the Test Cases editor, Test Results, and the Submissions verdict
+  - `ResizableSplit.tsx` — the draggable divider between the question and code panels. The
+    question side is clamped to 25–70% of the width so neither panel can be dragged closed;
+    double-click the handle to reset to 50/50. Below the `md` breakpoint the panels stack and
+    the handle is hidden. The split isn't persisted, so it resets on reload.
   - `CodeEditor.tsx` — the CodeMirror editor
   - `CodeBlock.tsx` — a small read-only, syntax-highlighted code block helper
   - `SolutionPanel.tsx` — numbered solution approaches, each with a LeetCode-style write-up
@@ -55,12 +60,18 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
     Detects navigation by intercepting internal `<a>` clicks (the App Router has no router
     events) and clears once `usePathname()` reflects the new route.
   - `games/` — the hint-unlocking minigames
-    - `GameStage.tsx` — drives a round through intro → countdown → playing → result, judging the
-      score reached against the target for the next hint; a pixel-hover Quit button in the corner
-      exits back to the editor at any phase
-    - `Tetris.tsx` — the current minigame: Hold slot, 6-piece Next queue, ghost piece, a 7-bag
-      piece randomizer instead of independent per-piece randomness, and an on-screen Controls
-      panel listing the keybinds
+    - `GameStage.tsx` — drives a round through menu → roulette → countdown → playing → result,
+      judging the score reached against the target for the next hint; a pixel-hover Quit button
+      in the corner exits back to the editor at any phase
+    - `ItemBox.tsx` — the translucent, white-edged CSS 3D cube shown on the menu and during the
+      roulette (styles under "Minigame item box" in `app/globals.css`); see
+      [The Item Box](#the-item-box) below
+    - `minigames.ts` — the minigame registry (`MINIGAMES`) and the shared `MinigameProps`
+      contract
+    - `Tetris.tsx` — Hold slot, 6-piece Next queue, ghost piece, a 7-bag piece randomizer
+      instead of independent per-piece randomness, and an on-screen Controls panel listing the
+      keybinds
+    - `Snake.tsx`, `Pong.tsx`, `Breakout.tsx` — the other minigames
   - `react-bits/` — animated visual effects used across the landing page, the solutions list, and
     behind the minigame/spoiler overlays: `Particles`, `CircularText`, `Balatro`, `PillNav`,
     `Cubes`, `Iridescence`, `LetterGlitch`
@@ -80,7 +91,11 @@ env is needed; set `SERVER_URL` if the API server is not on `localhost:4000`, or
   - `utils.ts` — small shared helpers (e.g. the `cn` class-name utility)
 - problem content (description, examples, starter code, spoiler solutions) comes from the
   `@leetbytes/problems` workspace package (`../byte_problems/<slug>/public.ts`)
-- `public/videos/`, `public/game-images/` — minigame background footage and tetromino sprites
+- `public/game-assets/` — sprites the minigames draw with (currently the tetromino blocks)
+- `public/game-images/` — one screenshot per minigame, flashed inside the item box during the
+  roulette
+- `public/videos/` — `tetris-gameplay.mp4`, the old minigame-menu background; no longer
+  referenced since the item box replaced it
 
 ## Test Panel
 
@@ -107,11 +122,15 @@ actual score/count target for a given hint level is owned per-game instead — s
 Clicking the Navbar's Game button swaps the code editor for `GameStage`, which walks
 a round through five phases:
 
-1. **Menu** — "Hint Minigame" title, a one-line description, and a Play button.
-2. **Roulette** — a Mario-Kart-item-box-style picker: a box flickers between the
-   registered minigames (`games/minigames.ts`) for ~3.4s, lands on one (chosen the
-   instant the spin starts — the animation is just theater), then holds on it for a
-   couple seconds so the objective is actually readable before the round starts.
+1. **Menu** — "Hint Minigame" title, the floating item box with a "?" inside, a
+   one-line description, and a Play button.
+2. **Roulette** — Play bumps the box, and the registered minigames' screenshots
+   (`games/minigames.ts`) flash inside it in order, starting fast and slowing down
+   each step for ~3.4s. It lands on one (chosen the instant the spin starts — the
+   animation is just theater): the box bumps again, its edges turn green, its spin
+   slows, and it holds there for a couple seconds so the objective is actually
+   readable before the round starts. Menu and roulette share the same `ItemBox`, so
+   the cube keeps spinning straight through Play.
 3. **Countdown** — 3-2-1 before the clock starts.
 4. **Playing** — a 60-second round of whichever minigame the roulette picked, over an
    animated glitch-text background.
@@ -125,6 +144,28 @@ starts, so a win unlocking hint *N* always reports hint *N* — even though the
 underlying `hintsUnlocked` count (and the props derived from it) can advance out from
 under the component the instant `onWin()` fires.
 
+### The Item Box
+
+`ItemBox` is pure CSS 3D — no 3D library. Six translucent, white-bordered faces are
+pushed out from a shared center inside a `transform-style: preserve-3d` cube that
+spins on a tilted axis while the whole scene bobs up and down.
+
+The contents (the "?" or the current screenshot) sit at the cube's center *inside*
+that same 3D space, so the front faces really pass in front of them rather than the
+contents being drawn on top. To keep them facing the screen anyway, the contents run
+a counter-spin that exactly undoes the cube's rotation: the cube does
+`rotateX(-20deg) rotateY(t)` and the contents do `rotateY(-t) rotateX(20deg)`, so the
+net rotation is always zero. Two things keep that working:
+
+- The two animations must always share a duration — including the slower 14s spin
+  after landing — or the contents drift off facing the viewer.
+- The counter-spinning element is never remounted, since restarting its animation
+  would knock it out of phase with the cube. The "hit" bump on Play and on landing
+  lives on a keyed child inside it instead.
+
+`GameStage` preloads every screenshot on mount so the roulette never flashes an
+empty frame, and with `prefers-reduced-motion` the cube holds still at an angle.
+
 ### Adding a Minigame
 
 Every minigame implements the same `MinigameProps` contract (`running`, `secondsLeft`,
@@ -132,5 +173,6 @@ Every minigame implements the same `MinigameProps` contract (`running`, `seconds
 the roulette lands on interchangeably — `targetScore`/`onScoreChange` are a generic
 progress channel, not literally "points": Tetris reports line-clear points, Snake
 reports apples eaten. Register a new one in `games/minigames.ts`'s `MINIGAMES` array
-with its own `unitName` (used to phrase the objective, e.g. "10 apples") and `targets`
-array (one entry per hint level, index 0 = hint 1's target).
+with its own `unitName` (used to phrase the objective, e.g. "10 apples"), `targets`
+array (one entry per hint level, index 0 = hint 1's target), and `screenshot` (a path
+under `public/game-images/`, flashed inside the item box during the roulette).

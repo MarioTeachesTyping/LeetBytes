@@ -188,3 +188,99 @@
   background-color: #ff0000;
   animation: rainbow-hue 2s linear infinite;
 }
+
+/* Minigame item box — a translucent CSS 3D cube that floats and spins on the
+   minigame menu. Its contents (the "?" and the roulette screenshots) sit at
+   the cube's center inside the same 3D space, so the front faces really pass
+   in front of them, and they counter-spin to always face the screen. */
+.item-box-scene {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  /* Rotated corners poke out past the 180px box (more so with perspective),
+     so reserve room around it instead of letting them overlap the text. */
+  margin: 36px 0;
+  flex-shrink: 0;
+  perspective: 700px;
+  animation: item-box-bob 2.4s ease-in-out infinite;
+}
+
+.item-box-cube {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: item-box-spin 6s linear infinite;
+}
+
+.item-box-face {
+  position: absolute;
+  inset: 0;
+  border: 3px solid #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  transition: border-color 300ms, background-color 300ms;
+}
+
+.item-box-scene[data-landed="true"] .item-box-face {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+/* The cube and its contents slow down together — the two durations must
+   always match or the contents drift off facing the screen. */
+.item-box-scene[data-landed="true"] .item-box-cube,
+.item-box-scene[data-landed="true"] .item-box-core {
+  animation-duration: 14s;
+}
+
+/* A flat plane at the cube's center. Its animation exactly undoes the cube's
+   (the cube does rotateX(-20) rotateY(t); this does rotateY(-t) rotateX(20)),
+   so the net rotation is always zero and it stays facing the viewer. */
+.item-box-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: item-box-counter-spin 6s linear infinite;
+}
+
+.item-box-hit {
+  animation: item-box-hit 350ms ease-out;
+}
+
+@keyframes item-box-spin {
+  from { transform: rotateX(-20deg) rotateY(0deg); }
+  to { transform: rotateX(-20deg) rotateY(360deg); }
+}
+
+@keyframes item-box-counter-spin {
+  from { transform: rotateY(0deg) rotateX(20deg); }
+  to { transform: rotateY(-360deg) rotateX(20deg); }
+}
+
+@keyframes item-box-bob {
+  0%, 100% { transform: translateY(-8px); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes item-box-hit {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-box-scene,
+  .item-box-cube,
+  .item-box-core,
+  .item-box-hit {
+    animation: none;
+  }
+  .item-box-cube {
+    transform: rotateX(-20deg) rotateY(35deg);
+  }
+  .item-box-core {
+    transform: rotateY(-35deg) rotateX(20deg);
+  }
+}

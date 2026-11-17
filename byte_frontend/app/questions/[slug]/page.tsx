@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import QuestionPanel from "@/components/QuestionPanel";
 import CodePanel from "@/components/CodePanel";
+import ResizableSplit from "@/components/ResizableSplit";
 import { WorkspaceProvider } from "@/components/WorkspaceContext";
 import { getPublicProblem } from "@leetbytes/problems/public";
 import { companyTagsForSlug, titleWithoutProblemNumber } from "@/lib/problem-list";
@@ -37,8 +38,8 @@ export default async function Page({ params }: PageProps)
       <WorkspaceProvider>
         <Navbar />
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0 gap-2 py-1 px-1">
-          <div className="min-h-0">
+        <ResizableSplit
+          left={
             <QuestionPanel
               title={titleWithoutProblemNumber(entry.title)}
               link={entry.link}
@@ -54,12 +55,9 @@ export default async function Page({ params }: PageProps)
               explanation={entry.explanation}
               solutions={entry.solutions}
             />
-          </div>
-
-          <div className="min-h-0">
-            <CodePanel slug={slug} starterCode={entry.starterCode} />
-          </div>
-        </div>
+          }
+          right={<CodePanel slug={slug} starterCode={entry.starterCode} />}
+        />
       </WorkspaceProvider>
     </main>
   );

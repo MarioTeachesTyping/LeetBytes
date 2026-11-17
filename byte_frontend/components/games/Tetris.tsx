@@ -15,13 +15,13 @@ const CELL_SIZE = 28;
 const DROP_INTERVAL_MS = 600;
 
 const TETROMINO_SPRITES: Record<TetrominoType, string> = {
-  I: "/game-images/tetromino-cyan.png",
-  O: "/game-images/tetromino-yellow.png",
-  T: "/game-images/tetromino-violet.png",
-  S: "/game-images/tetromino-green.png",
-  Z: "/game-images/tetromino-red.png",
-  J: "/game-images/tetromino-blue.png",
-  L: "/game-images/tetromino-orange.png",
+  I: "/game-assets/tetromino-cyan.png",
+  O: "/game-assets/tetromino-yellow.png",
+  T: "/game-assets/tetromino-violet.png",
+  S: "/game-assets/tetromino-green.png",
+  Z: "/game-assets/tetromino-red.png",
+  J: "/game-assets/tetromino-blue.png",
+  L: "/game-assets/tetromino-orange.png",
 };
 
 const TETROMINO_TYPES: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];

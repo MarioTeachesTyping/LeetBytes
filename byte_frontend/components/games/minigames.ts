@@ -36,6 +36,8 @@ export interface MinigameDefinition
   // This game's own target per hint level (points for Tetris, apples eaten
   // for Snake) — index 0 is hint 1's target, index 1 is hint 2's, etc.
   targets: number[];
+  // Screenshot the item-box roulette flashes for this game (under public/).
+  screenshot: string;
 }
 
 // A hint level past the end of a game's targets array clamps to the last
@@ -46,8 +48,8 @@ export function targetForLevel(game: MinigameDefinition, hintIndex: number): num
 }
 
 export const MINIGAMES: MinigameDefinition[] = [
-  { id: "tetris", title: "Tetris", Component: Tetris, unitName: "points", targets: [5000, 10000, 15000] },
-  { id: "snake", title: "Snake", Component: Snake, unitName: "apples", targets: [10, 15, 20] },
-  { id: "pong", title: "Pong", Component: Pong, unitName: "hits", targets: [10, 20, 30] },
-  { id: "breakout", title: "Breakout", Component: Breakout, unitName: "bricks", targets: [10, 20, 30] },
+  { id: "tetris", title: "Tetris", Component: Tetris, unitName: "points", targets: [5000, 10000, 15000], screenshot: "/game-images/tetris.png" },
+  { id: "snake", title: "Snake", Component: Snake, unitName: "apples", targets: [10, 15, 20], screenshot: "/game-images/snake.png" },
+  { id: "pong", title: "Pong", Component: Pong, unitName: "hits", targets: [10, 20, 30], screenshot: "/game-images/pong.png" },
+  { id: "breakout", title: "Breakout", Component: Breakout, unitName: "bricks", targets: [10, 20, 30], screenshot: "/game-images/breakout.png" },
 ];

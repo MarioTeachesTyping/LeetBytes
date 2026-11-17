@@ -10,9 +10,10 @@
 
 **Practice**
 
-- 38 problems, mostly LeetCode plus a few company-sourced ones, each graded against a hidden test suite.
+- 46 problems, mostly LeetCode plus a few company-sourced ones, each graded against a hidden test suite.
 - In-browser Python editor with **Run** (your own editable example cases) and **Judge** (the hidden suite), showing per-case results plus runtime and memory.
 - Handles linked lists, trees, and "design" problems (a class plus method calls, like LRU Cache and Min Stack).
+- Drag the divider between the question and the editor to give either side more room.
 
 **Learn**
 
@@ -22,9 +23,11 @@
 
 **Play**
 
-- The hint minigame roulette: a Mario Kart item box flickers between games, lands on one, and starts a 60-second round. Win to unlock the next hint; lose and retry re-spins.
+- The hint minigame roulette: a floating, spinning 3D item box with a "?" inside. Hit Play and screenshots of each game flash inside the box, slowing down until it lands on one and starts a 60-second round. Win to unlock the next hint; lose and retry re-spins.
   - **Tetris**: hold slot, 6-piece next queue, ghost piece, 7-bag randomizer.
   - **Snake**: eat the target number of apples before time runs out.
+  - **Pong**: keep the rally going for the target number of hits.
+  - **Breakout**: clear the target number of bricks.
   - Targets get harder with each hint level.
 
 **Track**
