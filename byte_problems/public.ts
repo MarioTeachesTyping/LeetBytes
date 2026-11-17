@@ -44,6 +44,7 @@ import { invertBinaryTree } from "./invert-binary-tree/public.ts";
 import { validAnagram } from "./valid-anagram/public.ts";
 import { meetingRooms } from "./meeting-rooms/public.ts";
 import { binaryTreeVerticalOrderTraversal } from "./binary-tree-vertical-order-traversal/public.ts";
+import { binarySearch } from "./binary-search/public.ts";
 import { minimumRemoveToMakeValidParentheses } from "./minimum-remove-to-make-valid-parentheses/public.ts";
 import { sequentialDigits } from "./sequential-digits/public.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAway } from "./check-if-all-1s-are-at-least-length-k-places-away/public.ts";
@@ -91,6 +92,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "valid-anagram": validAnagram,
   "meeting-rooms": meetingRooms,
   "binary-tree-vertical-order-traversal": binaryTreeVerticalOrderTraversal,
+  "binary-search": binarySearch,
   "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParentheses,
   "sequential-digits": sequentialDigits,
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAway,

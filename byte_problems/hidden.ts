@@ -46,6 +46,7 @@ import { invertBinaryTreeHidden } from "./invert-binary-tree/hidden.ts";
 import { validAnagramHidden } from "./valid-anagram/hidden.ts";
 import { meetingRoomsHidden } from "./meeting-rooms/hidden.ts";
 import { binaryTreeVerticalOrderTraversalHidden } from "./binary-tree-vertical-order-traversal/hidden.ts";
+import { binarySearchHidden } from "./binary-search/hidden.ts";
 import { minimumRemoveToMakeValidParenthesesHidden } from "./minimum-remove-to-make-valid-parentheses/hidden.ts";
 import { sequentialDigitsHidden } from "./sequential-digits/hidden.ts";
 import { checkIfAll1SAreAtLeastLengthKPlacesAwayHidden } from "./check-if-all-1s-are-at-least-length-k-places-away/hidden.ts";
@@ -93,6 +94,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "valid-anagram": validAnagramHidden,
   "meeting-rooms": meetingRoomsHidden,
   "binary-tree-vertical-order-traversal": binaryTreeVerticalOrderTraversalHidden,
+  "binary-search": binarySearchHidden,
   "minimum-remove-to-make-valid-parentheses": minimumRemoveToMakeValidParenthesesHidden,
   "sequential-digits": sequentialDigitsHidden,
   "check-if-all-1s-are-at-least-length-k-places-away": checkIfAll1SAreAtLeastLengthKPlacesAwayHidden,

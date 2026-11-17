@@ -52,6 +52,7 @@ export const PROBLEM_SLUGS = [
   "valid-anagram",
   "meeting-rooms",
   "binary-tree-vertical-order-traversal",
+  "binary-search",
   "minimum-remove-to-make-valid-parentheses",
   "sequential-digits",
   "check-if-all-1s-are-at-least-length-k-places-away",
