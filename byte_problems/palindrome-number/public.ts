@@ -49,8 +49,8 @@ export const palindromeNumber: SolutionEntry =
   ],
 
   hints: [
-    "A negative number can never be a palindrome — what's the quickest way to rule that case out before doing any real comparison work?",
-    "Comparing digits from both ends toward the middle is a common pattern any time you need to check something reads the same both ways — how might converting the number to a different type make indexing those digits easier?",
+    "A negative number can never be a palindrome. What's the quickest way to rule that case out before doing any real comparison work?",
+    "Comparing digits from both ends toward the middle is a common pattern any time you need to check something reads the same both ways. How might converting the number to a different type make indexing those digits easier?",
     "Turn `x` into a string, then use two pointers starting at index 0 and index `len - 1`, comparing and moving them toward each other until they meet or cross.",
   ],
 

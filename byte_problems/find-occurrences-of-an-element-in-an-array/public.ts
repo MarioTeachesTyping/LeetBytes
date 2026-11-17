@@ -46,7 +46,7 @@ export const findOccurrencesOfAnElementInAnArray: SolutionEntry =
   ],
 
   hints: [
-    "Answering each query by rescanning `nums` from the start is wasteful when there can be up to 10⁵ queries — think about what you could work out once, up front, and reuse for every query.",
+    "Answering each query by rescanning `nums` from the start is wasteful when there can be up to 10⁵ queries. Think about what you could work out once, up front, and reuse for every query.",
     "Only the positions where `nums[i] == x` matter. If you record those positions in the order you meet them, the k-th occurrence is simply the k-th thing you recorded.",
     "Walk `nums` once, storing each index of `x` against its occurrence number (a dict, or just a list). Then answer each query with a lookup, returning -1 when that occurrence number was never recorded.",
   ],

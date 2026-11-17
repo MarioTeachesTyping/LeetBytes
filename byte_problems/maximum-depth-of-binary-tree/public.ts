@@ -44,7 +44,7 @@ export const maximumDepthOfBinaryTree: SolutionEntry =
 
   hints: [
     "If you already knew the max depth of the left subtree and the max depth of the right subtree, how would you combine those two numbers to get the depth of the whole tree?",
-    "What's the simplest base case — the depth of a tree that doesn't exist at all?",
+    "What's the simplest base case, the depth of a tree that doesn't exist at all?",
     "Recursively compute `left = maxDepth(root.left)` and `right = maxDepth(root.right)`, returning 0 when `root` is null, and otherwise return `max(left, right) + 1` to account for the current node.",
   ],
 

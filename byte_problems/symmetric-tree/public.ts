@@ -43,8 +43,8 @@ export const symmetricTree: SolutionEntry =
   ],
 
   hints: [
-    "Symmetry is really about comparing two subtrees to each other, not one tree to itself — what would you pass into a helper function to represent 'the left side' and 'the right side' being compared?",
-    "For two sides to mirror each other, a node's left child has to match up with the other node's right child (and vice versa) — how does that change which two subtrees you recurse into next?",
+    "Symmetry is really about comparing two subtrees to each other, not one tree to itself. What would you pass into a helper function to represent 'the left side' and 'the right side' being compared?",
+    "For two sides to mirror each other, a node's left child has to match up with the other node's right child (and vice versa). How does that change which two subtrees you recurse into next?",
     "Call a helper on `root.left` and `root.right`; it should return false if exactly one side is null or the values differ, true if both are null, and otherwise recurse on `(left.left, right.right)` and `(left.right, right.left)`.",
   ],
 

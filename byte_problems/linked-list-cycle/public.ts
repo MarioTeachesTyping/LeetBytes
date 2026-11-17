@@ -54,8 +54,8 @@ export const linkedListCycle: SolutionEntry =
   ],
 
   hints: [
-    "You could track every node you've visited in a set and check for repeats, but that costs extra memory — is there a way to detect a cycle using just two pointers and no extra storage?",
-    "If one pointer moves through the list twice as fast as another, what has to happen eventually if the list loops back on itself — and what happens instead if it doesn't?",
+    "You could track every node you've visited in a set and check for repeats, but that costs extra memory. Is there a way to detect a cycle using just two pointers and no extra storage?",
+    "If one pointer moves through the list twice as fast as another, what has to happen eventually if the list loops back on itself, and what happens instead if it doesn't?",
     "Move a `slow` pointer one step and a `fast` pointer two steps each iteration (guarding against `fast` or `fast.next` being null); if `slow` and `fast` are ever the same node, there's a cycle.",
   ],
 

@@ -52,9 +52,9 @@ export const minimumRemoveToMakeValidParentheses: SolutionEntry =
   ],
 
   hints: [
-    "Every unmatched closing bracket is easy to spot immediately, but an unmatched opening bracket only reveals itself if you never find its partner — what structure would let you track 'open brackets waiting for a match' and check it as you go?",
+    "Every unmatched closing bracket is easy to spot immediately, but an unmatched opening bracket only reveals itself if you never find its partner. What structure would let you track 'open brackets waiting for a match' and check it as you go?",
     "Instead of removing characters while you scan (which shifts indices out from under you), what if you just recorded the *positions* that need to be deleted, and built the final string afterward?",
-    "Push the index of each `'('` onto a stack; on a `')'`, pop if the stack isn't empty, otherwise mark that index for removal. After the scan, any indices left in the stack are unmatched `'('`s — add them to your removal set too, then rebuild the string skipping every marked index.",
+    "Push the index of each `'('` onto a stack; on a `')'`, pop if the stack isn't empty, otherwise mark that index for removal. After the scan, any indices left in the stack are unmatched `'('`s, so add them to your removal set too, then rebuild the string skipping every marked index.",
   ],
 
   starterCode: `class Solution:

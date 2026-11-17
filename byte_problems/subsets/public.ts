@@ -44,7 +44,7 @@ export const subsets: SolutionEntry =
 
   hints: [
     "Since you need every possible subset, not just one valid answer, what technique lets you explore every combination of 'include this element or don't' and backs out of dead ends?",
-    "At every point in your recursion, the subset built so far is already a valid answer on its own — when should you be adding it to your results list?",
+    "At every point in your recursion, the subset built so far is already a valid answer on its own. When should you be adding it to your results list?",
     "Recurse with a `start` index so you never reconsider earlier elements: at each call, append the current subset to your output, then loop from `start` to the end, appending `nums[i]`, recursing with `i + 1`, and popping it back off afterward.",
   ],
 

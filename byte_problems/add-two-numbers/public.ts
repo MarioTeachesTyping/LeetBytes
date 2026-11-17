@@ -49,9 +49,9 @@ export const addTwoNumbers: SolutionEntry =
   ],
 
   hints: [
-    "You don't need to reverse anything — the lists are already stored least-significant-digit first, so you can add them the same way you'd line up digits on paper.",
+    "You don't need to reverse anything. The lists are already stored least-significant-digit first, so you can add them the same way you'd line up digits on paper.",
     "Walk both lists at the same time with a single loop, treating a missing node as a value of 0 so lists of different lengths still work.",
-    "Keep a running carry variable, and remember it can still be 1 even after both lists run out — that's what produces an extra leading digit.",
+    "Keep a running carry variable, and remember it can still be 1 even after both lists run out, which is what produces an extra leading digit.",
   ],
 
   starterCode: `# Definition for singly-linked list.

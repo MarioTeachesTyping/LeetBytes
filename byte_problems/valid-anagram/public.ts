@@ -41,9 +41,9 @@ export const validAnagram: SolutionEntry =
   ],
 
   hints: [
-    "An anagram is just the same letters in a different order — is there a quick length check you could do up front to rule out obviously invalid pairs before comparing letters?",
+    "An anagram is just the same letters in a different order. Is there a quick length check you could do up front to rule out obviously invalid pairs before comparing letters?",
     "If two strings contain exactly the same letters, what would happen to both of them if you rearranged their characters into a consistent, predictable order?",
-    "Return False early if the lengths differ, otherwise compare `sorted(s) == sorted(t)` — if they match once sorted, they must be anagrams of each other.",
+    "Return False early if the lengths differ, otherwise compare `sorted(s) == sorted(t)`. If they match once sorted, they must be anagrams of each other.",
   ],
 
   starterCode: `class Solution:

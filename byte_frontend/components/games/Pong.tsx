@@ -21,22 +21,23 @@ const BALL_SIZE = 10;
 
 // All speeds are pixels per second.
 const PLAYER_SPEED = 380;
-// Slower than the ball gets at a steep angle, so hitting off the paddle's
-// edge is how you score. A flat return is always saved.
-const CPU_SPEED = 215;
+// Slower than the player's paddle and than the ball at a steep angle, so the
+// bot can still miss a sharp shot. That only restarts the rally, since just
+// your hits count.
+const CPU_SPEED = 250;
 const BALL_START_SPEED = 260;
 const BALL_SPEEDUP = 1.06;
 const BALL_MAX_SPEED = 640;
 // Hitting the very edge of a paddle sends the ball off at this angle.
 const MAX_BOUNCE_ANGLE = (55 * Math.PI) / 180;
 
-// Pause after each point before the next serve.
+// Pause after each missed ball before the next serve.
 const SERVE_DELAY_SECONDS = 0.8;
 const STARTING_LIVES = 3;
 // Physics advances in fixed steps of this size, however often frames arrive.
 const PHYSICS_STEP_SECONDS = 1 / 120;
 // The most real time one frame may simulate, so returning to a backgrounded
-// tab doesn't fast-forward through a point.
+// tab doesn't fast-forward through a rally.
 const MAX_FRAME_SECONDS = 0.25;
 // The trail drawn behind the ball, in frames.
 const TRAIL_LENGTH = 6;
@@ -59,9 +60,10 @@ type GameState = {
   cpuAimOffset: number;
   ball: Ball;
   trail: { x: number; y: number }[];
-  // Counts down between points; the ball is frozen at center until it hits 0.
+  // Counts down between rallies; the ball is frozen at center until it hits 0.
   serveTimer: number;
-  points: number;
+  // Times the ball has bounced off the player's paddle. This is the score.
+  hits: number;
   lives: number;
   gameOver: boolean;
 };
@@ -91,7 +93,7 @@ function initialState(): GameState
     ball: servedBall("player"),
     trail: [],
     serveTimer: SERVE_DELAY_SECONDS,
-    points: 0,
+    hits: 0,
     lives: STARTING_LIVES,
     gameOver: false,
   };
@@ -167,6 +169,7 @@ function step(state: GameState, dt: number, input: { up: boolean; down: boolean 
   if (ball.vx < 0 && previousX >= playerFace && ball.x <= playerFace && overlapsVertically(state.playerY))
   {
     state.ball = bounceOffPaddle({ ...ball, x: playerFace }, state.playerY, 1);
+    state.hits += 1;
     state.cpuAimOffset = (Math.random() - 0.5) * PADDLE_HEIGHT * 0.6;
   }
 
@@ -176,8 +179,9 @@ function step(state: GameState, dt: number, input: { up: boolean; down: boolean 
     state.ball = bounceOffPaddle({ ...ball, x: cpuFace - BALL_SIZE }, state.cpuY, -1);
   }
 
-  // A ball past either edge is a point. The next serve goes toward whoever
-  // just gave up the point.
+  // A ball past either edge ends the rally. Missing costs you a life, but the
+  // CPU missing just restarts the rally, since only your hits count. The next
+  // serve goes toward whoever just missed.
   if (state.ball.x + BALL_SIZE < 0)
   {
     state.lives -= 1;
@@ -192,7 +196,6 @@ function step(state: GameState, dt: number, input: { up: boolean; down: boolean 
   }
   else if (state.ball.x > WIDTH)
   {
-    state.points += 1;
     state.ball = servedBall("cpu");
     state.trail = [];
     state.serveTimer = SERVE_DELAY_SECONDS;
@@ -246,27 +249,28 @@ interface PaddleDuelProps
   running: boolean;
   secondsLeft: number;
   // Named for the shared MinigameProps contract. For Pong this is a
-  // target number of points scored against the CPU.
+  // target number of times you return the ball.
   targetScore: number;
-  onScoreChange: (points: number) => void;
+  onScoreChange: (hits: number) => void;
   onGameOver: () => void;
 }
 
-// A one-player paddle game against a CPU paddle. Scoring past the CPU earns a
-// point, and letting the ball past you costs one of three lives. Reaching the
-// target score (a win) or running out of lives (a loss) ends the round early. Physics runs in a requestAnimationFrame loop
-// on a ref'd state object, and only points and lives go through React state
-// for the side panels.
-export default function PaddleDuel({ running, secondsLeft, targetScore: targetPoints, onScoreChange, onGameOver }: PaddleDuelProps)
+// A one-player paddle game against a CPU paddle. Every time the ball bounces
+// off your paddle counts as a hit, and letting the ball past you costs one of
+// three lives. Reaching the target hits (a win) or running out of lives (a
+// loss) ends the round early. Physics runs in a requestAnimationFrame loop on
+// a ref'd state object, and only hits and lives go through React state for the
+// side panels.
+export default function PaddleDuel({ running, secondsLeft, targetScore: targetHits, onScoreChange, onGameOver }: PaddleDuelProps)
 {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef<GameState>(initialState());
   const inputRef = useRef({ up: false, down: false });
-  const [points, setPoints] = useState(0);
+  const [hits, setHits] = useState(0);
   const [lives, setLives] = useState(STARTING_LIVES);
   const onScoreChangeRef = useRef(onScoreChange);
   const onGameOverRef = useRef(onGameOver);
-  const targetPointsRef = useRef(targetPoints);
+  const targetHitsRef = useRef(targetHits);
 
   useEffect(() =>
   {
@@ -275,8 +279,8 @@ export default function PaddleDuel({ running, secondsLeft, targetScore: targetPo
 
   useEffect(() =>
   {
-    targetPointsRef.current = targetPoints;
-  }, [targetPoints]);
+    targetHitsRef.current = targetHits;
+  }, [targetHits]);
 
   useEffect(() =>
   {
@@ -285,8 +289,8 @@ export default function PaddleDuel({ running, secondsLeft, targetScore: targetPo
 
   useEffect(() =>
   {
-    onScoreChangeRef.current(points);
-  }, [points]);
+    onScoreChangeRef.current(hits);
+  }, [hits]);
 
   // Game loop: steps the physics by real elapsed time each frame and redraws.
   // Only runs while the round is running, and freezes on the last frame after.
@@ -317,19 +321,19 @@ export default function PaddleDuel({ running, secondsLeft, targetScore: targetPo
         unsimulated -= PHYSICS_STEP_SECONDS;
         // Reaching the target wins the round right away instead of playing
         // out the clock.
-        if (state.points >= targetPointsRef.current) state.gameOver = true;
+        if (state.hits >= targetHitsRef.current) state.gameOver = true;
       }
 
-      setPoints(state.points);
+      setHits(state.hits);
       setLives(state.lives);
 
       draw(context!, state);
       // The loop stops scheduling itself on game over, so this fires once.
       if (state.gameOver)
       {
-        // Report the final score first. The points effect above only runs
+        // Report the final score first. The hits effect above only runs
         // after the next render, which is too late for GameStage's win check.
-        onScoreChangeRef.current(state.points);
+        onScoreChangeRef.current(state.hits);
         onGameOverRef.current();
         return;
       }
@@ -374,9 +378,9 @@ export default function PaddleDuel({ running, secondsLeft, targetScore: targetPo
         <PanelBox label="Time">
           <span className="text-lg font-bold text-white">{secondsLeft}s</span>
         </PanelBox>
-        <PanelBox label="Points">
-          <span className="text-sm font-semibold text-white">{points}</span>
-          <span className="text-[10px] text-white/50">/ {targetPoints}</span>
+        <PanelBox label="Hits">
+          <span className="text-sm font-semibold text-white">{hits}</span>
+          <span className="text-[10px] text-white/50">/ {targetHits}</span>
         </PanelBox>
         <PanelBox label="Lives">
           <div className="flex gap-1.5">

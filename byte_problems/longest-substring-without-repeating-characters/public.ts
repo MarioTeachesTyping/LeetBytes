@@ -48,7 +48,7 @@ export const longestSubstringWithoutRepeatingCharacters: SolutionEntry =
   ],
 
   hints: [
-    "Checking every possible substring is wasteful — think about tracking a window of characters that grows and shrinks as you scan through the string once.",
+    "Checking every possible substring is wasteful. Think about tracking a window of characters that grows and shrinks as you scan through the string once.",
     "Keep a set of the characters currently in your window; hitting a duplicate is the signal to start shrinking the window from the left.",
     "Move the left edge forward (removing characters from the set as you go) until the duplicate is gone, then update your answer with the current window size.",
   ],

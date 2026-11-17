@@ -56,7 +56,7 @@ export const pinterestTravelDistanceOnScooters: SolutionEntry =
   ],
 
   hints: [
-    "Walking costs nothing toward the answer — only the distance you actually ride counts, so focus on tracking where you are and how much scooter distance you've added up.",
+    "Walking costs nothing toward the answer. Only the distance you actually ride counts, so focus on tracking where you are and how much scooter distance you've added up.",
     "The scooters come in no particular order. If you put them in sorted order, finding the nearest one to your right becomes a simple left-to-right scan.",
     "Loop while your position is short of `finish`: jump to the first scooter at or past your position, ride `min(position + 10, finish)`, add the distance covered, and if no scooter is left to your right, just move to `finish`.",
   ],

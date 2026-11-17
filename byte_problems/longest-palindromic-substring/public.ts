@@ -45,8 +45,8 @@ export const longestPalindromicSubstring: SolutionEntry =
 
   hints: [
     "Since we want the longest match, would it be worth checking candidate substrings starting from the biggest possible length down to the smallest, so you can return as soon as one works?",
-    "You'll need a helper that can tell you whether a given substring reads the same forwards and backwards — how would two pointers moving toward each other from both ends answer that?",
-    "Loop over every possible substring length from longest to shortest, and within that every possible starting index, calling your palindrome checker on each — the first one that passes is your answer.",
+    "You'll need a helper that can tell you whether a given substring reads the same forwards and backwards. How would two pointers moving toward each other from both ends answer that?",
+    "Loop over every possible substring length from longest to shortest, and within that every possible starting index, calling your palindrome checker on each. The first one that passes is your answer.",
   ],
 
   starterCode: `class Solution:

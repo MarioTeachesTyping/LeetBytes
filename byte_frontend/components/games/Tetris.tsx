@@ -281,12 +281,17 @@ interface TetrisProps
 // A falling-blocks board that runs its own gravity/input loop while `running`
 // is true. Score changes are reported upward so the parent can judge a win
 // against its own countdown instead of this component tracking time itself.
-// secondsLeft/targetScore are display-only, owned by the parent's round clock.
+// Reaching targetScore (a win) or topping out (a loss) ends the round early.
+// secondsLeft is display-only, owned by the parent's round clock.
 export default function Tetris({ running, secondsLeft, targetScore, onScoreChange, onGameOver }: TetrisProps)
 {
   const [state, setState] = useState<GameState>(initialState);
   const onScoreChangeRef = useRef(onScoreChange);
   const onGameOverRef = useRef(onGameOver);
+  // A single move can both reach the target and top out the board. The round
+  // must only be ended once, or the parent would count it as two finished
+  // rounds.
+  const roundEndedRef = useRef(false);
 
   useEffect(() =>
   {
@@ -303,9 +308,21 @@ export default function Tetris({ running, secondsLeft, targetScore, onScoreChang
     onScoreChangeRef.current(state.score);
   }, [state.score]);
 
+  // Reaching the target wins the round right away instead of playing out the
+  // clock. Declared after the score effect above so the final score is
+  // reported before the round ends.
   useEffect(() =>
   {
-    if (state.toppedOut) onGameOverRef.current();
+    if (state.score < targetScore || roundEndedRef.current) return;
+    roundEndedRef.current = true;
+    onGameOverRef.current();
+  }, [state.score, targetScore]);
+
+  useEffect(() =>
+  {
+    if (!state.toppedOut || roundEndedRef.current) return;
+    roundEndedRef.current = true;
+    onGameOverRef.current();
   }, [state.toppedOut]);
 
   // Gravity loop — only active while the round is running, and stops nudging

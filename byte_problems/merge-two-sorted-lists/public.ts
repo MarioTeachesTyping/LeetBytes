@@ -49,8 +49,8 @@ export const mergeTwoSortedLists: SolutionEntry =
   ],
 
   hints: [
-    "Both lists are already sorted, so think about how you'd merge two sorted piles of cards by hand — you'd only ever need to look at the two cards currently on top, right?",
-    "A dummy placeholder node before your result list can save you from special-casing 'is this the first node I'm adding' — you just return `dummy.next` at the end.",
+    "Both lists are already sorted, so think about how you'd merge two sorted piles of cards by hand. You'd only ever need to look at the two cards currently on top, right?",
+    "A dummy placeholder node before your result list can save you from special-casing 'is this the first node I'm adding'. You just return `dummy.next` at the end.",
     "Walk both lists with a `tail` pointer, at each step attaching whichever current node has the smaller value and advancing only that list, then once one list runs out, attach whatever remains of the other list directly.",
   ],
 

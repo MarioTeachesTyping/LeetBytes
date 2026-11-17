@@ -45,9 +45,9 @@ export const validPalindrome: SolutionEntry =
   ],
 
   hints: [
-    "Think about comparing the string from both ends inward instead of building a cleaned-up copy first — what would two pointers, one starting at each end, let you check as they move toward each other?",
-    "Not every character counts — when a pointer lands on something that isn't a letter or digit, what should happen before you compare it to the other side?",
-    "Move the left pointer right and the right pointer left, skipping any non-alphanumeric characters as you go, and compare the lowercase version of each side — return False the moment a mismatch occurs.",
+    "Think about comparing the string from both ends inward instead of building a cleaned-up copy first. What would two pointers, one starting at each end, let you check as they move toward each other?",
+    "Not every character counts. When a pointer lands on something that isn't a letter or digit, what should happen before you compare it to the other side?",
+    "Move the left pointer right and the right pointer left, skipping any non-alphanumeric characters as you go, and compare the lowercase version of each side. Return False the moment a mismatch occurs.",
   ],
 
   starterCode: `class Solution:

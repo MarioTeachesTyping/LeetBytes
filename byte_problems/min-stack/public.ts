@@ -46,8 +46,8 @@ export const minStack: SolutionEntry =
   ],
 
   hints: [
-    "getMin needs to run in O(1), so recomputing the minimum from scratch on every call is out — what if every element on the stack could carry along the answer to 'what was the min at the time I was pushed'?",
-    "Since a pop can remove the current minimum, you need the *previous* minimum readily available the instant that happens — could each stack entry store both its own value and the minimum seen up to that point?",
+    "getMin needs to run in O(1), so recomputing the minimum from scratch on every call is out. What if every element on the stack could carry along the answer to 'what was the min at the time I was pushed'?",
+    "Since a pop can remove the current minimum, you need the *previous* minimum readily available the instant that happens. Could each stack entry store both its own value and the minimum seen up to that point?",
     "Push tuples of `(value, min(value, current_min))` instead of raw values; `top()` returns `stack[-1][0]` and `getMin()` returns `stack[-1][1]`, so both stay O(1) even after a `pop()`.",
   ],
 
