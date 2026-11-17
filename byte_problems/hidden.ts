@@ -24,6 +24,7 @@ import { groupAnagramsHidden } from "./group-anagrams/hidden.ts";
 import { maximumSubarrayHidden } from "./maximum-subarray/hidden.ts";
 import { mergeIntervalsHidden } from "./merge-intervals/hidden.ts";
 import { trappingRainWaterHidden } from "./trapping-rain-water/hidden.ts";
+import { searchA2dMatrixHidden } from "./search-a-2d-matrix/hidden.ts";
 import { subsetsHidden } from "./subsets/hidden.ts";
 import { wordSearchHidden } from "./word-search/hidden.ts";
 import { sameTreeHidden } from "./same-tree/hidden.ts";
@@ -72,6 +73,7 @@ export const HIDDEN_PROBLEMS: Partial<Record<ProblemSlug, HiddenProblem>> =
   "maximum-subarray": maximumSubarrayHidden,
   "merge-intervals": mergeIntervalsHidden,
   "trapping-rain-water": trappingRainWaterHidden,
+  "search-a-2d-matrix": searchA2dMatrixHidden,
   "subsets": subsetsHidden,
   "word-search": wordSearchHidden,
   "same-tree": sameTreeHidden,

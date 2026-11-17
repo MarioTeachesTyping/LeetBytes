@@ -30,6 +30,7 @@ export const PROBLEM_SLUGS = [
   "group-anagrams",
   "maximum-subarray",
   "merge-intervals",
+  "search-a-2d-matrix",
   "subsets",
   "word-search",
   "same-tree",
