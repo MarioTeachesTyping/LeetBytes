@@ -41,6 +41,28 @@ is from [FastPrep](https://www.fastprep.io)). For those:
   owner instead of defaulting to LeetCode.
 - Hand-author `companies`, since the generated company tags only cover LeetCode slugs.
 
+## "In Place" Problems
+
+Some problems return nothing and instead edit an argument in place (e.g.
+`set-matrix-zeroes`, whose `setZeroes` returns `None` and rewrites `matrix`).
+Grading the return value would fail every correct answer, so set `inPlaceArg` in
+the problem's `hidden.ts` to the index of the argument being mutated:
+
+```ts
+{
+  functionName: "setZeroes",
+  inPlaceArg: 0,                       // grade `matrix`, not the return value
+  tests: [
+    { args: [[[1, 1, 1], [1, 0, 1], [1, 1, 1]]], expected: [[1, 0, 1], [0, 0, 0], [1, 0, 1]] },
+  ],
+  // ...
+}
+```
+
+The harness calls the method on a fresh copy of each case's args, then compares
+that argument's final state to `expected` (decoded/encoded with its `argTypes`
+entry, so a mutated `ListNode`/`TreeNode` works too). The return value is ignored.
+
 ## "Design" Problems
 
 Most problems grade a single function. A "design" problem (a class with a

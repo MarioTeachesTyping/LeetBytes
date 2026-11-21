@@ -31,6 +31,7 @@ export const PROBLEM_SLUGS = [
   "maximum-subarray",
   "merge-intervals",
   "search-a-2d-matrix",
+  "set-matrix-zeroes",
   "subsets",
   "word-search",
   "same-tree",
@@ -207,6 +208,12 @@ export type FunctionHiddenProblem =
   argTypes?: IOType[];
   // I/O type of the method's return value. Defaults to "json".
   returnType?: IOType;
+  // For "modify in place" problems (e.g. set-matrix-zeroes), the index of the
+  // argument the method mutates instead of returning. When set, the harness
+  // ignores the return value and grades that argument as it stands after the
+  // call, so `expected` is the argument's final state. Its `argTypes` entry is
+  // used to encode it back to JSON, same as `returnType` would be.
+  inPlaceArg?: number;
   // The public example cases shown on the problem (the "Run" path grades against
   // just these). A subset/restatement of the problem's published examples, kept
   // structured so the harness can run them. Distinct from `tests`, the full

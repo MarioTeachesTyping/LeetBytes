@@ -162,6 +162,7 @@ function gradeFunction(
       compare: problem.compare,
       argTypes: problem.argTypes,
       returnType: problem.returnType,
+      inPlaceArg: problem.inPlaceArg,
       tests,
     },
     tests,

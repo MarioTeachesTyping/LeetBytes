@@ -205,6 +205,7 @@ def _run_function(spec):
     mode = spec.get("compare", "exact")
     arg_types = spec.get("argTypes") or []
     return_type = spec.get("returnType")
+    in_place_arg = spec.get("inPlaceArg")
     tests = spec.get("tests", [])
     results = []
 
@@ -224,7 +225,12 @@ def _run_function(spec):
             ]
             with _ctx.redirect_stdout(buf):
                 actual = method(*call_args)
-            if return_type:
+            if in_place_arg is not None:
+                # An in-place problem returns nothing: grade the mutated
+                # argument as it stands after the call instead.
+                arg_type = arg_types[in_place_arg] if in_place_arg < len(arg_types) else None
+                actual = _encode(call_args[in_place_arg], arg_type)
+            elif return_type:
                 actual = _encode(actual, return_type)
             elapsed = (_time.perf_counter() - start) * 1000
             passed = _equal(actual, expected, mode)

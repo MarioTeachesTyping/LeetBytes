@@ -10,7 +10,7 @@
 
 **Practice**
 
-- 47 problems, mostly LeetCode plus a few company-sourced ones, each graded against a hidden test suite.
+- 48 problems, mostly LeetCode plus a few company-sourced ones, each graded against a hidden test suite.
 - In-browser Python editor with **Run** (your own editable example cases) and **Judge** (the hidden suite), showing per-case results plus runtime and memory.
 - Handles linked lists, trees, and "design" problems (a class plus method calls, like LRU Cache and Min Stack).
 - Drag the divider between the question and the editor to give either side more room.
@@ -144,7 +144,7 @@ Each package has its own README with the details:
 | --- | --- |
 | [byte_frontend](byte_frontend/README.md) | Components, pages, and how the minigame roulette works |
 | [byte_backend](byte_backend/README.md) | API routes, the judge, and runner options |
-| [byte_problems](byte_problems/README.md) | Problem layout, design problems, and company tags |
+| [byte_problems](byte_problems/README.md) | Problem layout, design and in-place problems, and company tags |
 | [byte_shared](byte_shared/README.md) | The shared request/response types and schemas |
 
 ---
