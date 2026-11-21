@@ -199,7 +199,9 @@
   height: 180px;
   /* Rotated corners poke out past the 180px box (more so with perspective),
      so reserve room around it instead of letting them overlap the text. */
-  margin: 36px 0;
+  /* Top/bottom are uneven on purpose: it sits a little high, closer to the
+     title than to the text below. */
+  margin: 24px 0 48px;
   flex-shrink: 0;
   perspective: 700px;
   animation: item-box-bob 2.4s ease-in-out infinite;
@@ -220,9 +222,43 @@
   transition: border-color 300ms, background-color 300ms;
 }
 
+/* On landing every face's edges cycle through the rainbow. Each face starts
+   at a different point in the cycle (negative delays), so the cube shows
+   several colors at once instead of flashing one color in unison. */
 .item-box-scene[data-landed="true"] .item-box-face {
-  border-color: #34d399;
-  background: rgba(52, 211, 153, 0.12);
+  background: rgba(255, 255, 255, 0.12);
+  /* 6 colors, ~1s on each. */
+  animation: item-box-rainbow 6s linear infinite;
+}
+/* Offsets are sixths of the 6s cycle — keep them in step with the duration. */
+.item-box-scene[data-landed="true"] .item-box-face:nth-child(2) { animation-delay: -1s; }
+.item-box-scene[data-landed="true"] .item-box-face:nth-child(3) { animation-delay: -2s; }
+.item-box-scene[data-landed="true"] .item-box-face:nth-child(4) { animation-delay: -3s; }
+.item-box-scene[data-landed="true"] .item-box-face:nth-child(5) { animation-delay: -4s; }
+.item-box-scene[data-landed="true"] .item-box-face:nth-child(6) { animation-delay: -5s; }
+
+/* The landed game's name under the box, cycling the same colors at the same
+   speed as the edges. */
+.item-box-rainbow-text {
+  animation: item-box-rainbow-text 6s linear infinite;
+}
+
+@keyframes item-box-rainbow-text {
+  0%, 100% { color: #ef4444; }
+  17% { color: #f97316; }
+  33% { color: #facc15; }
+  50% { color: #22c55e; }
+  67% { color: #3b82f6; }
+  83% { color: #a855f7; }
+}
+
+@keyframes item-box-rainbow {
+  0%, 100% { border-color: #ef4444; }
+  17% { border-color: #f97316; }
+  33% { border-color: #facc15; }
+  50% { border-color: #22c55e; }
+  67% { border-color: #3b82f6; }
+  83% { border-color: #a855f7; }
 }
 
 /* The cube and its contents slow down together — the two durations must
@@ -283,4 +319,14 @@
   .item-box-core {
     transform: rotateY(-35deg) rotateX(20deg);
   }
+  /* No color cycling: each face just holds its own rainbow color, and the
+     game name holds a single one. */
+  .item-box-rainbow-text { animation: none; color: #facc15; }
+  .item-box-scene[data-landed="true"] .item-box-face { animation: none; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(1) { border-color: #ef4444; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(2) { border-color: #f97316; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(3) { border-color: #facc15; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(4) { border-color: #22c55e; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(5) { border-color: #3b82f6; }
+  .item-box-scene[data-landed="true"] .item-box-face:nth-child(6) { border-color: #a855f7; }
 }

@@ -127,7 +127,7 @@ a round through five phases:
 2. **Roulette** — Play bumps the box, and the registered minigames' screenshots
    (`games/minigames.ts`) flash inside it in order, starting fast and slowing down
    each step for ~3.4s. It lands on one (chosen the instant the spin starts — the
-   animation is just theater): the box bumps again, its edges turn green, its spin
+   animation is just theater): the box bumps again, its edges cycle rainbow, its spin
    slows, and it holds there for a couple seconds so the objective is actually
    readable before the round starts. Menu and roulette share the same `ItemBox`, so
    the cube keeps spinning straight through Play.

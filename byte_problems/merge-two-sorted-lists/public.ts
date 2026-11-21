@@ -20,7 +20,7 @@ export const mergeTwoSortedLists: SolutionEntry =
 
   examples: [
     {
-      image: "/problem-images/merge_ex1.jpg",
+      image: "/problem-images/merge-ex-1.jpg",
       input: "`list1 = [1,2,4], list2 = [1,3,4]`",
       output: "`[1,1,2,3,4,4]`",
     },

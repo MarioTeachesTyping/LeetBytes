@@ -28,6 +28,7 @@ import { wordSearch } from "./word-search/public.ts";
 import { sameTree } from "./same-tree/public.ts";
 import { symmetricTree } from "./symmetric-tree/public.ts";
 import { maximumDepthOfBinaryTree } from "./maximum-depth-of-binary-tree/public.ts";
+import { diameterOfBinaryTree } from "./diameter-of-binary-tree/public.ts";
 import { bestTimeToBuyAndSellStock } from "./best-time-to-buy-and-sell-stock/public.ts";
 import { validPalindrome } from "./valid-palindrome/public.ts";
 import { longestConsecutiveSequence } from "./longest-consecutive-sequence/public.ts";
@@ -77,6 +78,7 @@ export const PROBLEMS: Record<ProblemSlug, SolutionEntry> =
   "same-tree": sameTree,
   "symmetric-tree": symmetricTree,
   "maximum-depth-of-binary-tree": maximumDepthOfBinaryTree,
+  "diameter-of-binary-tree": diameterOfBinaryTree,
   "best-time-to-buy-and-sell-stock": bestTimeToBuyAndSellStock,
   "valid-palindrome": validPalindrome,
   "longest-consecutive-sequence": longestConsecutiveSequence,

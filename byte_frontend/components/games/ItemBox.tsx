@@ -24,7 +24,7 @@ interface ItemBoxProps
   // Screenshot to show inside the box; the "?" shows when this is omitted.
   imageSrc?: string;
   imageAlt?: string;
-  // Turns the cube's edges green and slows its spin once the roulette lands.
+  // Turns the cube's edges rainbow and slows its spin once the roulette lands.
   landed?: boolean;
   // Changing this replays the contents' "hit" bump (on Play, and on landing).
   hitKey?: number;

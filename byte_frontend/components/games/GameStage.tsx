@@ -235,7 +235,7 @@ export default function GameStage({ hintsUnlocked, allHintsUnlocked, onWin, onEx
             )}
             {phase === "roulette" && rouletteLanded && (
               <>
-                <p className="text-lg font-bold uppercase tracking-widest text-emerald-300">{pickedGame.title}</p>
+                <p className="item-box-rainbow-text text-lg font-bold uppercase tracking-widest">{pickedGame.title}</p>
                 <p className="text-lg text-white/80">
                   {roundAllHintsUnlocked
                     ? `Get ${roundTargetScore.toLocaleString()} ${pickedGame.unitName} in ${GAME_DURATION_SECONDS}s`

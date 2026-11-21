@@ -19,7 +19,7 @@ export const addTwoNumbers: SolutionEntry =
 
   examples: [
     {
-      image: "/problem-images/addtwonumber1.jpg",
+      image: "/problem-images/add-two-numbers-1.jpg",
       input: "`l1 = [2,4,3], l2 = [5,6,4]`",
       output: "`[7,0,8]`",
       explanation: "342 + 465 = 807.",

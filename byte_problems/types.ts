@@ -36,6 +36,7 @@ export const PROBLEM_SLUGS = [
   "same-tree",
   "symmetric-tree",
   "maximum-depth-of-binary-tree",
+  "diameter-of-binary-tree",
   "best-time-to-buy-and-sell-stock",
   "valid-palindrome",
   "longest-consecutive-sequence",
